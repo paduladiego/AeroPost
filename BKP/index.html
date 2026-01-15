@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>Gestão de Correspondências - Facilities</title>
+
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+
+        <!-- Phosphor Icons (Lightweight icons) -->
+        <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+        <!-- HTML5-QRCode Library -->
+        <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="styles.css">
+
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: '#2563EB',
+                            secondary: '#475569',
+                        }
+                    }
+                }
+            }
+        </script>
+    </head>
+
+    <body class="bg-slate-50 min-h-screen text-slate-800 pb-24">
+
+        <!-- Header -->
+        <header class="bg-white sticky top-0 z-50 shadow-sm border-b border-slate-100">
+            <div class="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-primary/10 p-2 rounded-lg">
+                        <i class="ph ph-package text-2xl text-primary"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight">Facilities Mail</h1>
+                        <p class="text-xs text-slate-500">Gestão de Encomendas</p>
+                    </div>
+                </div>
+                <button onclick="app.showInstallPrompt()" id="installBtn"
+                    class="hidden text-sm font-medium text-primary">
+                    Instalar
+                </button>
+            </div>
+
+            <!-- Search & Filter Bar -->
+            <div class="px-4 py-3 bg-white border-t border-slate-50 max-w-3xl mx-auto" id="searchBar">
+                <div class="relative">
+                    <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="searchInput" onkeyup="app.filterPackages()"
+                        placeholder="Buscar por nome ou apto..."
+                        class="w-full bg-slate-100 border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20 placeholder:text-slate-400">
+                </div>
+
+                <div class="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar">
+                    <button onclick="app.setFilter('todos')" id="filter-todos"
+                        class="filter-chip active px-4 py-1.5 rounded-full text-xs font-medium bg-slate-800 text-white transition-colors whitespace-nowrap">Todos</button>
+                    <button onclick="app.setFilter('portaria')" id="filter-portaria"
+                        class="filter-chip px-4 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors whitespace-nowrap">Na
+                        Portaria</button>
+                    <button onclick="app.setFilter('disponivel')" id="filter-disponivel"
+                        class="filter-chip px-4 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors whitespace-nowrap">Disponíveis</button>
+                    <button onclick="app.setFilter('entregue')" id="filter-entregue"
+                        class="filter-chip px-4 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors whitespace-nowrap">Entregues</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-3xl mx-auto px-4 py-6" id="appContent">
+            <!-- View: List (Default) -->
+            <div id="view-dashboard" class="space-y-4">
+                <!-- Empty State -->
+                <div id="emptyState" class="hidden flex flex-col items-center justify-center py-12 text-center">
+                    <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                        <i class="ph ph-archive-box text-3xl text-slate-300"></i>
+                    </div>
+                    <h3 class="text-slate-900 font-medium">Nenhuma encomenda encontrada</h3>
+                    <p class="text-sm text-slate-500 mt-1">Cadastre uma nova encomenda para começar.</p>
+                </div>
+
+                <!-- List Container -->
+                <div id="packagesList" class="space-y-3">
+                    <!-- Cards will be injected here -->
+                </div>
+            </div>
+
+            <!-- View: Registration Form -->
+            <div id="view-register" class="hidden">
+                <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                    <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                        <i class="ph ph-plus-circle text-primary"></i> Nova Encomenda
+                    </h2>
+
+                    <form id="registerForm" onsubmit="app.saveNewPackage(event)" class="space-y-5">
+
+                        <!-- Tracking Code Section -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Código de Rastreio</label>
+                            <div class="flex gap-2">
+                                <input type="text" name="tracking" id="trackingInput"
+                                    class="flex-1 text-lg p-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all uppercase"
+                                    placeholder="Ex: AB123456789BR">
+                                <button type="button" onclick="app.startScanner()"
+                                    class="bg-slate-800 text-white p-3 rounded-xl flex items-center justify-center active:scale-95 transition-transform">
+                                    <i class="ph ph-barcode text-2xl"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Destinatário</label>
+                            <input type="text" name="recipient" required
+                                class="w-full text-lg p-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                                placeholder="Nome completo">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Apto / Setor</label>
+                                <input type="text" name="location" required
+                                    class="w-full text-lg p-3 rounded-xl border border-slate-200 focus:border-primary focus:ring-1 focus:ring-primary outline-none"
+                                    placeholder="Ex: 304B">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Tipo</label>
+                                <select name="type"
+                                    class="w-full text-lg p-3 rounded-xl border border-slate-200 bg-white focus:border-primary outline-none">
+                                    <option value="Caixa">Caixa</option>
+                                    <option value="Envelope">Envelope</option>
+                                    <option value="Sacola">Sacola</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Foto (Opcional)</label>
+                            <label
+                                class="flex items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:bg-slate-50 transition-colors relative overflow-hidden group">
+                                <div class="text-center" id="photoPlaceholder">
+                                    <i class="ph ph-camera text-2xl text-slate-400 mb-2"></i>
+                                    <span class="block text-xs text-slate-500">Tirar foto / Upload</span>
+                                </div>
+                                <img id="photoPreview" class="hidden absolute inset-0 w-full h-full object-cover">
+                                <input type="file" accept="image/*" capture="environment" class="hidden"
+                                    onchange="app.handlePhotoUpload(this)">
+                                <button type="button" onclick="app.removePhoto(event)" id="removePhotoBtn"
+                                    class="hidden absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full shadow-lg z-10">
+                                    <i class="ph ph-x"></i>
+                                </button>
+                            </label>
+                        </div>
+
+                        <div class="pt-4 flex gap-3">
+                            <button type="button" onclick="app.navigate('dashboard')"
+                                class="flex-1 py-3.5 rounded-xl border border-slate-200 text-slate-600 font-semibold">Cancelar</button>
+                            <button type="submit"
+                                class="flex-1 py-3.5 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/25 active:scale-95 transition-transform">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <!-- FAB: Add Button -->
+        <button onclick="app.navigate('register')" id="fab"
+            class="fixed bottom-6 right-6 w-14 h-14 bg-slate-900 text-white rounded-full shadow-xl flex items-center justify-center active:scale-90 transition-transform z-40">
+            <i class="ph ph-plus text-2xl"></i>
+        </button>
+
+        <!-- Bottom Action Sheet (Modal) for Status Updates -->
+        <div id="actionSheet"
+            class="fixed inset-0 bg-black/50 z-50 hidden flex items-end opacity-0 transition-opacity duration-200"
+            onclick="if(event.target === this) app.closeActionSheet()">
+            <div class="bg-white w-full max-w-3xl mx-auto rounded-t-3xl p-6 transform translate-y-full transition-transform duration-300 ease-out"
+                id="actionSheetContent">
+                <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
+
+                <div id="sheetDetails" class="mb-6">
+                    <!-- Dynamic Content -->
+                </div>
+
+                <div id="signatureSection" class="hidden mb-6">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Assinatura do Destinatário</label>
+                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50 touch-none relative">
+                        <canvas id="signatureCanvas" class="w-full h-40 block"></canvas>
+                        <button onclick="app.clearSignature()"
+                            class="absolute top-2 right-2 text-xs bg-white/80 backdrop-blur px-2 py-1 rounded border border-slate-200 text-slate-500">Limpar</button>
+                    </div>
+                </div>
+
+                <button id="actionBtn"
+                    class="w-full py-4 rounded-xl font-bold text-lg text-white shadow-lg active:scale-95 transition-all">
+                    Confirmar Ação
+                </button>
+            </div>
+        </div>
+
+        <!-- Scanner Modal -->
+        <div id="scannerModal"
+            class="fixed inset-0 bg-black/90 z-[70] hidden flex flex-col items-center justify-center p-4">
+            <div class="relative w-full max-w-sm bg-white rounded-2xl overflow-hidden">
+                <div class="p-4 flex justify-between items-center border-b border-slate-100">
+                    <h3 class="font-bold text-slate-800">Escanear Código</h3>
+                    <button onclick="app.stopScanner()" class="p-2 bg-slate-100 rounded-full">
+                        <i class="ph ph-x"></i>
+                    </button>
+                </div>
+                <div id="reader" class="w-full bg-black min-h-[300px]"></div>
+                <div class="p-4 text-center text-sm text-slate-500">
+                    Aponte a câmera para o código de barras ou QR Code
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast"
+            class="fixed top-4 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl z-[60] flex items-center gap-3 translate-y-[-150%] transition-transform duration-300">
+            <i class="ph ph-check-circle text-green-400 text-xl"></i>
+            <span id="toastMsg" class="font-medium text-sm">Ação realizada com sucesso!</span>
+        </div>
+
+        <!-- App Script -->
+        <script src="script.js"></script>
+    </body>
+
+</html>

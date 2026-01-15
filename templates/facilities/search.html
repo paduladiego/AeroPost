@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Pesquisa Avançada{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🔎 Pesquisar Encomendas</h2>
+    <a href="{{ url_for('facilities_dashboard') }}" class="btn btn-outline-secondary">Voltar ao Dashboard</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form action="{{ url_for('facilities_search') }}" method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Busca Geral</label>
+                <input type="text" class="form-control" name="q" value="{{ request.args.get('q', '') }}" placeholder="Rastreio, Destinatário, Remetente...">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Status</label>
+                <select class="form-select" name="status">
+                    <option value="">Todos</option>
+                    <option value="RECEBIDO_PORTARIA" {% if request.args.get('status') == 'RECEBIDO_PORTARIA' %}selected{% endif %}>Na Portaria</option>
+                    <option value="EM_FACILITIES" {% if request.args.get('status') == 'EM_FACILITIES' %}selected{% endif %}>Em Triagem</option>
+                    <option value="DISPONIVEL_PARA_RETIRADA" {% if request.args.get('status') == 'DISPONIVEL_PARA_RETIRADA' %}selected{% endif %}>Disponível</option>
+                    <option value="ENTREGUE" {% if request.args.get('status') == 'ENTREGUE' %}selected{% endif %}>Entregue</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Data (A partir de)</label>
+                <input type="date" class="form-control" name="date" value="{{ request.args.get('date', '') }}">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if items is not none %}
+<div class="card">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">Resultados ({{ items|length }})</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>ID / Rastreio</th>
+                        <th>Tipo / Remetente</th>
+                        <th>Destinatário</th>
+                        <th>Status / Local</th>
+                        <th>Atualizado em</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>
+                            <strong>{{ item.internal_id }}</strong>
+                            {% if item.tracking_code %}
+                            <br><small class="text-muted">{{ item.tracking_code }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ item.type }}<br>
+                            <small>{{ item.sender }}</small>
+                        </td>
+                        <td>
+                            {{ item.recipient_email or item.recipient_name_manual }}
+                            {% if item.recipient_floor %}<br><small>Andar: {{ item.recipient_floor }}</small>{% endif %}
+                        </td>
+                        <td>
+                            <span class="badge 
+                                {% if item.status == 'ENTREGUE' %}bg-secondary
+                                {% elif item.status == 'DISPONIVEL_PARA_RETIRADA' %}bg-success
+                                {% else %}bg-warning text-dark{% endif %}">
+                                {{ item.status }}
+                            </span>
+                            <br><small>{{ item.location or '' }}</small>
+                        </td>
+                        <td>{{ item.updated_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>
+                            <!-- Ações contextuais simples -->
+                            {% if item.status == 'DISPONIVEL_PARA_RETIRADA' %}
+                            <a href="{{ url_for('delivery_page', item_id=item.id) }}" class="btn btn-sm btn-success">Entregar</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted p-4">Nenhum resultado encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

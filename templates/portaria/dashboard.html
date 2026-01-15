@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Portaria - Recebimento{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Painel da Portaria</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Registrar Novo Item</h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('portaria_register') }}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Item</label>
+                        <select class="form-select" name="type" required>
+                            <option value="ENVELOPE">Envelope / Carta</option>
+                            <option value="CAIXA">Caixa / Pacote</option>
+                            <option value="OUTROS">Outros</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rastreio (Opcional)</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="tracking_code"
+                                placeholder="Código de rastreio">
+                            <button class="btn btn-outline-secondary" type="button">📷 Scan</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Remetente</label>
+                        <input type="text" class="form-control" name="sender" required
+                            placeholder="Nome da empresa/pessoa">
+                    </div>
+                    <hr>
+                    <h6 class="text-muted">Destinatário</h6>
+                    <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pills-corp-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-corp" type="button" role="tab">Corporativo (Email)</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pills-manual-tab" data-bs-toggle="pill"
+                                data-bs-target="#pills-manual" type="button" role="tab">Manual / Genérico</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-corp" role="tabpanel">
+                            <div class="mb-3">
+                                <label class="form-label">Email Corporativo</label>
+                                <input type="email" class="form-control" name="recipient_email"
+                                    placeholder="nome@dex.co">
+                                <div class="form-text">Usar email corporativo válido.</div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="pills-manual" role="tabpanel">
+                            <div class="mb-3">
+                                <label class="form-label">Nome Completo / Setor</label>
+                                <input type="text" class="form-control" name="recipient_name_manual"
+                                    placeholder="Ex: DEXCO - Marketing">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Observação</label>
+                                <input type="text" class="form-control" name="observation"
+                                    placeholder="Ex: Deixar na recepção">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">Registrar Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header">
+                Recebimentos Recentes (Hoje)
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Tipo</th>
+                            <th>Para</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in recent_items %}
+                        <tr>
+                            <td>{{ item.created_at.strftime('%H:%M') }}</td>
+                            <td>{{ item.type }}</td>
+                            <td>
+                                {% if item.recipient_email %}
+                                {{ item.recipient_email }}
+                                {% else %}
+                                {{ item.recipient_name_manual }}
+                                {% endif %}
+                            </td>
+                            <td><span class="badge bg-secondary status-badge">{{ item.status }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted p-3">Nenhum item recebido hoje ainda.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

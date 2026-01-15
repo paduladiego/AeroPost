@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}Facilities - Controle{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Painel Facilities</h2>
+    <div>
+        <a href="{{ url_for('history') }}" class="btn btn-outline-success">📜 Histórico/Entregues</a>
+        <a href="#" class="btn btn-outline-primary">Exportar CSV</a>
+        <a href="{{ url_for('users_list') }}" class="btn btn-outline-secondary">Gerenciar Usuários</a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center text-white bg-warning">
+            <div class="card-body">
+                <h3>{{ stats.in_portaria }}</h3>
+                <p class="mb-0">Na Portaria</p>
+                <small>Aguardando Coleta</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center text-white bg-info">
+            <div class="card-body">
+                <h3>{{ stats.in_facilities }}</h3>
+                <p class="mb-0">Em Triagem</p>
+                <small>Aguardando Alocação</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center text-white bg-success">
+            <div class="card-body">
+                <h3>{{ stats.ready }}</h3>
+                <p class="mb-0">Disponíveis</p>
+                <small>Aguardando Retirada</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ul class="nav nav-tabs mb-3" id="facilitiesTab" role="tablist">
+    <li class="nav-item">
+        <button class="nav-link active" id="portaria-tab" data-bs-toggle="tab" data-bs-target="#portaria"
+            type="button">1. Coletar da Portaria</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" id="triagem-tab" data-bs-toggle="tab" data-bs-target="#triagem" type="button">2. Alocar
+            Local</button>
+    </li>
+    <li class="nav-item">
+        <button class="nav-link" id="entregar-tab" data-bs-toggle="tab" data-bs-target="#entregar" type="button">3.
+            Realizar Entrega</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="facilitiesTabContent">
+    <!-- ABA 1: COLETAR -->
+    <div class="tab-pane fade show active" id="portaria" role="tabpanel">
+        <div class="card">
+            <div class="card-body">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Chegada</th>
+                            <th>Item</th>
+                            <th>Destinatário</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items_portaria %}
+                        <tr>
+                            <td><small class="text-muted">{{ item.internal_id }}</small></td>
+                            <td>{{ item.created_at.strftime('%d/%m %H:%M') }}</td>
+                            <td>{{ item.type }}<br><small>{{ item.sender }}</small></td>
+                            <td>{{ item.recipient_email or item.recipient_name_manual }}</td>
+                            <td>
+                                <form action="{{ url_for('facilities_collect', item_id=item.id) }}" method="post">
+                                    <button type="submit" class="btn btn-sm btn-warning">📥 Coletar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">Nenhum item na portaria.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABA 2: ALOCAR -->
+    <div class="tab-pane fade" id="triagem" role="tabpanel">
+        <div class="card">
+            <div class="card-body">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Item</th>
+                            <th>Destinatário</th>
+                            <th>Definir Local</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items_facilities %}
+                        <tr>
+                            <td>{{ item.internal_id }}</td>
+                            <td>{{ item.type }} de {{ item.sender }}</td>
+                            <td>{{ item.recipient_email or item.recipient_name_manual }}</td>
+                            <td>
+                                <form action="{{ url_for('facilities_allocate', item_id=item.id) }}" method="post"
+                                    class="d-flex gap-2">
+                                    <select name="location" class="form-select form-select-sm" required>
+                                        <option value="">Escolha...</option>
+                                        <option value="Armário 1">Armário 1</option>
+                                        <option value="Armário 2">Armário 2</option>
+                                        <option value="Armário 3">Armário 3</option>
+                                        <option value="Sala Facilities">Sala Facilities</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-info">Salvar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center">Nenhum item aguardando alocação.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABA 3: ENTREGAR -->
+    <div class="tab-pane fade" id="entregar" role="tabpanel">
+        <div class="card">
+            <div class="card-body">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Destinatário</th>
+                            <th>Local</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items_ready %}
+                        <tr>
+                            <td>{{ item.internal_id }}</td>
+                            <td>
+                                <strong>{{ item.recipient_email or item.recipient_name_manual }}</strong>
+                                <br><small>Andar: {{ item.recipient_floor or 'N/A' }}</small>
+                            </td>
+                            <td><span class="badge bg-light text-dark border">{{ item.location }}</span></td>
+                            <td>
+                                <a href="{{ url_for('delivery_page', item_id=item.id) }}"
+                                    class="btn btn-sm btn-success">✍️ Entregar</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center">Nenhum item disponível para entrega.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

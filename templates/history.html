@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Histórico de Entregas{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Histórico de Entregas</h2>
+    <a href="{{ url_for('facilities_dashboard') }}" class="btn btn-outline-secondary">Voltar ao Dashboard</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Busca</label>
+                <input type="text" class="form-control" name="q" value="{{ request.args.get('q', '') }}"
+                    placeholder="Rastreio, Nome, ID...">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Data Início</label>
+                <input type="date" class="form-control" name="start_date"
+                    value="{{ request.args.get('start_date', '') }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Data Fim</label>
+                <input type="date" class="form-control" name="end_date" value="{{ request.args.get('end_date', '') }}">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>ID / Rastreio</th>
+                        <th>Item</th>
+                        <th>Entregue Para</th>
+                        <th>Data Entrega</th>
+                        <th>Comprovante</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>
+                            <strong>{{ item.internal_id }}</strong><br>
+                            <small class="text-muted">{{ item.tracking_code or '-' }}</small>
+                        </td>
+                        <td>
+                            {{ item.type }}<br>
+                            <small>Remetente: {{ item.sender }}</small>
+                        </td>
+                        <td>
+                            {{ item.received_by_name }}<br>
+                            <small class="text-muted">Por: {{ item.deliverer_name }}</small>
+                        </td>
+                        <td>{{ item.delivered_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal"
+                                data-bs-target="#modalProof{{ item.id }}">
+                                🔍 Ver Assinatura
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="modalProof{{ item.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Comprovante de Entrega</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <p><strong>Item:</strong> {{ item.internal_id }}</p>
+                                            <p><strong>Recebido por:</strong> {{ item.received_by_name }}</p>
+                                            <div class="border p-2 bg-light">
+                                                <img src="{{ item.signature_data }}" class="img-fluid" alt="Assinatura">
+                                            </div>
+                                            <p class="mt-2 text-muted"><small>Entregue em: {{
+                                                    item.delivered_at.strftime('%d/%m/%Y %H:%M') }}</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center p-4">Nenhuma entrega encontrada com estes filtros.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

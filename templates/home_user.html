@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Minhas Encomendas{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Minhas Encomendas</h2>
+
+        <div class="card">
+            <div class="card-body">
+                {% if items %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>Rastreio / ID</th>
+                                <th>Tipo / Remetente</th>
+                                <th>Chegada</th>
+                                <th>Status</th>
+                                <th>Local</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>
+                                    <strong>{{ item.internal_id }}</strong><br>
+                                    <small class="text-muted">{{ item.tracking_code or '-' }}</small>
+                                </td>
+                                <td>
+                                    {{ item.type }}<br>
+                                    <small>{{ item.sender }}</small>
+                                </td>
+                                <td>{{ item.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td>
+                                    {% if item.status == 'RECEBIDO_PORTARIA' %}
+                                    <span class="badge bg-secondary">Na Portaria</span>
+                                    {% elif item.status == 'EM_FACILITIES' %}
+                                    <span class="badge bg-info text-dark">Em Triagem</span>
+                                    {% elif item.status == 'DISPONIVEL_PARA_RETIRADA' %}
+                                    <span class="badge bg-success">Disponível</span>
+                                    {% elif item.status == 'ENTREGUE' %}
+                                    <span class="badge bg-light text-dark border">Entregue</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ item.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.location or '-' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <p class="text-muted fs-5">Você não tem encomendas registradas no momento.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if unclaimed_items %}
+<h3 class="mt-5 mb-3 text-warning">📦 Itens sem Destinatário Identificado</h3>
+<p class="text-muted">Estes itens chegaram na portaria mas não tinham email identificado. Se algum for seu, procure o
+    Facilities.</p>
+
+<div class="card border-warning">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Rastreio / ID</th>
+                        <th>Tipo / Remetente</th>
+                        <th>Destinatário Manual</th>
+                        <th>Observação</th>
+                        <th>Chegada</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in unclaimed_items %}
+                    <tr>
+                        <td>
+                            <strong>{{ item.internal_id }}</strong><br>
+                            <small class="text-muted">{{ item.tracking_code or '-' }}</small>
+                        </td>
+                        <td>
+                            {{ item.type }}<br>
+                            <small>{{ item.sender }}</small>
+                        </td>
+                        <td class="fw-bold text-danger">{{ item.recipient_name_manual }}</td>
+                        <td>{{ item.observation or '-' }}</td>
+                        <td>{{ item.created_at.strftime('%d/%m %H:%M') }}</td>
+                        <td>
+                            <span class="badge bg-secondary">{{ item.status }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

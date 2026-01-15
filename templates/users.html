@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerenciar Usuários{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gerenciar Usuários</h2>
+    <a href="{{ url_for('facilities_dashboard') }}" class="btn btn-outline-secondary">Voltar ao Dashboard</a>
+</div>
+
+<!-- Lista de Usuários Existentes -->
+<div class="card mb-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">Usuários Cadastrados</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome / Info</th>
+                        <th>Login (Email/User)</th>
+                        <th>Função</th>
+                        <th>Ações</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>
+                            <strong>{{ user.full_name }}</strong><br>
+                            <small class="text-muted">{{ user.company }} - {{ user.floor }}</small>
+                        </td>
+                        <td>{{ user.email or user.username }}</td>
+                        <td>
+                            {% if user.role == 'ADMIN' %}
+                            <span class="badge bg-danger">ADMIN</span>
+                            {% elif user.role == 'FACILITIES' %}
+                            <span class="badge bg-warning text-dark">FACILITIES</span>
+                            {% elif user.role == 'PORTARIA' %}
+                            <span class="badge bg-info text-dark">PORTARIA</span>
+                            {% else %}
+                            <span class="badge bg-secondary">USER</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                        <td>
+                            {% set is_admin = (user.role == 'ADMIN') %}
+                            {% set is_self = (session.get('user_id') == user.id) %}
+
+                            {% if not is_self %}
+                            <div class="d-flex gap-1">
+                                {% if user.role == 'USER' %}
+                                <form action="{{ url_for('user_promote', user_id=user.id) }}" method="post"
+                                    class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-success"
+                                        title="Promover para Facilities">⬆️</button>
+                                </form>
+                                {% endif %}
+
+                                {% if user.role == 'FACILITIES' %}
+                                <form action="{{ url_for('user_demote', user_id=user.id) }}" method="post"
+                                    class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-warning"
+                                        title="Rebaixar para Usuário">⬇️</button>
+                                </form>
+                                {% endif %}
+
+                                <form action="{{ url_for('user_toggle_block', user_id=user.id) }}" method="post"
+                                    class="d-inline">
+                                    {% if user.is_active %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        title="Bloquear Acesso">🚫</button>
+                                    {% else %}
+                                    <button type="submit" class="btn btn-sm btn-dark"
+                                        title="Desbloquear Acesso">🔓</button>
+                                    {% endif %}
+                                </form>
+                            </div>
+                            {% else %}
+                            <span class="text-muted fs-6">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not user.is_active %}
+                            <span class="badge bg-danger">BLOQUEADO</span>
+                            {% else %}
+                            <span class="badge bg-success">ATIVO</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Criar Usuário de Portaria -->
+<div class="card">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Cadastrar Equipe (Portaria)</h5>
+    </div>
+    <div class="card-body">
+        <form action="{{ url_for('user_create_portaria') }}" method="post" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Nome Completo</label>
+                <input type="text" class="form-control" name="full_name" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Usuário de Login</label>
+                <input type="text" class="form-control" name="username" placeholder="ex: porteiro1" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Senha</label>
+                <input type="password" class="form-control" name="password" required>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Criar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Entrega - Assinatura{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Confirmar Entrega</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Item:</strong> {{ item.type }} <br>
+                    <strong>Remetente:</strong> {{ item.sender }} <br>
+                    <strong>Para:</strong> {{ item.recipient_email or item.recipient_name_manual }}
+                </div>
+
+                <form id="delivery-form" action="{{ url_for('delivery_confirm', item_id=item.id) }}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Recebedor (Nome Legível)</label>
+                        <input type="text" class="form-control" name="received_by_name" required
+                            placeholder="Quem está retirando?">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Assinatura</label>
+                        <div class="border rounded p-2 text-center" style="background-color: #f0f0f0;">
+                            <canvas id="signature-pad" width="500" height="200"
+                                style="background: white; border: 1px dashed #ccc; touch-action: none;"></canvas>
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="clear-btn">Limpar
+                                    Assinatura</button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="signature_data" id="hidden-signature-input">
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="button" id="save-btn" class="btn btn-success btn-lg">Confirmar Entrega</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script>
+    var canvas = document.getElementById('signature-pad');
+
+    // Resize canvas for high DPI
+    function resizeCanvas() {
+        var ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
+    }
+    window.onresize = resizeCanvas;
+    resizeCanvas();
+
+    var signaturePad = new SignaturePad(canvas);
+
+    document.getElementById('clear-btn').addEventListener('click', function () {
+        signaturePad.clear();
+    });
+
+    document.getElementById('save-btn').addEventListener('click', function () {
+        if (signaturePad.isEmpty()) {
+            alert("Por favor, colete a assinatura antes de confirmar.");
+        } else {
+            var dataURL = signaturePad.toDataURL();
+            document.getElementById('hidden-signature-input').value = dataURL;
+            document.getElementById('delivery-form').submit();
+        }
+    });
+</script>
+{% endblock %}

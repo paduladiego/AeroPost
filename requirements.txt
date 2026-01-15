@@ -1,0 +1,4 @@
+flask
+werkzeug
+gunicorn
+# Simple image processing might be needed later, but keeping it minimal for now
