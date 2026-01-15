@@ -30,7 +30,8 @@
                         <div class="input-group">
                             <input type="text" class="form-control" name="tracking_code"
                                 placeholder="Código de rastreio">
-                            <button class="btn btn-outline-secondary" type="button">📷 Scan</button>
+                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
+                                data-bs-target="#scannerModal">📷 Scan</button>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -81,4 +82,55 @@
         </div>
     </div>
 </div>
+
+<!-- Modal do Scanner -->
+<div class="modal fade" id="scannerModal" tabindex="-1" aria-labelledby="scannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scannerModalLabel">Leitor de Código de Barras</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div id="reader" style="width: 100%; min-height: 300px; background: #000;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+    let html5QrCode = null;
+    const scannerModal = document.getElementById('scannerModal');
+
+    scannerModal.addEventListener('shown.bs.modal', function () {
+        html5QrCode = new Html5Qrcode("reader");
+        const config = { fps: 10, qrbox: { width: 250, height: 150 } };
+
+        html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            (decodedText, decodedResult) => {
+                // Sucesso na leitura
+                document.getElementsByName("tracking_code")[0].value = decodedText;
+                const modal = bootstrap.Modal.getInstance(scannerModal);
+                modal.hide();
+            }
+        ).catch(err => {
+            console.error("Erro ao iniciar scanner:", err);
+            document.getElementById('reader').innerHTML = `<div class="p-4 text-center text-white">Erro ao acessar câmera: ${err}</div>`;
+        });
+    });
+
+    scannerModal.addEventListener('hidden.bs.modal', function () {
+        if (html5QrCode) {
+            html5QrCode.stop().then(() => {
+                html5QrCode.clear();
+            }).catch(err => console.warn("Erro ao parar scanner:", err));
+        }
+    });
+</script>
 {% endblock %}
