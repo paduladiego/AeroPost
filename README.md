@@ -20,6 +20,8 @@ O AeroPost é uma aplicação web desenvolvida para otimizar o fluxo de recebime
 - **Assinatura Digital**: Captura de assinatura direto na tela (tablet/celular) para comprovação de entrega.
 - **Gestão de Usuários**: Bloqueio, desbloqueio e promoção de usuários (User -> Facilities).
 - **Histórico**: Consulta de entregas passadas com filtros por data e busca textual.
+- **Exportação CSV**: Geração de relatório detalhado de entregas para análise externa (v1.2+).
+- **Gestão de Configurações**: (v1.2+) Interface para cadastro dinâmico de Tipos de Item, Locais, Empresas e Domínios de E-mail.
 
 ### 3. Colaboradores (Usuários Finais)
 - **Auto-cadastro**: Registro permitido apenas para domínios corporativos autorizados (`@dex.co`, `@deca.com.br`, etc.).
@@ -61,6 +63,10 @@ O AeroPost é uma aplicação web desenvolvida para otimizar o fluxo de recebime
     flask create-admin
     ```
     *Isso criará o usuário `admin` com senha `admin123`.*
+    
+    **(Para atualizações v1.2+) Execute a migração de dados:**
+    ```bash
+    python migrate_v120.py
     *(Opcional) Para adicionar a coluna `is_active` em bancos antigos:*
     ```bash
     python update_db_users.py
@@ -86,4 +92,5 @@ O AeroPost é uma aplicação web desenvolvida para otimizar o fluxo de recebime
 Este projeto foi desenvolvido como um MVP (Mínimo Produto Viável) para uso corporativo interno.
 
 ---
-*Versão 1.0.0*
+---
+*Versão 1.2.0*
