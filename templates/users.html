@@ -47,11 +47,12 @@
                             {% endif %}
                         </td>
                         <td>
-                        <td>
-                            {% set is_admin = (user.role == 'ADMIN') %}
+                            {% set is_admin_target = (user.role == 'ADMIN') %}
+                            {% set is_manager_admin = (session.get('role') == 'ADMIN') %}
                             {% set is_self = (session.get('user_id') == user.id) %}
 
                             {% if not is_self %}
+                            {% if not (is_admin_target and not is_manager_admin) %}
                             <div class="d-flex gap-1">
                                 {% if user.role == 'USER' %}
                                 <form action="{{ url_for('user_promote', user_id=user.id) }}" method="post"
@@ -80,6 +81,9 @@
                                     {% endif %}
                                 </form>
                             </div>
+                            {% else %}
+                            <span class="text-muted small">Restrito</span>
+                            {% endif %}
                             {% else %}
                             <span class="text-muted fs-6">-</span>
                             {% endif %}

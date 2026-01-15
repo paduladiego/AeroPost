@@ -104,8 +104,9 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Rastreio</th>
                             <th>Item</th>
-                            <th>Destinatário</th>
+                            <th>Remetente</th>
                             <th>Definir Local</th>
                         </tr>
                     </thead>
@@ -113,25 +114,49 @@
                         {% for item in items_facilities %}
                         <tr>
                             <td>{{ item.internal_id }}</td>
-                            <td>{{ item.type }} de {{ item.sender }}</td>
-                            <td>{{ item.recipient_email or item.recipient_name_manual }}</td>
+                            <td>{{ item.tracking_code or '-' }}</td>
+                            <td>{{ item.type }}</td>
+                            <td>{{ item.sender }}</td>
                             <td>
                                 <form action="{{ url_for('facilities_allocate', item_id=item.id) }}" method="post"
-                                    class="d-flex gap-2">
-                                    <select name="location" class="form-select form-select-sm" required>
-                                        <option value="">Escolha...</option>
-                                        <option value="Armário 1">Armário 1</option>
-                                        <option value="Armário 2">Armário 2</option>
-                                        <option value="Armário 3">Armário 3</option>
-                                        <option value="Sala Facilities">Sala Facilities</option>
-                                    </select>
-                                    <button type="submit" class="btn btn-sm btn-info">Salvar</button>
+                                    class="row g-2">
+                                    <div class="col-md-4">
+                                        <label class="form-label small mb-1">Local</label>
+                                        <select name="location" class="form-select form-select-sm" required>
+                                            <option value="">Local...</option>
+                                            <option value="Armário 1">Armário 1</option>
+                                            <option value="Armário 2">Armário 2</option>
+                                            <option value="Armário 3">Armário 3</option>
+                                            <option value="Sala Facilities">Sala Facilities</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label small mb-1">Identificar Destinatário</label>
+                                        <div class="input-group input-group-sm">
+                                            <select name="recipient_email" class="form-select">
+                                                <option value="">(Selecione Corporativo ou use Novo abaixo)</option>
+                                                {% for u in corp_users %}
+                                                <option value="{{ u.email }}">{{ u.full_name }} ({{ u.email }})</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <input type="text" name="recipient_name_manual"
+                                            class="form-control form-control-sm mt-1"
+                                            placeholder="Nome manual se não houver email">
+                                        <input type="text" name="recipient_floor"
+                                            class="form-control form-control-sm mt-1"
+                                            placeholder="Andar / Setor (Manual)">
+                                    </div>
+                                    <div class="col-md-3 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-sm btn-info w-100">Alocar e
+                                            Notificar</button>
+                                    </div>
                                 </form>
                             </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="4" class="text-center">Nenhum item aguardando alocação.</td>
+                            <td colspan="5" class="text-center">Nenhum item aguardando alocação.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -148,6 +173,8 @@
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Rastreio</th>
+                            <th>Item</th>
                             <th>Destinatário</th>
                             <th>Local</th>
                             <th>Ação</th>
@@ -157,14 +184,22 @@
                         {% for item in items_ready %}
                         <tr>
                             <td>{{ item.internal_id }}</td>
+                            <td>{{ item.tracking_code or '-' }}</td>
+                            <td>{{ item.type }}</td>
                             <td>
                                 <strong>{{ item.recipient_email or item.recipient_name_manual }}</strong>
-                                <br><small>Andar: {{ item.recipient_floor or 'N/A' }}</small>
+                                <br><small>Andar: {{ item.user_floor or item.recipient_floor or 'N/A' }}</small>
                             </td>
                             <td><span class="badge bg-light text-dark border">{{ item.location }}</span></td>
                             <td>
-                                <a href="{{ url_for('delivery_page', item_id=item.id) }}"
-                                    class="btn btn-sm btn-success">✍️ Entregar</a>
+                                <div class="btn-group">
+                                    <a href="{{ url_for('delivery_page', item_id=item.id) }}"
+                                        class="btn btn-sm btn-success">✍️ Assinatura</a>
+                                    {% if item.recipient_email %}
+                                    <a href="{{ url_for('delivery_password_page', item_id=item.id) }}"
+                                        class="btn btn-sm btn-outline-success">🔑 Senha</a>
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                         {% else %}

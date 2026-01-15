@@ -64,7 +64,7 @@
                         <td>
                             <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal"
                                 data-bs-target="#modalProof{{ item.id }}">
-                                🔍 Ver Assinatura
+                                🔍 Ver Comprovante
                             </button>
 
                             <!-- Modal -->
@@ -79,8 +79,17 @@
                                         <div class="modal-body text-center">
                                             <p><strong>Item:</strong> {{ item.internal_id }}</p>
                                             <p><strong>Recebido por:</strong> {{ item.received_by_name }}</p>
-                                            <div class="border p-2 bg-light">
+                                            <div class="border p-4 bg-light">
+                                                {% if item.signature_data == 'DATA:AUTHENTICATED_BY_PASSWORD' %}
+                                                <div class="py-3">
+                                                    <span class="display-1 text-success">✔️</span>
+                                                    <h5 class="mt-2 text-success">Autenticado via Senha</h5>
+                                                    <p class="text-muted mb-0">Confirmação digital segura pelo AeroPost
+                                                    </p>
+                                                </div>
+                                                {% else %}
                                                 <img src="{{ item.signature_data }}" class="img-fluid" alt="Assinatura">
+                                                {% endif %}
                                             </div>
                                             <p class="mt-2 text-muted"><small>Entregue em: {{
                                                     item.delivered_at.strftime('%d/%m/%Y %H:%M') }}</small></p>

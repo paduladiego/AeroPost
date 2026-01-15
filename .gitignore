@@ -19,3 +19,6 @@ aeropost.db
 
 # Hostinger/Server specific
 passenger_wsgi.py
+
+#BKP Local
+BKP/

@@ -178,11 +178,13 @@ def portaria_dashboard():
 @role_required(['PORTARIA', 'ADMIN'])
 def portaria_register():
     type = request.form['type']
-    tracking = request.form['tracking_code']
+    tracking = request.form.get('tracking_code', '')
     sender = request.form['sender']
-    rec_email = request.form['recipient_email']
-    rec_manual = request.form['recipient_name_manual']
-    observation = request.form['observation']
+    
+    # Recipient identification moved to Facilities V1.1
+    rec_email = None
+    rec_manual = None
+    observation = None
 
     # Generate internal ID: AP-YYYYMMDD-XXXX (Random 4 chars for simplicity or sequential)
     import random, string
@@ -219,11 +221,20 @@ def facilities_dashboard():
         'ready': db.execute("SELECT COUNT(*) FROM items WHERE status = 'DISPONIVEL_PARA_RETIRADA'").fetchone()[0]
     }
     
-    items_portaria = db.execute("SELECT * FROM items WHERE status = 'RECEBIDO_PORTARIA' ORDER BY created_at ASC").fetchall()
-    items_facilities = db.execute("SELECT * FROM items WHERE status = 'EM_FACILITIES' ORDER BY updated_at ASC").fetchall()
-    items_ready = db.execute("SELECT * FROM items WHERE status = 'DISPONIVEL_PARA_RETIRADA' ORDER BY updated_at DESC").fetchall()
+    query_base = """
+        SELECT i.*, u.floor as user_floor, u.company as user_company 
+        FROM items i 
+        LEFT JOIN users u ON i.recipient_email = u.email
+    """
+    
+    items_portaria = db.execute(query_base + " WHERE i.status = 'RECEBIDO_PORTARIA' ORDER BY i.created_at ASC").fetchall()
+    items_facilities = db.execute(query_base + " WHERE i.status = 'EM_FACILITIES' ORDER BY i.updated_at ASC").fetchall()
+    items_ready = db.execute(query_base + " WHERE i.status = 'DISPONIVEL_PARA_RETIRADA' ORDER BY i.updated_at DESC").fetchall()
 
-    return render_template('facilities/dashboard.html', stats=stats, items_portaria=items_portaria, items_facilities=items_facilities, items_ready=items_ready)
+    # Fetch all active users (except Admins) for selection in v1.1
+    corp_users = db.execute("SELECT email, full_name FROM users WHERE is_active = 1 AND role != 'ADMIN' ORDER BY full_name ASC").fetchall()
+
+    return render_template('facilities/dashboard.html', stats=stats, items_portaria=items_portaria, items_facilities=items_facilities, items_ready=items_ready, corp_users=corp_users)
 
 @app.route('/facilities/collect/<int:item_id>', methods=['POST'])
 @login_required
@@ -241,11 +252,60 @@ def facilities_collect(item_id):
 @role_required(['FACILITIES', 'ADMIN'])
 def facilities_allocate(item_id):
     location = request.form['location']
+    rec_email = request.form.get('recipient_email')
+    rec_manual = request.form.get('recipient_name_manual')
+    rec_floor = request.form.get('recipient_floor')
+    
     db = get_db()
-    db.execute("UPDATE items SET status = 'DISPONIVEL_PARA_RETIRADA', location = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (location, item_id))
-    db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], f'ALLOCATED: {location}'))
+    db.execute(
+        "UPDATE items SET status = 'DISPONIVEL_PARA_RETIRADA', location = ?, recipient_email = ?, recipient_name_manual = ?, recipient_floor = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", 
+        (location, rec_email, rec_manual, rec_floor, item_id)
+    )
+    db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], f'ALLOCATED: {location} AND ID_RECIPIENT'))
     db.commit()
-    flash(f'Item alocado em {location}.', 'success')
+    flash(f'Item alocado em {location} para {rec_email or rec_manual}.', 'success')
+    return redirect(url_for('facilities_dashboard'))
+
+@app.route('/delivery/password/<int:item_id>')
+@login_required
+@role_required(['FACILITIES', 'ADMIN'])
+def delivery_password_page(item_id):
+    db = get_db()
+    item = db.execute("SELECT * FROM items WHERE id = ?", (item_id,)).fetchone()
+    if not item['recipient_email']:
+        flash('Este item não possui um destinatário cadastrado para validar via senha.', 'danger')
+        return redirect(url_for('facilities_dashboard'))
+    return render_template('delivery_password.html', item=item)
+
+@app.route('/delivery/confirm_password/<int:item_id>', methods=['POST'])
+@login_required
+@role_required(['FACILITIES', 'ADMIN'])
+def delivery_password_confirm(item_id):
+    email = request.form['email']
+    password = request.form['password']
+    
+    db = get_db()
+    user = db.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+    
+    if user is None or not check_password_hash(user['password_hash'], password):
+        flash('Senha incorreta para o destinatário informado.', 'danger')
+        return redirect(url_for('delivery_password_page', item_id=item_id))
+    
+    # Update status
+    db.execute("UPDATE items SET status = 'ENTREGUE', updated_at = CURRENT_TIMESTAMP WHERE id = ?", (item_id,))
+    
+    # Save proof (Using a placeholder for signature)
+    placeholder_sig = "DATA:AUTHENTICATED_BY_PASSWORD"
+    db.execute(
+        "INSERT INTO proofs (item_id, signature_data, delivered_by, received_by_name) VALUES (?, ?, ?, ?)",
+        (item_id, placeholder_sig, session['user_id'], user['full_name'])
+    )
+    
+    # Log movement
+    db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], 'DELIVERED_VIA_PASSWORD'))
+    db.commit()
+    
+    flash(f'Item entregue com sucesso para {user["full_name"]} via autenticação!', 'success')
     return redirect(url_for('facilities_dashboard'))
 
 @app.route('/delivery/<int:item_id>')
@@ -315,6 +375,13 @@ def user_create_portaria():
 @role_required(['ADMIN', 'FACILITIES'])
 def user_promote(user_id):
     db = get_db()
+    target = db.execute("SELECT role FROM users WHERE id = ?", (user_id,)).fetchone()
+    
+    # Security: FACILITES cannot promote ADMINs or other STAFF to level higher than them (not applicable here but good to check)
+    if target['role'] == 'ADMIN' and session['role'] != 'ADMIN':
+        flash('Erro: Você não tem permissão para gerenciar Administradores.', 'danger')
+        return redirect(url_for('users_list'))
+        
     db.execute("UPDATE users SET role = 'FACILITIES' WHERE id = ?", (user_id,))
     db.commit()
     flash('Usuário promovido para FACILITIES.', 'success')
@@ -362,6 +429,13 @@ def history():
 @role_required(['ADMIN', 'FACILITIES'])
 def user_demote(user_id):
     db = get_db()
+    target = db.execute("SELECT role FROM users WHERE id = ?", (user_id,)).fetchone()
+
+    # Security: Only ADMIN can demote and ADMIN (and FACILITIES cannot demote other STAFF)
+    if target['role'] == 'ADMIN' and session['role'] != 'ADMIN':
+        flash('Erro: Você não tem permissão para gerenciar Administradores.', 'danger')
+        return redirect(url_for('users_list'))
+
     # Demote to USER by default
     db.execute("UPDATE users SET role = 'USER' WHERE id = ?", (user_id,))
     db.commit()
@@ -373,7 +447,13 @@ def user_demote(user_id):
 @role_required(['ADMIN', 'FACILITIES'])
 def user_toggle_block(user_id):
     db = get_db()
-    user = db.execute("SELECT is_active FROM users WHERE id = ?", (user_id,)).fetchone()
+    user = db.execute("SELECT role, is_active FROM users WHERE id = ?", (user_id,)).fetchone()
+    
+    # Security: Only ADMIN can block another ADMIN
+    if user['role'] == 'ADMIN' and session['role'] != 'ADMIN':
+        flash('Erro: Você não tem permissão para bloquear um Administrador.', 'danger')
+        return redirect(url_for('users_list'))
+
     new_status = 0 if user['is_active'] else 1
     
     db.execute("UPDATE users SET is_active = ? WHERE id = ?", (new_status, user_id))

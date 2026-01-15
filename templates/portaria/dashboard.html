@@ -38,43 +38,9 @@
                         <input type="text" class="form-control" name="sender" required
                             placeholder="Nome da empresa/pessoa">
                     </div>
-                    <hr>
-                    <h6 class="text-muted">Destinatário</h6>
-                    <ul class="nav nav-tabs mb-3" id="pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="pills-corp-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-corp" type="button" role="tab">Corporativo (Email)</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-manual-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-manual" type="button" role="tab">Manual / Genérico</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade show active" id="pills-corp" role="tabpanel">
-                            <div class="mb-3">
-                                <label class="form-label">Email Corporativo</label>
-                                <input type="email" class="form-control" name="recipient_email"
-                                    placeholder="nome@dex.co">
-                                <div class="form-text">Usar email corporativo válido.</div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="pills-manual" role="tabpanel">
-                            <div class="mb-3">
-                                <label class="form-label">Nome Completo / Setor</label>
-                                <input type="text" class="form-control" name="recipient_name_manual"
-                                    placeholder="Ex: DEXCO - Marketing">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Observação</label>
-                                <input type="text" class="form-control" name="observation"
-                                    placeholder="Ex: Deixar na recepção">
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-success btn-lg">Registrar Item</button>
+                        <button type="submit" class="btn btn-success btn-lg">Registrar Recebimento</button>
                     </div>
                 </form>
             </div>
@@ -92,7 +58,7 @@
                         <tr>
                             <th>Hora</th>
                             <th>Tipo</th>
-                            <th>Para</th>
+                            <th>Remetente</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -101,13 +67,7 @@
                         <tr>
                             <td>{{ item.created_at.strftime('%H:%M') }}</td>
                             <td>{{ item.type }}</td>
-                            <td>
-                                {% if item.recipient_email %}
-                                {{ item.recipient_email }}
-                                {% else %}
-                                {{ item.recipient_name_manual }}
-                                {% endif %}
-                            </td>
+                            <td>{{ item.sender }}</td>
                             <td><span class="badge bg-secondary status-badge">{{ item.status }}</span></td>
                         </tr>
                         {% else %}

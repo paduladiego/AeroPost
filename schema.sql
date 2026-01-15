@@ -51,3 +51,27 @@ CREATE TABLE proofs (
     FOREIGN KEY (item_id) REFERENCES items (id),
     FOREIGN KEY (delivered_by) REFERENCES users (id)
 );
+
+CREATE TABLE settings_item_types (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
+    is_active INTEGER DEFAULT 1
+);
+
+CREATE TABLE settings_locations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
+    is_active INTEGER DEFAULT 1
+);
+
+CREATE TABLE settings_companies (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
+    is_active INTEGER DEFAULT 1
+);
+
+CREATE TABLE settings_allowed_domains (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    domain TEXT NOT NULL UNIQUE, -- e.g. @dex.co
+    is_active INTEGER DEFAULT 1
+);
