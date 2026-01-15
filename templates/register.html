@@ -24,9 +24,9 @@
                         <label class="form-label">Empresa</label>
                         <select class="form-select" name="company" required>
                             <option value="">Selecione...</option>
-                            <option value="Dexco">Dexco</option>
-                            <option value="Deca">Deca</option>
-                            <option value="Duratex">Duratex</option>
+                            {% for c in companies %}
+                            <option value="{{ c.name }}">{{ c.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">

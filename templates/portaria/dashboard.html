@@ -20,9 +20,9 @@
                     <div class="mb-3">
                         <label class="form-label">Tipo de Item</label>
                         <select class="form-select" name="type" required>
-                            <option value="ENVELOPE">Envelope / Carta</option>
-                            <option value="CAIXA">Caixa / Pacote</option>
-                            <option value="OUTROS">Outros</option>
+                            {% for type in item_types %}
+                            <option value="{{ type.name }}">{{ type.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="mb-3">

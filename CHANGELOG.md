@@ -5,6 +5,31 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v1.2.0] - 2026-01-15
+### Adicionado
+- **Gestão Dinâmica de Configurações**:
+    - Nova página `Configurações` para admins e facilities.
+    - CRUD completo para **Tipos de Item** (Envelope, Caixa...).
+    - CRUD completo para **Locais de Alocação** (Armários, Salas...).
+    - CRUD completo para **Empresas/Unidades** (Dexco, Deca...).
+    - **Gestão de Domínios**: Admin pode definir quais domínios de email são permitidos no cadastro.
+- **Exportação de Dados**:
+    - Botão "Exportar CSV" no Histórico, gerando relatório detalhado de entregas.
+
+## [v1.1.0] - 2026-01-15
+### Adicionado
+- **Entrega Segura via Senha**:
+    - Alternativa à assinatura digital.
+    - O destinatário digita sua senha de login para confirmar o recebimento.
+    - Badge "Autenticado via Senha" no comprovante.
+- **Landing Page Comercial**:
+    - Nova `index.html` com apresentação do produto (KRÒS / Desire Studios).
+    - Tabela de preços e funcionalidades.
+### Alterado
+- **Fluxo Otimizado**:
+    - Identificação do destinatário movida da Portaria para o Facilities (Triagem).
+    - Portaria foca apenas no registro rápido (Tipo/Rastreio).
+
 ## [v1.0.0] - 2026-01-15
 
 ### Adicionado

@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block title %}Configurações do Sistema{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Configurações do Sistema</h2>
+    <a href="{{ url_for('facilities_dashboard') }}" class="btn btn-outline-secondary">Voltar ao Dashboard</a>
+</div>
+
+<div class="row">
+    <!-- Sidebar de Navegação -->
+    <div class="col-md-3 mb-4">
+        <div class="list-group" id="settings-tabs" role="tablist">
+            <a class="list-group-item list-group-item-action active" id="list-types-list" data-bs-toggle="list"
+                href="#list-types" role="tab">📦 Tipos de Item</a>
+            <a class="list-group-item list-group-item-action" id="list-locations-list" data-bs-toggle="list"
+                href="#list-locations" role="tab">📍 Locais de Alocação</a>
+            <a class="list-group-item list-group-item-action" id="list-companies-list" data-bs-toggle="list"
+                href="#list-companies" role="tab">🏢 Empresas/Unidades</a>
+            {% if session['role'] == 'ADMIN' %}
+            <a class="list-group-item list-group-item-action" id="list-domains-list" data-bs-toggle="list"
+                href="#list-domains" role="tab">🔒 Domínios Permitidos</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="col-md-9">
+        <div class="tab-content" id="nav-tabContent">
+
+            <!-- Tipos de Item -->
+            <div class="tab-pane fade show active" id="list-types" role="tabpanel">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Tipos de Item</h5>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addTypeModal">+
+                            Novo Tipo</button>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for item in item_types %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ item.name }}
+                            <form action="{{ url_for('settings_delete', category='type', item_id=item.id) }}"
+                                method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger border-0"
+                                    onclick="return confirm('Excluir este item?')">🗑️</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="list-group-item text-muted">Nenhum tipo cadastrado.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Locais -->
+            <div class="tab-pane fade" id="list-locations" role="tabpanel">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Locais de Alocação</h5>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#addLocationModal">+ Novo Local</button>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for item in locations %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ item.name }}
+                            <form action="{{ url_for('settings_delete', category='location', item_id=item.id) }}"
+                                method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger border-0"
+                                    onclick="return confirm('Excluir este local?')">🗑️</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="list-group-item text-muted">Nenhum local cadastrado.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Empresas -->
+            <div class="tab-pane fade" id="list-companies" role="tabpanel">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Empresas / Unidades</h5>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#addCompanyModal">+ Nova Empresa</button>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for item in companies %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ item.name }}
+                            <form action="{{ url_for('settings_delete', category='company', item_id=item.id) }}"
+                                method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger border-0"
+                                    onclick="return confirm('Excluir esta empresa?')">🗑️</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="list-group-item text-muted">Nenhuma empresa cadastrada.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            {% if session['role'] == 'ADMIN' %}
+            <!-- Domínios -->
+            <div class="tab-pane fade" id="list-domains" role="tabpanel">
+                <div class="card shadow-sm border-danger">
+                    <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Domínios Permitidos (Admin)</h5>
+                        <button class="btn btn-sm btn-light text-danger fw-bold" data-bs-toggle="modal"
+                            data-bs-target="#addDomainModal">+ Novo Domínio</button>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for item in domains %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ item.domain }}
+                            <form action="{{ url_for('settings_delete', category='domain', item_id=item.id) }}"
+                                method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger border-0"
+                                    onclick="return confirm('Remover este domínio?')">🗑️</button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="list-group-item text-muted">Nenhum domínio cadastrado.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<!-- Modais de Adição -->
+<!-- Modal Type -->
+<div class="modal fade" id="addTypeModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ url_for('settings_add', category='type') }}" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Tipo de Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="name" class="form-control" placeholder="Ex: ENVELOPE, CAIXA TÉRMICA..."
+                        required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Location -->
+<div class="modal fade" id="addLocationModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ url_for('settings_add', category='location') }}" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Local</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="name" class="form-control" placeholder="Ex: Armário 01, Sala 402..."
+                        required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Company -->
+<div class="modal fade" id="addCompanyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ url_for('settings_add', category='company') }}" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Empresa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="name" class="form-control" placeholder="Ex: Dexco, Deca, Hydra..."
+                        required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Domain -->
+<div class="modal fade" id="addDomainModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ url_for('settings_add', category='domain') }}" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Domínio Permitido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" name="name" class="form-control" placeholder="Ex: @empresa.com.br" required>
+                    <small class="text-muted">Inclua o @ no início.</small>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Salvar Regra</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

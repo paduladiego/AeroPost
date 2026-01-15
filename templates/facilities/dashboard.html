@@ -9,6 +9,7 @@
         <a href="{{ url_for('history') }}" class="btn btn-outline-success">📜 Histórico/Entregues</a>
         <a href="#" class="btn btn-outline-primary">Exportar CSV</a>
         <a href="{{ url_for('users_list') }}" class="btn btn-outline-secondary">Gerenciar Usuários</a>
+        <a href="{{ url_for('settings_dashboard') }}" class="btn btn-outline-dark">⚙️ Configurações</a>
     </div>
 </div>
 
@@ -124,10 +125,9 @@
                                         <label class="form-label small mb-1">Local</label>
                                         <select name="location" class="form-select form-select-sm" required>
                                             <option value="">Local...</option>
-                                            <option value="Armário 1">Armário 1</option>
-                                            <option value="Armário 2">Armário 2</option>
-                                            <option value="Armário 3">Armário 3</option>
-                                            <option value="Sala Facilities">Sala Facilities</option>
+                                            {% for loc in locations %}
+                                            <option value="{{ loc.name }}">{{ loc.name }}</option>
+                                            {% endfor %}
                                         </select>
                                     </div>
                                     <div class="col-md-5">
