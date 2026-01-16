@@ -80,6 +80,13 @@
                                         title="Desbloquear Acesso">🔓</button>
                                     {% endif %}
                                 </form>
+
+                                <form action="{{ url_for('user_reset_password', user_id=user.id) }}" method="post"
+                                    class="d-inline"
+                                    onsubmit="return confirm('Tem certeza? Isso definirá a senha como \'mudar123\' e exigirá troca no login.');">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary"
+                                        title="Resetar Senha">🔑</button>
+                                </form>
                             </div>
                             {% else %}
                             <span class="text-muted small">Restrito</span>

@@ -38,6 +38,12 @@ def init_db_command():
     """Clear the existing data and create new tables."""
     init_db()
 
+@app.before_request
+def enforce_password_change():
+    if 'user_id' in session and session.get('must_change_password'):
+        if request.endpoint not in ('change_password', 'logout', 'static'):
+            return redirect(url_for('change_password'))
+
 # --- Auth Decorators ---
 def login_required(f):
     @wraps(f)
@@ -78,13 +84,15 @@ def index():
         
         # Fetch my items
         my_items = db.execute(
-            'SELECT * FROM items WHERE recipient_email = ? ORDER BY created_at DESC', 
-            (email,)
+            'SELECT * FROM items WHERE recipient_email = ? OR recipient_name_manual = ? ORDER BY created_at DESC', 
+            (email, email)
         ).fetchall()
 
-        # Fetch unclaimed items (no email)
+        # Fetch unclaimed items (no email and no manual email identification)
         unclaimed_items = db.execute(
-            "SELECT * FROM items WHERE (recipient_email IS NULL OR recipient_email = '') AND status != 'ENTREGUE' ORDER BY created_at DESC"
+            "SELECT * FROM items WHERE (recipient_email IS NULL OR recipient_email = '') "
+            "AND (recipient_name_manual NOT LIKE '%@%' OR recipient_name_manual IS NULL) "
+            "AND status != 'ENTREGUE' ORDER BY created_at DESC"
         ).fetchall()
         
         return render_template('home_user.html', items=my_items, unclaimed_items=unclaimed_items)
@@ -114,6 +122,17 @@ def login():
             session['user_id'] = user['id']
             session['role'] = user['role']
             session['name'] = user['full_name']
+            
+            # Check for forced password change (safely handle if column missing during migration transition)
+            try:
+                if user['must_change_password'] == 1:
+                    session['must_change_password'] = True
+                    flash('Por favor, redefina sua senha para continuar.', 'warning')
+                    return redirect(url_for('change_password'))
+            except IndexError:
+                # Column might not exist yet if migration failed
+                pass
+
             return redirect(url_for('index'))
 
         flash(error, 'danger')
@@ -172,6 +191,38 @@ def register():
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
+@app.route('/change_password', methods=['GET', 'POST'])
+def change_password():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+        
+    if request.method == 'POST':
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        
+        if password != confirm_password:
+            flash('As senhas não coincidem.', 'danger')
+            return render_template('change_password.html')
+            
+        if len(password) < 6:
+            flash('A senha deve ter no mínimo 6 caracteres.', 'danger')
+            return render_template('change_password.html')
+
+        db = get_db()
+        db.execute(
+            'UPDATE users SET password_hash = ?, must_change_password = 0 WHERE id = ?',
+            (generate_password_hash(password), session['user_id'])
+        )
+        db.commit()
+        
+        # Clear the flag in session
+        session.pop('must_change_password', None)
+        
+        flash('Senha alterada com sucesso!', 'success')
+        return redirect(url_for('index'))
+        
+    return render_template('change_password.html')
 
 # --- Placeholders for core dashboards ---
 # --- Core Core Routes ---
@@ -281,6 +332,10 @@ def facilities_allocate(item_id):
     rec_email = request.form.get('recipient_email')
     rec_manual = request.form.get('recipient_name_manual')
     rec_floor = request.form.get('recipient_floor')
+
+    # Auto-detect email in manual field if selection is empty
+    if not rec_email and rec_manual and '@' in rec_manual:
+        rec_email = rec_manual
     
     db = get_db()
     db.execute(
@@ -298,10 +353,17 @@ def facilities_allocate(item_id):
 def delivery_password_page(item_id):
     db = get_db()
     item = db.execute("SELECT * FROM items WHERE id = ?", (item_id,)).fetchone()
-    if not item['recipient_email']:
+    
+    # Logic to handle items with email in the manual field
+    display_email = item['recipient_email']
+    if not display_email and item['recipient_name_manual'] and '@' in item['recipient_name_manual']:
+        display_email = item['recipient_name_manual']
+
+    if not display_email:
         flash('Este item não possui um destinatário cadastrado para validar via senha.', 'danger')
         return redirect(url_for('facilities_dashboard'))
-    return render_template('delivery_password.html', item=item)
+        
+    return render_template('delivery_password.html', item=item, display_email=display_email)
 
 @app.route('/delivery/confirm_password/<int:item_id>', methods=['POST'])
 @login_required
@@ -611,6 +673,28 @@ def user_toggle_block(user_id):
     
     msg = 'Usuário bloqueado.' if new_status == 0 else 'Usuário desbloqueado.'
     flash(msg, 'warning' if new_status == 0 else 'success')
+    return redirect(url_for('users_list'))
+
+@app.route('/users/reset_password/<int:user_id>', methods=['POST'])
+@login_required
+@role_required(['ADMIN', 'FACILITIES'])
+def user_reset_password(user_id):
+    db = get_db()
+    target = db.execute("SELECT role, full_name, email FROM users WHERE id = ?", (user_id,)).fetchone()
+    
+    # Security: Only ADMIN can reset ADMIN
+    if target['role'] == 'ADMIN' and session['role'] != 'ADMIN':
+        flash('Erro: Você não tem permissão para gerenciar Administradores.', 'danger')
+        return redirect(url_for('users_list'))
+
+    default_password = 'mudar123'
+    db.execute(
+        "UPDATE users SET password_hash = ?, must_change_password = 1 WHERE id = ?", 
+        (generate_password_hash(default_password), user_id)
+    )
+    db.commit()
+    
+    flash(f'Senha de {target["full_name"]} resetada para "{default_password}". O usuário deverá trocá-la no próximo login.', 'success')
     return redirect(url_for('users_list'))
 
 # --- Admin Setup Script (For MVP simplicity) ---

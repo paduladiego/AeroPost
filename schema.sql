@@ -2,6 +2,10 @@ DROP TABLE IF EXISTS proofs;
 DROP TABLE IF EXISTS movements;
 DROP TABLE IF EXISTS items;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS settings_item_types;
+DROP TABLE IF EXISTS settings_locations;
+DROP TABLE IF EXISTS settings_companies;
+DROP TABLE IF EXISTS settings_allowed_domains;
 
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -12,6 +16,7 @@ CREATE TABLE users (
     full_name TEXT NOT NULL,
     floor TEXT,
     company TEXT,
+    is_active INTEGER DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
