@@ -18,7 +18,7 @@ O AeroPost é uma aplicação web desenvolvida para otimizar o fluxo de recebime
     2.  **Alocação**: Define onde o item ficará guardado (Armário, Sala, etc.).
     3.  **Entrega**: Realiza a entrega ao destinatário final.
 - **Assinatura Digital**: Captura de assinatura direto na tela (tablet/celular) para comprovação de entrega.
-- **Gestão de Usuários**: Bloqueio, desbloqueio e promoção de usuários (User -> Facilities).
+- **Gestão de Usuários**: Bloqueio, desbloqueio, promoção de usuários (User -> Facilities) e **Reset de Senha com troca obrigatória** (v1.2.2+).
 - **Histórico**: Consulta de entregas passadas com filtros por data e busca textual.
 - **Exportação CSV**: Geração de relatório detalhado de entregas para análise externa (v1.2+).
 - **Gestão de Configurações**: (v1.2+) Interface para cadastro dinâmico de Tipos de Item, Locais, Empresas e Domínios de E-mail.
@@ -67,6 +67,11 @@ O AeroPost é uma aplicação web desenvolvida para otimizar o fluxo de recebime
     **(Para atualizações v1.2+) Execute a migração de dados:**
     ```bash
     python migrate_v120.py
+    ```
+    **(Opcional) Para adicionar funcionalidades de Reset de Senha (v1.2.2+):**
+    ```bash
+    python migrate_v1.2.2.py
+    ```
     *(Opcional) Para adicionar a coluna `is_active` em bancos antigos:*
     ```bash
     python update_db_users.py
@@ -93,4 +98,4 @@ Este projeto foi desenvolvido como um MVP (Mínimo Produto Viável) para uso cor
 
 ---
 ---
-*Versão 1.2.0*
+*Versão 1.2.2d*

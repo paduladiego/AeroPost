@@ -5,6 +5,16 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v1.2.2d] - 2026-01-16
+### Adicionado
+- **Controle de Senhas e Segurança**:
+    - Funcionalidade de **Troca de Senha Obrigatória**: Usuários podem ser forçados a mudar a senha no próximo login.
+    - **Reset de Senha por Admin**: Botão 🔑 na listagem de usuários que redefine a senha para um padrão (`mudar123`) e exige troca imediata.
+    - Nova rota `/change_password` e página dedicada para redefinição segura.
+- **Melhorias na Gestão de Usuários**:
+    - Refinamento visual na tabela de usuários com novos ícones de ação.
+    - Verificação defensiva no backend para colunas de banco de dados durante transições de versão.
+
 ## [v1.2.0] - 2026-01-15
 ### Adicionado
 - **Gestão Dinâmica de Configurações**:
