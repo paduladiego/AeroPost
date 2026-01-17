@@ -11,6 +11,23 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_key_only_for_mvp')
 app.config['DATABASE'] = os.path.join(app.root_path, 'aeropost.db')
 
+# Middleware para lidar com subdiretórios (necessário para /Dexco/AeroPost)
+class PrefixMiddleware(object):
+    def __init__(self, app, prefix=''):
+        self.app = app
+        self.prefix = prefix
+
+    def __call__(self, environ, start_response):
+        if environ.get('HTTP_X_FORWARDED_PREFIX'):
+            environ['SCRIPT_NAME'] = environ['HTTP_X_FORWARDED_PREFIX']
+            path_info = environ.get('PATH_INFO', '')
+            if path_info.startswith(environ['SCRIPT_NAME']):
+                environ['PATH_INFO'] = path_info[len(environ['SCRIPT_NAME']):]
+        return self.app(environ, start_response)
+
+app.wsgi_app = PrefixMiddleware(app.wsgi_app)
+
+
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(
