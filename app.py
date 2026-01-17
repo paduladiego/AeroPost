@@ -28,7 +28,7 @@ class PrefixMiddleware(object):
 
 # No Hostinger, o prefixo deve ser exatamente o caminho da URL
 if os.environ.get('PASSENGER_APP_ENV'):
-    app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/00kros/Dexco/AeroPost')
+    app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/Dexco/AeroPost')
 
 def get_db():
     if 'db' not in g:
