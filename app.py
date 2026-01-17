@@ -11,6 +11,25 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev_key_only_for_mvp')
 app.config['DATABASE'] = os.path.join(app.root_path, 'aeropost.db')
 
+# --- Subdirectory Middleware ---
+class PrefixMiddleware(object):
+    def __init__(self, app, prefix=''):
+        self.app = app
+        self.prefix = prefix
+
+    def __call__(self, environ, start_response):
+        if environ['PATH_INFO'].startswith(self.prefix):
+            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
+            environ['SCRIPT_NAME'] = self.prefix
+            return self.app(environ, start_response)
+        else:
+            start_response('404', [('Content-Type', 'text/plain')])
+            return ["Este app está configurado para rodar em um subdiretório.".encode()]
+
+# No Hostinger, o prefixo deve ser exatamente o caminho da URL
+if os.environ.get('PASSENGER_APP_ENV'):
+    app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/00kros/Dexco/AeroPost')
+
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(
