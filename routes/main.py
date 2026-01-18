@@ -12,7 +12,7 @@ def index():
     role = session.get('role')
     if role == 'PORTARIA':
         return redirect(url_for('portaria.dashboard'))
-    elif role in ('FACILITIES', 'ADMIN'):
+    elif role in ('FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'):
         return redirect(url_for('facilities.dashboard'))
     else:
         db = get_db()
@@ -34,7 +34,7 @@ def index():
 
 @main_bp.route('/history')
 @login_required
-@role_required(['ADMIN', 'FACILITIES'])
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def history():
     db = get_db()
     

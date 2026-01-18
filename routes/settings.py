@@ -9,7 +9,7 @@ settings_bp = Blueprint('settings', __name__)
 
 @settings_bp.route('/settings')
 @login_required
-@role_required(['ADMIN', 'FACILITIES'])
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def dashboard():
     db = get_db()
     
@@ -29,7 +29,7 @@ def dashboard():
 
 @settings_bp.route('/settings/add/<category>', methods=['POST'])
 @login_required
-@role_required(['ADMIN', 'FACILITIES'])
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def add(category):
     name = request.form['name'].strip()
     db = get_db()
@@ -59,7 +59,7 @@ def add(category):
 
 @settings_bp.route('/settings/delete/<category>/<int:item_id>', methods=['POST'])
 @login_required
-@role_required(['ADMIN', 'FACILITIES'])
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def delete(category, item_id):
     db = get_db()
     
@@ -82,7 +82,7 @@ def delete(category, item_id):
 
 @settings_bp.route('/history/export')
 @login_required
-@role_required(['ADMIN', 'FACILITIES'])
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def export():
     db = get_db()
     
