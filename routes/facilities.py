@@ -8,7 +8,7 @@ facilities_bp = Blueprint('facilities', __name__)
 
 @facilities_bp.route('/facilities')
 @login_required
-@role_required(['FACILITIES', 'ADMIN'])
+@role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
 def dashboard():
     db = get_db()
     stats = {
@@ -41,7 +41,7 @@ def dashboard():
 
 @facilities_bp.route('/facilities/collect/<int:item_id>', methods=['POST'])
 @login_required
-@role_required(['FACILITIES', 'ADMIN'])
+@role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
 def collect(item_id):
     db = get_db()
     db.execute("UPDATE items SET status = 'EM_FACILITIES', updated_at = CURRENT_TIMESTAMP WHERE id = ?", (item_id,))
@@ -52,7 +52,7 @@ def collect(item_id):
 
 @facilities_bp.route('/facilities/allocate/<int:item_id>', methods=['POST'])
 @login_required
-@role_required(['FACILITIES', 'ADMIN'])
+@role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
 def allocate(item_id):
     location = request.form['location']
     rec_email = request.form.get('recipient_email')
@@ -89,7 +89,7 @@ def allocate(item_id):
 
 @facilities_bp.route('/delivery/password/<int:item_id>')
 @login_required
-@role_required(['FACILITIES', 'ADMIN'])
+@role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
 def delivery_password_page(item_id):
     db = get_db()
     item = db.execute("SELECT * FROM items WHERE id = ?", (item_id,)).fetchone()
@@ -106,7 +106,7 @@ def delivery_password_page(item_id):
 
 @facilities_bp.route('/delivery/confirm_password/<int:item_id>', methods=['POST'])
 @login_required
-@role_required(['FACILITIES', 'ADMIN'])
+@role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
 def delivery_password_confirm(item_id):
     email = request.form['email']
     from werkzeug.security import check_password_hash
@@ -135,7 +135,7 @@ def delivery_password_confirm(item_id):
 
 @facilities_bp.route('/delivery/<int:item_id>')
 @login_required
-@role_required(['FACILITIES', 'ADMIN'])
+@role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
 def delivery_page(item_id):
     db = get_db()
     item = db.execute("SELECT * FROM items WHERE id = ?", (item_id,)).fetchone()
@@ -143,7 +143,7 @@ def delivery_page(item_id):
 
 @facilities_bp.route('/delivery/confirm/<int:item_id>', methods=['POST'])
 @login_required
-@role_required(['FACILITIES', 'ADMIN'])
+@role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
 def delivery_confirm(item_id):
     received_by = request.form['received_by_name']
     signature = request.form['signature_data']

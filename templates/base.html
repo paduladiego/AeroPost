@@ -72,12 +72,12 @@
                 <div class="collapse navbar-collapse" id="navbarContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         {% if session.get('user_id') %}
-                        {% if session.get('role') in ['PORTARIA', 'ADMIN'] %}
+                        {% if session.get('role') in ['PORTARIA', 'ADMIN', 'FACILITIES_PORTARIA'] %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('portaria.dashboard') }}">Portaria</a>
                         </li>
                         {% endif %}
-                        {% if session.get('role') in ['FACILITIES', 'ADMIN'] %}
+                        {% if session.get('role') in ['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'] %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('facilities.dashboard') }}">Facilities</a>
                         </li>

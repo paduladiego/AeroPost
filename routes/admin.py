@@ -8,7 +8,7 @@ admin_bp = Blueprint('admin', __name__)
 
 @admin_bp.route('/users')
 @login_required
-@role_required(['ADMIN', 'FACILITIES'])
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def users_list():
     db = get_db()
     users = db.execute('SELECT * FROM users ORDER BY created_at DESC').fetchall()
@@ -16,7 +16,7 @@ def users_list():
 
 @admin_bp.route('/users/create_portaria', methods=['POST'])
 @login_required
-@role_required(['ADMIN', 'FACILITIES'])
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def user_create_portaria():
     full_name = request.form['full_name']
     username = request.form['username']
@@ -37,7 +37,7 @@ def user_create_portaria():
 
 @admin_bp.route('/users/promote/<int:user_id>', methods=['POST'])
 @login_required
-@role_required(['ADMIN', 'FACILITIES'])
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def user_promote(user_id):
     db = get_db()
     target = db.execute("SELECT role FROM users WHERE id = ?", (user_id,)).fetchone()
@@ -53,7 +53,7 @@ def user_promote(user_id):
 
 @admin_bp.route('/users/demote/<int:user_id>', methods=['POST'])
 @login_required
-@role_required(['ADMIN', 'FACILITIES'])
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def user_demote(user_id):
     db = get_db()
     target = db.execute("SELECT role FROM users WHERE id = ?", (user_id,)).fetchone()
@@ -69,7 +69,7 @@ def user_demote(user_id):
 
 @admin_bp.route('/users/toggle_block/<int:user_id>', methods=['POST'])
 @login_required
-@role_required(['ADMIN', 'FACILITIES'])
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def user_toggle_block(user_id):
     db = get_db()
     user = db.execute("SELECT role, is_active FROM users WHERE id = ?", (user_id,)).fetchone()
@@ -89,7 +89,7 @@ def user_toggle_block(user_id):
 
 @admin_bp.route('/users/reset_password/<int:user_id>', methods=['POST'])
 @login_required
-@role_required(['ADMIN', 'FACILITIES'])
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def user_reset_password(user_id):
     db = get_db()
     target = db.execute("SELECT role, full_name, email FROM users WHERE id = ?", (user_id,)).fetchone()
@@ -106,4 +106,36 @@ def user_reset_password(user_id):
     db.commit()
     
     flash(f'Senha de {target["full_name"]} resetada para "{default_password}". O usuário deverá trocá-la no próximo login.', 'success')
+    return redirect(url_for('admin.users_list'))
+
+@admin_bp.route('/users/grant_portaria/<int:user_id>', methods=['POST'])
+@login_required
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
+def user_grant_portaria(user_id):
+    db = get_db()
+    target = db.execute("SELECT role FROM users WHERE id = ?", (user_id,)).fetchone()
+    
+    if target['role'] != 'FACILITIES':
+        flash('Erro: Apenas usuários FACILITIES podem receber este acesso extra.', 'danger')
+        return redirect(url_for('admin.users_list'))
+
+    db.execute("UPDATE users SET role = 'FACILITIES_PORTARIA' WHERE id = ?", (user_id,))
+    db.commit()
+    flash('Acesso à Portaria concedido ao usuário Facilities.', 'success')
+    return redirect(url_for('admin.users_list'))
+
+@admin_bp.route('/users/revoke_portaria/<int:user_id>', methods=['POST'])
+@login_required
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
+def user_revoke_portaria(user_id):
+    db = get_db()
+    target = db.execute("SELECT role FROM users WHERE id = ?", (user_id,)).fetchone()
+    
+    if target['role'] != 'FACILITIES_PORTARIA':
+        flash('Erro: Este usuário não possui acesso duplo para ser revogado.', 'danger')
+        return redirect(url_for('admin.users_list'))
+
+    db.execute("UPDATE users SET role = 'FACILITIES' WHERE id = ?", (user_id,))
+    db.commit()
+    flash('Acesso à Portaria revogado. O usuário agora é apenas FACILITIES.', 'warning')
     return redirect(url_for('admin.users_list'))

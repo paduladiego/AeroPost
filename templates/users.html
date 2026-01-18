@@ -40,6 +40,9 @@
                             <span class="badge bg-danger">ADMIN</span>
                             {% elif user.role == 'FACILITIES' %}
                             <span class="badge bg-warning text-dark">FACILITIES</span>
+                            {% elif user.role == 'FACILITIES_PORTARIA' %}
+                            <span class="badge bg-warning text-dark">FACILITIES</span> + <span
+                                class="badge bg-info text-dark">PORTARIA</span>
                             {% elif user.role == 'PORTARIA' %}
                             <span class="badge bg-info text-dark">PORTARIA</span>
                             {% else %}
@@ -67,6 +70,19 @@
                                     class="d-inline">
                                     <button type="submit" class="btn btn-sm btn-outline-warning"
                                         title="Rebaixar para Usuário">⬇️</button>
+                                </form>
+                                <form action="{{ url_for('admin.user_grant_portaria', user_id=user.id) }}" method="post"
+                                    class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-info"
+                                        title="Dar acesso à Portaria">🛂</button>
+                                </form>
+                                {% endif %}
+
+                                {% if user.role == 'FACILITIES_PORTARIA' %}
+                                <form action="{{ url_for('admin.user_revoke_portaria', user_id=user.id) }}"
+                                    method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-info"
+                                        title="Remover acesso à Portaria">🛂</button>
                                 </form>
                                 {% endif %}
 

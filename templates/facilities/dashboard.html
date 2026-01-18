@@ -84,7 +84,7 @@
                             <th>ID</th>
                             <th>Chegada</th>
                             <th>Item</th>
-                            <th>Destinatário</th>
+                            <th>Remetente</th>
                             <th>Ação</th>
                         </tr>
                     </thead>
@@ -93,8 +93,8 @@
                         <tr>
                             <td><small class="text-muted">{{ item.internal_id }}</small></td>
                             <td>{{ item.created_at.strftime('%d/%m %H:%M') }}</td>
-                            <td>{{ item.type }}<br><small>{{ item.sender }}</small></td>
-                            <td>{{ item.recipient_email or item.recipient_name_manual }}</td>
+                            <td>{{ item.type }}</td>
+                            <td>{{ item.sender }}</td>
                             <td>
                                 <form action="{{ url_for('facilities.collect', item_id=item.id) }}" method="post">
                                     <button type="submit" class="btn btn-sm btn-warning">📥 Coletar</button>

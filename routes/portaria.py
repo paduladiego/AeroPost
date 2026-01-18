@@ -9,7 +9,7 @@ portaria_bp = Blueprint('portaria', __name__)
 
 @portaria_bp.route('/portaria')
 @login_required
-@role_required(['PORTARIA', 'ADMIN'])
+@role_required(['PORTARIA', 'ADMIN', 'FACILITIES_PORTARIA'])
 def dashboard():
     db = get_db()
     recent_items = db.execute(
@@ -22,7 +22,7 @@ def dashboard():
 
 @portaria_bp.route('/portaria/register', methods=['POST'])
 @login_required
-@role_required(['PORTARIA', 'ADMIN'])
+@role_required(['PORTARIA', 'ADMIN', 'FACILITIES_PORTARIA'])
 def register():
     type = request.form['type']
     tracking = request.form.get('tracking_code', '')
