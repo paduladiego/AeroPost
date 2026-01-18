@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 from utils.db import init_app
 from utils.middleware import PrefixMiddleware
 from utils.auth import enforce_password_change_logic
+from flask_mail import Mail
+
+mail = Mail()
 
 def create_app():
     app = Flask(__name__)
@@ -19,7 +22,17 @@ def create_app():
     if '://' not in db_url and not os.path.isabs(db_url):
         db_url = os.path.join(app.root_path, db_url)
     app.config['DATABASE'] = db_url
-    app.config['APP_VERSION'] = os.environ.get('APP_VERSION', 'v1.3.0d')
+    app.config['APP_VERSION'] = os.environ.get('APP_VERSION', 'v2.0.0d')
+    
+    # Configurações de E-mail
+    app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+    app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+    app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'True').lower() == 'true'
+    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')
+    
+    mail.init_app(app)
     
     # Injeta a versão em todos os templates automaticamente
     @app.context_processor

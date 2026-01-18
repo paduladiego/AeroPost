@@ -2,6 +2,7 @@ import sqlite3
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from utils.db import get_db
 from utils.auth import login_required, role_required
+from utils.notifications import send_collection_alert
 
 facilities_bp = Blueprint('facilities', __name__)
 
@@ -17,7 +18,8 @@ def dashboard():
     }
     
     query_base = """
-        SELECT i.*, u.floor as user_floor, u.company as user_company 
+        SELECT i.*, u.floor as user_floor, u.company as user_company,
+               (CASE WHEN u.id IS NOT NULL THEN 1 ELSE 0 END) as is_registered
         FROM items i 
         LEFT JOIN users u ON i.recipient_email = u.email
     """
@@ -67,7 +69,18 @@ def allocate(item_id):
     )
     db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], f'ALLOCATED: {location} AND ID_RECIPIENT'))
     db.commit()
-    flash(f'Item alocado em {location} para {rec_email or rec_manual}.', 'success')
+
+    # Envio de Notificação por E-mail
+    if rec_email:
+        # Busca o tipo do item para o e-mail
+        item = db.execute("SELECT type, internal_id FROM items WHERE id = ?", (item_id,)).fetchone()
+        if send_collection_alert(rec_email, item['internal_id'], item['type']):
+            flash(f'Item alocado em {location} para {rec_email or rec_manual}. Notificação enviada!', 'success')
+        else:
+            flash(f'Item alocado em {location}, mas houve um erro ao enviar o e-mail.', 'warning')
+    else:
+        flash(f'Item alocado em {location} para {rec_manual}. (Sem e-mail para notificar)', 'success')
+        
     return redirect(url_for('facilities.dashboard'))
 
 @facilities_bp.route('/delivery/password/<int:item_id>')

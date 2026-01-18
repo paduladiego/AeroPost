@@ -96,3 +96,32 @@ def init_app(app):
             print(f"Erro ao criar admin (provavelmente já existe): {e}")
         finally:
             cursor.close()
+
+    @app.cli.command('test-email')
+    def test_email_command():
+        import click
+        from utils.notifications import send_collection_alert
+        from flask import current_app
+        
+        email = click.prompt('Digite o e-mail de teste')
+        username = current_app.config.get('MAIL_USERNAME', '').strip()
+        password = current_app.config.get('MAIL_PASSWORD', '').strip()
+        
+        print(f"--- Diagnóstico SMTP ---")
+        print(f"Servidor: {current_app.config.get('MAIL_SERVER')}:{current_app.config.get('MAIL_PORT')}")
+        print(f"TLS: {current_app.config.get('MAIL_USE_TLS')}")
+        print(f"Usuário: '{username}'")
+        print(f"Senha (tamanho): {len(password)} caracteres")
+        
+        if len(password) == 16 and any(c.isupper() or not c.isalpha() for c in password) and "gmail.com" in username:
+            print("AVISO: Essa senha parece uma senha comum (com números ou símbolos).")
+            print("Para o Gmail, você DEVE usar uma 'Senha de App' (16 letras minúsculas sem símbolos).")
+
+        # Força os valores limpos no config para o teste
+        current_app.config['MAIL_USERNAME'] = username
+        current_app.config['MAIL_PASSWORD'] = password
+        
+        if send_collection_alert(email, "TEST-123", "ENVELOPE/TESTE"):
+            print("E-mail enviado com sucesso!")
+        else:
+            print(f"Falha na autenticação. Verifique se a Senha de App foi gerada corretamente.")

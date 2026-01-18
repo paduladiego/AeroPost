@@ -195,8 +195,7 @@
                                 <div class="btn-group">
                                     <a href="{{ url_for('facilities.delivery_page', item_id=item.id) }}"
                                         class="btn btn-sm btn-success">✍️ Assinatura</a>
-                                    {% if item.recipient_email or (item.recipient_name_manual and '@' in
-                                    item.recipient_name_manual) %}
+                                    {% if item.is_registered %}
                                     <a href="{{ url_for('facilities.delivery_password_page', item_id=item.id) }}"
                                         class="btn btn-sm btn-outline-success">🔑 Senha</a>
                                     {% endif %}
