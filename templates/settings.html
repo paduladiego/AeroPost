@@ -5,7 +5,7 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Configurações do Sistema</h2>
-    <a href="{{ url_for('facilities_dashboard') }}" class="btn btn-outline-secondary">Voltar ao Dashboard</a>
+    <a href="{{ url_for('facilities.dashboard') }}" class="btn btn-outline-secondary">Voltar ao Dashboard</a>
 </div>
 
 <div class="row">
@@ -41,7 +41,7 @@
                         {% for item in item_types %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ item.name }}
-                            <form action="{{ url_for('settings_delete', category='type', item_id=item.id) }}"
+                            <form action="{{ url_for('settings.delete', category='type', item_id=item.id) }}"
                                 method="POST" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-outline-danger border-0"
                                     onclick="return confirm('Excluir este item?')">🗑️</button>
@@ -66,7 +66,7 @@
                         {% for item in locations %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ item.name }}
-                            <form action="{{ url_for('settings_delete', category='location', item_id=item.id) }}"
+                            <form action="{{ url_for('settings.delete', category='location', item_id=item.id) }}"
                                 method="POST" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-outline-danger border-0"
                                     onclick="return confirm('Excluir este local?')">🗑️</button>
@@ -91,7 +91,7 @@
                         {% for item in companies %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ item.name }}
-                            <form action="{{ url_for('settings_delete', category='company', item_id=item.id) }}"
+                            <form action="{{ url_for('settings.delete', category='company', item_id=item.id) }}"
                                 method="POST" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-outline-danger border-0"
                                     onclick="return confirm('Excluir esta empresa?')">🗑️</button>
@@ -117,7 +117,7 @@
                         {% for item in domains %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ item.domain }}
-                            <form action="{{ url_for('settings_delete', category='domain', item_id=item.id) }}"
+                            <form action="{{ url_for('settings.delete', category='domain', item_id=item.id) }}"
                                 method="POST" class="d-inline">
                                 <button type="submit" class="btn btn-sm btn-outline-danger border-0"
                                     onclick="return confirm('Remover este domínio?')">🗑️</button>
@@ -139,7 +139,7 @@
 <!-- Modal Type -->
 <div class="modal fade" id="addTypeModal" tabindex="-1">
     <div class="modal-dialog">
-        <form action="{{ url_for('settings_add', category='type') }}" method="POST">
+        <form action="{{ url_for('settings.add', category='type') }}" method="POST">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Novo Tipo de Item</h5>
@@ -160,7 +160,7 @@
 <!-- Modal Location -->
 <div class="modal fade" id="addLocationModal" tabindex="-1">
     <div class="modal-dialog">
-        <form action="{{ url_for('settings_add', category='location') }}" method="POST">
+        <form action="{{ url_for('settings.add', category='location') }}" method="POST">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Novo Local</h5>
@@ -181,7 +181,7 @@
 <!-- Modal Company -->
 <div class="modal fade" id="addCompanyModal" tabindex="-1">
     <div class="modal-dialog">
-        <form action="{{ url_for('settings_add', category='company') }}" method="POST">
+        <form action="{{ url_for('settings.add', category='company') }}" method="POST">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Nova Empresa</h5>
@@ -202,7 +202,7 @@
 <!-- Modal Domain -->
 <div class="modal fade" id="addDomainModal" tabindex="-1">
     <div class="modal-dialog">
-        <form action="{{ url_for('settings_add', category='domain') }}" method="POST">
+        <form action="{{ url_for('settings.add', category='domain') }}" method="POST">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Novo Domínio Permitido</h5>

@@ -45,7 +45,7 @@
 
         <nav class="navbar navbar-expand-lg navbar-light mb-4">
             <div class="container-fluid">
-                <a class="navbar-brand fw-bold text-primary" href="{{ url_for('index') }}">✉️ AeroPost</a>
+                <a class="navbar-brand fw-bold text-primary" href="{{ url_for('main.index') }}">✉️ AeroPost</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -55,12 +55,12 @@
                         {% if session.get('user_id') %}
                         {% if session.get('role') in ['PORTARIA', 'ADMIN'] %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('portaria_dashboard') }}">Portaria</a>
+                            <a class="nav-link" href="{{ url_for('portaria.dashboard') }}">Portaria</a>
                         </li>
                         {% endif %}
                         {% if session.get('role') in ['FACILITIES', 'ADMIN'] %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('facilities_dashboard') }}">Facilities</a>
+                            <a class="nav-link" href="{{ url_for('facilities.dashboard') }}">Facilities</a>
                         </li>
                         {% endif %}
                         {% endif %}
@@ -69,9 +69,9 @@
                     <div class="d-flex">
                         {% if session.get('user_id') %}
                         <span class="navbar-text me-3">Olá, {{ session.get('name') }}</span>
-                        <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">Sair</a>
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger btn-sm">Sair</a>
                         {% else %}
-                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">Entrar</a>
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-sm">Entrar</a>
                         {% endif %}
                     </div>
                 </div>
@@ -90,7 +90,7 @@
         </div>
 
         <div class="version-tag">
-            v1.2.2.Dexco
+            {{ app_version }}
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

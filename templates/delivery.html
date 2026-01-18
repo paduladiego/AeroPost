@@ -16,7 +16,8 @@
                     <strong>Para:</strong> {{ item.recipient_email or item.recipient_name_manual }}
                 </div>
 
-                <form id="delivery-form" action="{{ url_for('delivery_confirm', item_id=item.id) }}" method="post">
+                <form id="delivery-form" action="{{ url_for('facilities.delivery_confirm', item_id=item.id) }}"
+                    method="post">
                     <div class="mb-3">
                         <label class="form-label">Recebedor (Nome Legível)</label>
                         <input type="text" class="form-control" name="received_by_name" required
