@@ -12,11 +12,12 @@ CREATE TABLE users (
     email TEXT UNIQUE, -- login for corporate users
     username TEXT UNIQUE, -- login for portaria
     password_hash TEXT NOT NULL,
-    role TEXT NOT NULL CHECK(role IN ('ADMIN', 'PORTARIA', 'FACILITIES', 'USER')),
+    role TEXT NOT NULL CHECK(role IN ('ADMIN', 'PORTARIA', 'FACILITIES', 'USER', 'FACILITIES_PORTARIA')),
     full_name TEXT NOT NULL,
     floor TEXT,
     company TEXT,
     is_active INTEGER DEFAULT 1,
+    must_change_password INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
