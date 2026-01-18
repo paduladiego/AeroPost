@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Nova Senha{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h3 class="text-center mb-4">Definir Nova Senha</h3>
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Nova Senha</label>
+                        <input type="password" class="form-control" id="password" name="password" minlength="6"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">Confirmar Nova Senha</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                            minlength="6" required>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">Alterar Senha</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

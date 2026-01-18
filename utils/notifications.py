@@ -27,3 +27,33 @@ Equipe AeroPost / Facilities
     except Exception as e:
         print(f"Erro ao enviar e-mail: {e}")
         return False
+
+def send_reset_email(recipient_email, token):
+    """Envia link de recuperação de senha"""
+    from app import mail
+    from flask import url_for
+    
+    try:
+        reset_link = url_for('auth.reset_password', token=token, _external=True)
+        
+        msg = Message(
+            subject="AeroPost - Recuperação de Senha",
+            recipients=[recipient_email],
+            body=f"""Olá!
+            
+Recebemos uma solicitação para redefinir sua senha no AeroPost.
+
+Clique no link abaixo para criar uma nova senha:
+{reset_link}
+
+Se você não solicitou isso, apenas ignore este e-mail.
+
+Atenciosamente,
+Equipe AeroPost
+"""
+        )
+        mail.send(msg)
+        return True
+    except Exception as e:
+        print(f"Erro ao enviar e-mail de reset: {e}")
+        return False

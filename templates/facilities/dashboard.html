@@ -2,6 +2,21 @@
 
 {% block title %}Facilities - Controle{% endblock %}
 
+{% block scripts %}
+<script>
+    function toggleManualFields(selectElement, itemId) {
+        const manualFields = document.getElementById('manual-fields-' + itemId);
+        if (selectElement.value === '__NEW__') {
+            manualFields.style.display = 'block';
+            manualFields.querySelectorAll('input').forEach(input => input.setAttribute('required', 'required'));
+        } else {
+            manualFields.style.display = 'none';
+            manualFields.querySelectorAll('input').forEach(input => input.removeAttribute('required'));
+        }
+    }
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Painel Facilities</h2>
@@ -132,20 +147,30 @@
                                     </div>
                                     <div class="col-md-5">
                                         <label class="form-label small mb-1">Identificar Destinatário</label>
-                                        <div class="input-group input-group-sm">
-                                            <select name="recipient_email" class="form-select">
-                                                <option value="">(Selecione Corporativo ou use Novo abaixo)</option>
+                                        <div class="input-group input-group-sm mb-1">
+                                            <select name="recipient_email" class="form-select"
+                                                onchange="toggleManualFields(this, '{{ item.id }}')">
+                                                <option value="">(Selecione Corporativo...)</option>
+                                                <option value="__NEW__">➕ Novo Cadastro</option>
                                                 {% for u in corp_users %}
                                                 <option value="{{ u.email }}">{{ u.full_name }} ({{ u.email }})</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
-                                        <input type="text" name="recipient_name_manual"
-                                            class="form-control form-control-sm mt-1"
-                                            placeholder="Nome manual se não houver email">
-                                        <input type="text" name="recipient_floor"
-                                            class="form-control form-control-sm mt-1"
-                                            placeholder="Andar / Setor (Manual)">
+                                        <div id="manual-fields-{{ item.id }}" style="display: none;">
+                                            <div class="row g-1 mb-1">
+                                                <div class="col-7">
+                                                    <input type="text" name="recipient_name_manual"
+                                                        class="form-control form-control-sm" placeholder="Nome Manual">
+                                                </div>
+                                                <div class="col-5">
+                                                    <input type="text" name="recipient_floor"
+                                                        class="form-control form-control-sm" placeholder="Andar/Setor">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="text" name="observation" class="form-control form-control-sm"
+                                            placeholder="Observação (Ex: Frágil / Urgente)">
                                     </div>
                                     <div class="col-md-3 d-flex align-items-end">
                                         <button type="submit" class="btn btn-sm btn-info w-100">Alocar e

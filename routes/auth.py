@@ -121,5 +121,67 @@ def change_password():
         
         flash('Senha alterada com sucesso!', 'success')
         return redirect(url_for('main.index'))
+        flash('Senha alterada com sucesso!', 'success')
+        return redirect(url_for('main.index'))
         
     return render_template('change_password.html')
+
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form['email']
+        db = get_db()
+        user = db.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+        
+        if user:
+            from flask import current_app
+            from itsdangerous import URLSafeTimedSerializer
+            from utils.notifications import send_reset_email
+            
+            s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+            token = s.dumps(email, salt='password-reset-salt')
+            
+            if send_reset_email(email, token):
+                flash('Um link de recuperação foi enviado para seu e-mail.', 'info')
+            else:
+                flash('Erro ao enviar e-mail. Tente novamente.', 'danger')
+        else:
+            # Por segurança, mostramos a mesma mensagem mesmo se o email não existir
+            flash('Se o e-mail estiver cadastrado, você receberá um link de recuperação.', 'info')
+            
+        return redirect(url_for('auth.login'))
+        
+    return render_template('forgot_password.html')
+
+@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    from flask import current_app
+    from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadTimeSignature
+    
+    s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+    
+    try:
+        email = s.loads(token, salt='password-reset-salt', max_age=3600) # 1 hora
+    except (SignatureExpired, BadTimeSignature):
+        flash('O link de recuperação é inválido ou expirou.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+        
+    if request.method == 'POST':
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        
+        if password != confirm_password:
+            flash('As senhas não coincidem.', 'danger')
+            return render_template('reset_token.html', token=token)
+            
+        db = get_db()
+        db.execute(
+            'UPDATE users SET password_hash = ?, must_change_password = 0 WHERE email = ?',
+            (generate_password_hash(password), email)
+        )
+        db.commit()
+        
+        flash('Sua senha foi redefinida com sucesso! Faça login.', 'success')
+        return redirect(url_for('auth.login'))
+        
+    return render_template('reset_token.html', token=token)

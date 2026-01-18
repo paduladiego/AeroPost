@@ -58,14 +58,18 @@ def allocate(item_id):
     rec_email = request.form.get('recipient_email')
     rec_manual = request.form.get('recipient_name_manual')
     rec_floor = request.form.get('recipient_floor')
+    observation = request.form.get('observation')
+
+    if rec_email == '__NEW__':
+        rec_email = None
 
     if not rec_email and rec_manual and '@' in rec_manual:
         rec_email = rec_manual
     
     db = get_db()
     db.execute(
-        "UPDATE items SET status = 'DISPONIVEL_PARA_RETIRADA', location = ?, recipient_email = ?, recipient_name_manual = ?, recipient_floor = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", 
-        (location, rec_email, rec_manual, rec_floor, item_id)
+        "UPDATE items SET status = 'DISPONIVEL_PARA_RETIRADA', location = ?, recipient_email = ?, recipient_name_manual = ?, recipient_floor = ?, observation = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", 
+        (location, rec_email, rec_manual, rec_floor, observation, item_id)
     )
     db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], f'ALLOCATED: {location} AND ID_RECIPIENT'))
     db.commit()
