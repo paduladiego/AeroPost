@@ -13,7 +13,7 @@ if __name__ == "__main__":
         try:
             db.execute(
                 "INSERT INTO users (username, role, full_name, password_hash) VALUES (?, ?, ?, ?)",
-                ('admin', 'ADMIN', 'Administrador', generate_password_hash('admin123'))
+                ('admin', 'ADMIN', 'Administrador Sistema', generate_password_hash('admin123'))
             )
             db.commit()
             print("Admin user created: admin / admin123")

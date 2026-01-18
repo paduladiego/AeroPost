@@ -48,7 +48,10 @@ def migrate():
     for table_sql in tables:
         cursor.execute(table_sql)
 
-    # Dados Iniciais (Defaults)
+    for table_sql in tables:
+        cursor.execute(table_sql)
+
+    # Dados Iniciais (Defaults Gerais)
     # Tipos
     types = ['ENVELOPE/CARTA', 'CAIXA/PACOTE', 'OUTROS']
     for t in types:
@@ -58,16 +61,6 @@ def migrate():
     locs = ['Armário 1', 'Armário 2', 'Armário 3', 'Sala Facilities']
     for l in locs:
         cursor.execute("INSERT OR IGNORE INTO settings_locations (name) VALUES (?)", (l,))
-
-    # Empresas
-    companies = ['Dexco', 'Deca', 'Outra']
-    for c in companies:
-        cursor.execute("INSERT OR IGNORE INTO settings_companies (name) VALUES (?)", (c,))
-
-    # Domínios
-    domains = ['@dex.co', '@deca.com.br']
-    for d in domains:
-        cursor.execute("INSERT OR IGNORE INTO settings_allowed_domains (domain) VALUES (?)", (d,))
 
     conn.commit()
     conn.close()
