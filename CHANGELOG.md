@@ -5,6 +5,19 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v2.0.0] - 2026-01-18
+### Adicionado
+- **Papel Híbrido "Facilities Portaria"**:
+    - Novo tipo de usuário `FACILITIES_PORTARIA` que unifica o acesso aos painéis de Portaria e Facilities.
+    - Ação na tela de Gerenciar Usuários para conceder/revogar este acesso extra a usuários Facilities.
+- **Melhorias no Painel Facilities**:
+    - **Opção "Novo Cadastro"**: Possibilidade de cadastrar destinatários manuais diretamente na triagem (Alocar Local).
+    - **Interface Inteligente**: Campos manuais (Nome, Andar/Setor) aparecem condicionalmente via JavaScript.
+    - **Layout Compacto**: Redesign dos campos de triagem para otimizar espaço vertical.
+- **Backend e Segurança**:
+    - Migração de banco de dados para suporte ao novo `CHECK` de roles.
+    - Atualização de todos os decorators `@role_required` para suporte ao papel híbrido.
+
 ## [v1.2.2d] - 2026-01-16
 ### Adicionado
 - **Controle de Senhas e Segurança**:

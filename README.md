@@ -21,7 +21,7 @@ O AeroPost é uma aplicação web desenvolvida para otimizar o fluxo de recebime
 - **Auto-cadastro**: Restrito a domínios corporativos autorizados.
 - **Painel Pessoal**: Visualização de encomendas pendentes e histórico.
 
-## 🏗️ Arquitetura Modular (v1.3.0+)
+## 🏗️ Arquitetura Modular (v2.0.0)
 
 O sistema utiliza **Flask Blueprints** para uma organização limpa:
 - `/routes`: Lógica separada por módulos (auth, admin, portaria, facilities, settings).
@@ -52,7 +52,7 @@ Crie um arquivo `.env` na raiz:
 ```env
 SECRET_KEY=sua_chave_secreta_aqui
 DATABASE_URL=aeropost.db
-APP_VERSION=v1.3.0d
+APP_VERSION=v2.0.0
 ```
 > [!TIP]
 > Em produção (VPS), utilize `DATABASE_URL=postgresql://user:pass@localhost/dbname`.
@@ -73,7 +73,8 @@ python app.py
 1. **User**: Colaborador final (vê apenas seus itens).
 2. **Portaria**: Registro de entrada de encomendas.
 3. **Facilities**: Gestor logístico (coleta, aloca e entrega).
-4. **Admin**: Gestor técnico (usuários e configurações de sistema).
+4. **Facilities Portaria**: Perfil híbrido com acesso total aos fluxos de entrada e saída.
+5. **Admin**: Gestor técnico (usuários e configurações de sistema).
 
 ## 📄 Licença e Marca
 
@@ -81,4 +82,4 @@ Desenvolvido por **Desire Studios Ltda** sob o selo tecnológico **KRÒS / Divis
 MVP focado em eficiência logística e conformidade digital.
 
 ---
-*Versão Atual: v1.3.0d*
+*Versão Atual: v2.0.0*
