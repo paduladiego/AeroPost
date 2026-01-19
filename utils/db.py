@@ -82,8 +82,8 @@ def init_app(app):
         placeholder = '%s' if db_type == 'postgres' else '?'
         
         sql = f"""
-            INSERT INTO users (username, password, full_name, email, role, is_active, must_change_password)
-            VALUES ({placeholder}, {placeholder}, {placeholder}, {placeholder}, 'admin', 1, 0)
+            INSERT INTO users (username, password_hash, full_name, email, role, is_active, must_change_password)
+            VALUES ({placeholder}, {placeholder}, {placeholder}, {placeholder}, 'ADMIN', 1, 0)
         """
         
         cursor = db.cursor()
