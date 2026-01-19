@@ -22,3 +22,6 @@ passenger_wsgi.py
 
 #BKP Local
 BKP/
+
+# Tech Specs (Sensitive)
+INFRASTRUCTURE.md
