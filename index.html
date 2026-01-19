@@ -136,16 +136,19 @@
             .btn-cta {
                 background: linear-gradient(45deg, var(--primary), var(--secondary));
                 color: white;
-                padding: 0.8rem 1.5rem;
+                padding: 0.8rem 1.8rem;
                 border-radius: 50px;
                 text-decoration: none;
                 font-weight: 600;
-                box-shadow: 0 10px 20px rgba(0, 210, 255, 0.3);
-                transition: 0.3s transform;
+                box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2);
+                transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
             }
 
             .btn-cta:hover {
-                transform: translateY(-3px);
+                transform: translateY(-4px) scale(1.02);
                 box-shadow: 0 15px 30px rgba(0, 210, 255, 0.4);
             }
 
@@ -156,7 +159,41 @@
                 align-items: center;
                 padding: 0 10%;
                 position: relative;
+                overflow: hidden;
                 background: url('aeropost_hero_background_1768484668867.png') no-repeat center center/cover;
+            }
+
+            .sonar-wave {
+                position: absolute;
+                top: 50%;
+                left: 70%;
+                width: 2px;
+                height: 2px;
+                background: var(--primary);
+                border-radius: 50%;
+                opacity: 0;
+                z-index: 0;
+                animation: sonar 4s infinite;
+            }
+
+            .sonar-wave:nth-child(2) {
+                animation-delay: 1s;
+            }
+
+            .sonar-wave:nth-child(3) {
+                animation-delay: 2s;
+            }
+
+            @keyframes sonar {
+                0% {
+                    transform: scale(1);
+                    opacity: 0.5;
+                }
+
+                100% {
+                    transform: scale(500);
+                    opacity: 0;
+                }
             }
 
             .hero::before {
@@ -167,11 +204,12 @@
                 width: 100%;
                 height: 100%;
                 background: linear-gradient(90deg, #0f172a 30%, rgba(15, 23, 42, 0.4) 100%);
+                z-index: 1;
             }
 
             .hero-content {
                 position: relative;
-                z-index: 1;
+                z-index: 2;
                 max-width: 600px;
             }
 
@@ -271,12 +309,16 @@
                 text-align: center;
                 position: relative;
                 overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
 
             .price-card.featured {
                 border: 2px solid var(--primary);
-                background: rgba(0, 210, 255, 0.03);
+                background: rgba(0, 210, 255, 0.05);
                 transform: scale(1.05);
+                box-shadow: 0 20px 40px rgba(0, 210, 255, 0.15);
             }
 
             .price-card h3 {
@@ -301,6 +343,8 @@
                 list-style: none;
                 margin-bottom: 2.5rem;
                 text-align: left;
+                width: 100%;
+                flex-grow: 1;
             }
 
             .price-features li {
@@ -331,20 +375,33 @@
 
             /* --- Brand Section --- */
             .branding {
-                padding: 60px 5%;
+                padding: 80px 5%;
                 text-align: center;
-                opacity: 0.8;
+                opacity: 0.9;
             }
 
-            .branding img {
-                max-width: 120px;
-                margin-bottom: 1rem;
+            .branding .logo-footer {
+                height: 50px;
+                margin-bottom: 1.5rem;
+                filter: brightness(0) invert(1) opacity(0.8);
             }
 
             .branding p {
                 font-size: 0.9rem;
-                letter-spacing: 1px;
+                letter-spacing: 1.5px;
                 text-transform: uppercase;
+                color: var(--light);
+            }
+
+            .logo svg {
+                height: 32px;
+                width: auto;
+                transition: 0.3s;
+            }
+
+            .logo:hover svg {
+                filter: drop-shadow(0 0 8px var(--primary));
+                transform: rotate(-3deg);
             }
 
             /* --- Footer --- */
@@ -379,7 +436,13 @@
         </div>
 
         <header>
-            <div class="logo">AeroPost<span>KRÒS</span></div>
+            <div class="logo">
+                <svg viewBox="0 0 18425.47 6788.08" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="currentColor"
+                        d="M6225.5 4606.64c532.73,-863.7 1344.2,-1539.44 2273.02,-1938.25 -143.92,373.9 -306.75,739.72 -492.71,1092.66 -241.99,457.36 -527.52,891.72 -862.42,1280.78 -309.85,-135.19 -615.51,-281.33 -917.89,-435.19zm635.16 741.7c-392.39,396.69 -849.07,725.96 -1348.37,965.66 117.52,-477.08 288.53,-939.35 516.7,-1369.69 277.78,137.44 559.96,267.44 846.17,388.88 -4.91,4.95 -9.55,10.2 -14.5,15.16zm-3960.34 -2534.36c1514.87,-1186.77 3293.41,-1815.66 4961.3,-1872.47 381.88,1.2 764.61,33.41 1145.69,101.89 -98.44,382.09 -206.07,761.04 -331.94,1134.56 -1133.88,425.08 -2126.02,1234.03 -2743.62,2276.6 0,0 -1661.44,-1120.44 -3031.43,-1640.58zm6804.9 -1603.7c486.94,147.4 954.75,354.52 1379.9,629.78 -778.78,-84.42 -1559.65,39.61 -2293.09,295.15 104.03,-356.91 190.67,-718.86 265.8,-1082.36 218.48,41.05 434.71,93.15 647.39,157.43zm6912.45 2818.59c-2831.76,1964.32 -6066.82,2502.1 -9268.15,1100.75 590.94,-751.01 1001.25,-1623.22 1297.8,-2524.71 2159.36,-837.26 3843.65,-300.44 4664.44,1405.83 -813.89,-2109.03 -2300.49,-2996.59 -4168.35,-3397.82 37.3,-203.98 72.03,-408.37 104.48,-612.92 -41.56,203.06 -86.81,405.29 -133.92,607.02 -4000.72,-810.75 -7629.86,2223.27 -9113.96,3925.76 1019.89,-868.22 2568.14,-1525.94 5732.48,261.57 3.07,1.74 6.31,3.13 9.48,4.74 -318.55,623.87 -502.63,1303.81 -610.46,1988.99 747.87,-299.59 1436.03,-759.51 1966.68,-1362.08 4278.5,1817.81 8166.06,317.5 11327.29,-2803.84 -573.71,506.53 -1176.77,978.56 -1807.8,1406.72z" />
+                </svg>
+                AeroPost<span>KRÒS</span>
+            </div>
             <nav>
                 <a href="#features">Recursos</a>
                 <a href="#pricing">Planos</a>
@@ -389,6 +452,9 @@
         </header>
 
         <section class="hero">
+            <div class="sonar-wave"></div>
+            <div class="sonar-wave"></div>
+            <div class="sonar-wave"></div>
             <div class="hero-content">
                 <span class="badge-mvp">Lançamento MVP 1.1.0</span>
                 <h1>Logística de malotes sem atritos.</h1>
@@ -478,6 +544,10 @@
         </section>
 
         <section class="branding reveal" id="about">
+            <svg class="logo-footer" viewBox="0 0 18425.47 6788.08" xmlns="http://www.w3.org/2000/svg">
+                <path fill="white"
+                    d="M6225.5 4606.64c532.73,-863.7 1344.2,-1539.44 2273.02,-1938.25 -143.92,373.9 -306.75,739.72 -492.71,1092.66 -241.99,457.36 -527.52,891.72 -862.42,1280.78 -309.85,-135.19 -615.51,-281.33 -917.89,-435.19zm635.16 741.7c-392.39,396.69 -849.07,725.96 -1348.37,965.66 117.52,-477.08 288.53,-939.35 516.7,-1369.69 277.78,137.44 559.96,267.44 846.17,388.88 -4.91,4.95 -9.55,10.2 -14.5,15.16zm-3960.34 -2534.36c1514.87,-1186.77 3293.41,-1815.66 4961.3,-1872.47 381.88,1.2 764.61,33.41 1145.69,101.89 -98.44,382.09 -206.07,761.04 -331.94,1134.56 -1133.88,425.08 -2126.02,1234.03 -2743.62,2276.6 0,0 -1661.44,-1120.44 -3031.43,-1640.58zm6804.9 -1603.7c486.94,147.4 954.75,354.52 1379.9,629.78 -778.78,-84.42 -1559.65,39.61 -2293.09,295.15 104.03,-356.91 190.67,-718.86 265.8,-1082.36 218.48,41.05 434.71,93.15 647.39,157.43zm6912.45 2818.59c-2831.76,1964.32 -6066.82,2502.1 -9268.15,1100.75 590.94,-751.01 1001.25,-1623.22 1297.8,-2524.71 2159.36,-837.26 3843.65,-300.44 4664.44,1405.83 -813.89,-2109.03 -2300.49,-2996.59 -4168.35,-3397.82 37.3,-203.98 72.03,-408.37 104.48,-612.92 -41.56,203.06 -86.81,405.29 -133.92,607.02 -4000.72,-810.75 -7629.86,2223.27 -9113.96,3925.76 1019.89,-868.22 2568.14,-1525.94 5732.48,261.57 3.07,1.74 6.31,3.13 9.48,4.74 -318.55,623.87 -502.63,1303.81 -610.46,1988.99 747.87,-299.59 1436.03,-759.51 1966.68,-1362.08 4278.5,1817.81 8166.06,317.5 11327.29,-2803.84 -573.71,506.53 -1176.77,978.56 -1807.8,1406.72z" />
+            </svg>
             <p>A Divisão de Tecnologia KRAN do selo <strong>KRÒS</strong></p>
             <p style="font-weight: 300; opacity: 0.6; margin-top: 5px;">Uma solução desenvolvida por <strong>Desire
                     Studios Ltda</strong></p>
