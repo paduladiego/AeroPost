@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>KRAN - Coming Soon</title>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --primary: #ffffff;
+                --accent: #00d2ff;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+                font-family: 'Outfit', sans-serif;
+            }
+
+            body {
+                background-color: #050505;
+                color: white;
+                height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                text-align: center;
+            }
+
+            .bg {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: url('assets/space_bg.png') no-repeat center center/cover;
+                z-index: -1;
+                filter: brightness(0.6);
+                animation: slowZoom 20s infinite alternate ease-in-out;
+            }
+
+            @keyframes slowZoom {
+                from {
+                    transform: scale(1);
+                }
+
+                to {
+                    transform: scale(1.1);
+                }
+            }
+
+            .container {
+                padding: 2rem;
+                z-index: 1;
+            }
+
+            .logo {
+                width: 120px;
+                margin-bottom: 2rem;
+                animation: fadeInDown 1.5s ease-out;
+            }
+
+            .logo svg {
+                width: 100%;
+                height: auto;
+                color: white;
+                filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
+            }
+
+            h1 {
+                font-size: 4.5rem;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 0.5rem;
+                margin-bottom: 1rem;
+                background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.4) 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: fadeInUp 1.5s ease-out 0.3s backwards;
+            }
+
+            p {
+                font-size: 1.2rem;
+                font-weight: 300;
+                letter-spacing: 0.3rem;
+                opacity: 0.7;
+                text-transform: uppercase;
+                animation: fadeInUp 1.5s ease-out 0.6s backwards;
+            }
+
+            .glow-button {
+                margin-top: 3rem;
+                display: inline-block;
+                padding: 1rem 3rem;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: white;
+                text-decoration: none;
+                border-radius: 50px;
+                backdrop-filter: blur(10px);
+                background: rgba(255, 255, 255, 0.05);
+                font-weight: 600;
+                transition: 0.4s;
+                animation: fadeIn 2s ease-out 1s backwards;
+            }
+
+            .glow-button:hover {
+                background: white;
+                color: black;
+                box-shadow: 0 0 30px white;
+                transform: translateY(-5px);
+            }
+
+            @keyframes fadeInDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-50px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(50px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="bg"></div>
+        <div class="container">
+            <div class="logo">
+                <!-- Simplified KRAN Logo based on provided vector paths -->
+                <svg viewBox="0 0 18425.47 6788.08" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="currentColor"
+                        d="M6225.5 4606.64c532.73,-863.7 1344.2,-1539.44 2273.02,-1938.25 -143.92,373.9 -306.75,739.72 -492.71,1092.66 -241.99,457.36 -527.52,891.72 -862.42,1280.78 -309.85,-135.19 -615.51,-281.33 -917.89,-435.19zm635.16 741.7c-392.39,396.69 -849.07,725.96 -1348.37,965.66 117.52,-477.08 288.53,-939.35 516.7,-1369.69 277.78,137.44 559.96,267.44 846.17,388.88 -4.91,4.95 -9.55,10.2 -14.5,15.16zm-3960.34 -2534.36c1514.87,-1186.77 3293.41,-1815.66 4961.3,-1872.47 381.88,1.2 764.61,33.41 1145.69,101.89 -98.44,382.09 -206.07,761.04 -331.94,1134.56 -1133.88,425.08 -2126.02,1234.03 -2743.62,2276.6 0,0 -1661.44,-1120.44 -3031.43,-1640.58zm6804.9 -1603.7c486.94,147.4 954.75,354.52 1379.9,629.78 -778.78,-84.42 -1559.65,39.61 -2293.09,295.15 104.03,-356.91 190.67,-718.86 265.8,-1082.36 218.48,41.05 434.71,93.15 647.39,157.43zm6912.45 2818.59c-2831.76,1964.32 -6066.82,2502.1 -9268.15,1100.75 590.94,-751.01 1001.25,-1623.22 1297.8,-2524.71 2159.36,-837.26 3843.65,-300.44 4664.44,1405.83 -813.89,-2109.03 -2300.49,-2996.59 -4168.35,-3397.82 37.3,-203.98 72.03,-408.37 104.48,-612.92 -41.56,203.06 -86.81,405.29 -133.92,607.02 -4000.72,-810.75 -7629.86,2223.27 -9113.96,3925.76 1019.89,-868.22 2568.14,-1525.94 5732.48,261.57 3.07,1.74 6.31,3.13 9.48,4.74 -318.55,623.87 -502.63,1303.81 -610.46,1988.99 747.87,-299.59 1436.03,-759.51 1966.68,-1362.08 4278.5,1817.81 8166.06,317.5 11327.29,-2803.84 -573.71,506.53 -1176.77,978.56 -1807.8,1406.72z" />
+                </svg>
+            </div>
+            <h1>Coming Soon</h1>
+            <p>Innovation is on its way</p>
+        </div>
+    </body>
+
+</html>
