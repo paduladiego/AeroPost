@@ -2,7 +2,8 @@ import sqlite3
 import os
 
 def migrate():
-    db_path = 'aeropost.db'
+    # Tenta ler do .env ou usa o padrão
+    db_path = os.environ.get('DATABASE_URL', 'aeropost.db')
     if not os.path.exists(db_path):
         print(f"Error: {db_path} not found.")
         return
