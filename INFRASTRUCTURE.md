@@ -29,7 +29,7 @@ Para manter o repositório organizado, adotamos as seguintes nomenclaturas:
 
 ### 2. Ramos de Lançamento (Release/Client)
 - **`client/<nome>/v<versão>`**: Ramos específicos para entrega em produção.
-  - Ex: `client/dexco/v2.0.0`
+  - Versão atual em dev: `v3.0.0`
   - *Nota: Estes ramos podem conter configurações específicas de .env para o cliente.*
 
 ### 3. Tags (Versões Estáveis)

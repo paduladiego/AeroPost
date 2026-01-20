@@ -5,6 +5,17 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v3.0.0] - 2026-01-20
+### Adicionado
+- **Persistência de Estado (UX)**: O sistema agora lembra a aba ativa no Painel Facilities. Redirecionamentos inteligentes mantêm o contexto do usuário.
+- **Ordenação Dinâmica de Tabelas 📊**: Reorganização instantânea por ID, Item, Destinatário ou Local com clique no cabeçalho.
+- **Canal de Suporte 🆘**: Botão "Reportar Problema" com modal integrado e envio automático de metadados para suporte.
+- **Grupos de Email**: Gestão de grupos para notificações em lote na alocação de itens.
+- **Melhorias Visuais e Portaria**: Unificação de colunas ID/Rastreio, melhor visibilidade de itens pendentes na portaria e Favicon (✉️).
+### Corrigido
+- **Autenticação Híbrida**: Persistência de e-mail entre telas e validação assíncrona de usuários corporativos.
+- **Responsividade**: Ajustes no canvas de assinatura e larguras de tabelas.
+
 ## [v2.0.0] - 2026-01-18
 ### Adicionado
 - **Papel Híbrido "Facilities Portaria"**:
