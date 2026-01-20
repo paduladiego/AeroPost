@@ -14,6 +14,60 @@
             manualFields.querySelectorAll('input').forEach(input => input.removeAttribute('required'));
         }
     }
+
+    // Persistência de Abas
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeTab = urlParams.get('tab');
+        if (activeTab) {
+            const tabButton = document.getElementById(activeTab + '-tab');
+            if (tabButton) {
+                tabButton.click();
+            }
+        }
+    });
+
+    // Ordenação de Tabelas
+    function sortTable(tableId, colIndex) {
+        const table = document.getElementById(tableId);
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const header = table.querySelectorAll('th')[colIndex];
+        const isAsc = header.classList.contains('asc');
+
+        // Limpar estados de outras colunas
+        table.querySelectorAll('th').forEach(th => th.classList.remove('asc', 'desc'));
+
+        rows.sort((a, b) => {
+            let valA = a.cells[colIndex].innerText.trim().toLowerCase();
+            let valB = b.cells[colIndex].innerText.trim().toLowerCase();
+
+            // Lógica para números (IDs ou datas simplificadas)
+            if (!isNaN(valA) && !isNaN(valB)) {
+                return isAsc ? valB - valA : valA - valB;
+            }
+
+            return isAsc
+                ? (valA < valB ? 1 : -1)
+                : (valA > valB ? 1 : -1);
+        });
+
+        header.classList.toggle('asc', !isAsc);
+        header.classList.toggle('desc', isAsc);
+
+        rows.forEach(row => tbody.appendChild(row));
+    }
+
+    // Estilos para Ordenação
+    const style = document.createElement('style');
+    style.innerHTML = `
+        th.sortable { cursor: pointer; position: relative; padding-right: 25px !important; }
+        th.sortable:after { content: '↕'; position: absolute; right: 8px; color: #ccc; }
+        th.sortable.asc:after { content: '▴'; color: #000; }
+        th.sortable.desc:after { content: '▾'; color: #000; }
+        th.sortable:hover { background-color: #f1f1f1; }
+    `;
+    document.head.appendChild(style);
 </script>
 {% endblock %}
 
@@ -93,13 +147,13 @@
     <div class="tab-pane fade show active" id="portaria" role="tabpanel">
         <div class="card">
             <div class="card-body">
-                <table class="table align-middle">
+                <table class="table align-middle" id="table-portaria">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Chegada</th>
-                            <th>Item</th>
-                            <th>Remetente</th>
+                            <th class="sortable" onclick="sortTable('table-portaria', 0)">ID</th>
+                            <th class="sortable" onclick="sortTable('table-portaria', 1)">Chegada</th>
+                            <th class="sortable" onclick="sortTable('table-portaria', 2)">Item</th>
+                            <th class="sortable" onclick="sortTable('table-portaria', 3)">Remetente</th>
                             <th>Ação</th>
                         </tr>
                     </thead>
@@ -131,12 +185,12 @@
     <div class="tab-pane fade" id="triagem" role="tabpanel">
         <div class="card">
             <div class="card-body">
-                <table class="table align-middle">
+                <table class="table align-middle" id="table-triagem">
                     <thead>
                         <tr>
-                            <th>ID / Rastreio</th>
-                            <th>Item</th>
-                            <th>Remetente</th>
+                            <th class="sortable" onclick="sortTable('table-triagem', 0)">ID / Rastreio</th>
+                            <th class="sortable" onclick="sortTable('table-triagem', 1)">Item</th>
+                            <th class="sortable" onclick="sortTable('table-triagem', 2)">Remetente</th>
                             <th>Definir Local</th>
                         </tr>
                     </thead>
@@ -218,13 +272,13 @@
     <div class="tab-pane fade" id="entregar" role="tabpanel">
         <div class="card">
             <div class="card-body">
-                <table class="table align-middle">
+                <table class="table align-middle" id="table-entrega">
                     <thead>
                         <tr>
-                            <th>ID / Rastreio</th>
-                            <th>Item</th>
-                            <th>Destinatário</th>
-                            <th>Local</th>
+                            <th class="sortable" onclick="sortTable('table-entrega', 0)">ID / Rastreio</th>
+                            <th class="sortable" onclick="sortTable('table-entrega', 1)">Item</th>
+                            <th class="sortable" onclick="sortTable('table-entrega', 2)">Destinatário</th>
+                            <th class="sortable" onclick="sortTable('table-entrega', 3)">Local</th>
                             <th>Ação</th>
                         </tr>
                     </thead>

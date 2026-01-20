@@ -50,7 +50,7 @@ def collect(item_id):
     db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], 'COLLECT_FROM_PORTARIA'))
     db.commit()
     flash('Item coletado com sucesso.', 'success')
-    return redirect(url_for('facilities.dashboard'))
+    return redirect(url_for('facilities.dashboard', tab='portaria'))
 
 @facilities_bp.route('/facilities/allocate/<int:item_id>', methods=['POST'])
 @login_required
@@ -100,7 +100,7 @@ def allocate(item_id):
     else:
         flash(f'Item alocado em {location} para {rec_manual}. (Sem e-mail para notificar)', 'success')
         
-    return redirect(url_for('facilities.dashboard'))
+    return redirect(url_for('facilities.dashboard', tab='triagem'))
 
 @facilities_bp.route('/facilities/update_location/<int:item_id>', methods=['POST'])
 @login_required
@@ -112,7 +112,7 @@ def update_location(item_id):
     db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], f'LOCATION_CHANGED_TO: {location}'))
     db.commit()
     flash('Local atualizado com sucesso.', 'success')
-    return redirect(url_for('facilities.dashboard'))
+    return redirect(url_for('facilities.dashboard', tab='entregar'))
 
 @facilities_bp.route('/delivery/password/<int:item_id>')
 @login_required
@@ -162,7 +162,7 @@ def delivery_password_confirm(item_id):
     db.commit()
     
     flash(f'Item entregue com sucesso para {user["full_name"]} via autenticação!', 'success')
-    return redirect(url_for('facilities.dashboard'))
+    return redirect(url_for('facilities.dashboard', tab='entregar'))
 
 @facilities_bp.route('/delivery/<int:item_id>')
 @login_required
@@ -191,4 +191,4 @@ def delivery_confirm(item_id):
     db.commit()
     
     flash(f'Item entregue com sucesso para {received_by}!', 'success')
-    return redirect(url_for('facilities.dashboard'))
+    return redirect(url_for('facilities.dashboard', tab='entregar'))
