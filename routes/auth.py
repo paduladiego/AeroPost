@@ -185,3 +185,9 @@ def reset_password(token):
         return redirect(url_for('auth.login'))
         
     return render_template('reset_token.html', token=token)
+
+@auth_bp.route('/check_user/<email>')
+def check_user(email):
+    db = get_db()
+    user = db.execute('SELECT id FROM users WHERE email = ? AND is_active = 1', (email,)).fetchone()
+    return {'exists': user is not None}

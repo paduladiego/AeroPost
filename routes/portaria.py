@@ -13,7 +13,7 @@ portaria_bp = Blueprint('portaria', __name__)
 def dashboard():
     db = get_db()
     recent_items = db.execute(
-        'SELECT * FROM items WHERE created_at >= date("now", "localtime") ORDER BY created_at DESC'
+        'SELECT * FROM items WHERE status = "RECEBIDO_PORTARIA" OR created_at >= date("now", "localtime") ORDER BY status = "RECEBIDO_PORTARIA" DESC, created_at DESC'
     ).fetchall()
     
     item_types = db.execute("SELECT * FROM settings_item_types WHERE is_active = 1").fetchall()

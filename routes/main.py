@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from utils.db import get_db
 from utils.auth import login_required, role_required
+from utils.notifications import send_support_ticket
 
 main_bp = Blueprint('main', __name__)
 
@@ -31,6 +32,26 @@ def index():
         ).fetchall()
         
         return render_template('home_user.html', items=my_items, unclaimed_items=unclaimed_items)
+
+@main_bp.route('/home')
+@login_required
+def home_user():
+    db = get_db()
+    user = db.execute('SELECT email FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    email = user['email']
+    
+    my_items = db.execute(
+        'SELECT * FROM items WHERE recipient_email = ? OR recipient_name_manual = ? ORDER BY created_at DESC', 
+        (email, email)
+    ).fetchall()
+
+    unclaimed_items = db.execute(
+        "SELECT * FROM items WHERE (recipient_email IS NULL OR recipient_email = '') "
+        "AND (recipient_name_manual NOT LIKE '%@%' OR recipient_name_manual IS NULL) "
+        "AND status != 'ENTREGUE' ORDER BY created_at DESC"
+    ).fetchall()
+    
+    return render_template('home_user.html', items=my_items, unclaimed_items=unclaimed_items)
 
 @main_bp.route('/history')
 @login_required
@@ -67,3 +88,23 @@ def history():
     
     items = db.execute(query, params).fetchall()
     return render_template('history.html', items=items)
+
+@main_bp.route('/report-problem', methods=['POST'])
+@login_required
+def report_problem():
+    from flask import current_app
+    description = request.form.get('description')
+    user_name = session.get('name')
+    page_url = request.referrer or "URL desconhecida"
+    app_version = current_app.config.get('APP_VERSION', 'v2.1.0')
+    
+    db = get_db()
+    user = db.execute('SELECT email FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    user_email = user['email'] if user else None
+    
+    if send_support_ticket(user_name, user_email, description, app_version, page_url):
+        flash('Seu relato foi enviado com sucesso para o suporte! Obrigado pelo feedback.', 'success')
+    else:
+        flash('Houve um erro ao enviar seu relato. Por favor, tente novamente mais tarde.', 'danger')
+        
+    return redirect(request.referrer or url_for('main.index'))

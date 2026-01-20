@@ -57,3 +57,35 @@ Equipe AeroPost
     except Exception as e:
         print(f"Erro ao enviar e-mail de reset: {e}")
         return False
+
+def send_support_ticket(user_name, user_email, description, app_version, page_url):
+    """Envia um e-mail de suporte para o desenvolvedor"""
+    from app import mail
+    
+    # Fallback para e-mail se estiver vazio
+    sender_info = user_email if user_email else "E-mail não informado"
+
+    try:
+        msg = Message(
+            subject=f"🆘 Suporte AeroPost - {user_name}",
+            recipients=["kran.technology@gmail.com"],
+            reply_to=user_email if user_email else None,
+            body=f"""Novo chamado de suporte recebido!
+
+De: {user_name} ({sender_info})
+Versão: {app_version}
+Página: {page_url}
+
+Descrição do Problema:
+--------------------------------------------------
+{description}
+--------------------------------------------------
+
+Este e-mail foi gerado automaticamente pelo sistema AeroPost.
+"""
+        )
+        mail.send(msg)
+        return True
+    except Exception as e:
+        print(f"Erro ao enviar e-mail de suporte: {e}")
+        return False

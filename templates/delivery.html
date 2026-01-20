@@ -20,15 +20,22 @@
                     method="post">
                     <div class="mb-3">
                         <label class="form-label">Recebedor (Nome Legível)</label>
-                        <input type="text" class="form-control" name="received_by_name" required
-                            placeholder="Quem está retirando?">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="received_by_name" id="received_by_name"
+                                required placeholder="Quem está retirando?" oninput="checkEmailAuth(this.value)">
+                            <button type="button" id="btn-switch-password" class="btn btn-outline-primary d-none"
+                                onclick="switchToPassword()">🔑 Usar Senha</button>
+                        </div>
+                        <small id="email-hint" class="text-muted d-none">Usuário identificado. Você pode usar sua senha
+                            AeroPost.</small>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Assinatura</label>
-                        <div class="border rounded p-2 text-center" style="background-color: #f0f0f0;">
-                            <canvas id="signature-pad" width="500" height="200"
-                                style="background: white; border: 1px dashed #ccc; touch-action: none;"></canvas>
+                        <div class="border rounded p-2 text-center"
+                            style="background-color: #f0f0f0; min-height: 200px;">
+                            <canvas id="signature-pad" class="w-100" height="200"
+                                style="background: white; border: 1px dashed #ccc; touch-action: none; max-width: 100%;"></canvas>
                             <div class="mt-2">
                                 <button type="button" class="btn btn-sm btn-outline-secondary" id="clear-btn">Limpar
                                     Assinatura</button>
@@ -75,5 +82,41 @@
             document.getElementById('delivery-form').submit();
         }
     });
+
+    let checkTimeout;
+    function checkEmailAuth(value) {
+        const btn = document.getElementById('btn-switch-password');
+        const hint = document.getElementById('email-hint');
+
+        // Limpa estado anterior se não for email
+        if (!value.includes('@') || value.length < 5) {
+            btn.classList.add('d-none');
+            hint.classList.add('d-none');
+            return;
+        }
+
+        // Debounce para não sobrecarregar o servidor
+        clearTimeout(checkTimeout);
+        checkTimeout = setTimeout(() => {
+            fetch(`{{ url_for('auth.check_user', email='') }}${encodeURIComponent(value)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        btn.classList.remove('d-none');
+                        hint.classList.remove('d-none');
+                    } else {
+                        btn.classList.add('d-none');
+                        hint.classList.add('d-none');
+                    }
+                })
+                .catch(err => console.error("Erro ao verificar usuário:", err));
+        }, 500);
+    }
+
+    function switchToPassword() {
+        const email = document.getElementById('received_by_name').value;
+        const baseUrl = "{{ url_for('facilities.delivery_password_page', item_id=item.id) }}";
+        window.location.href = `${baseUrl}?email=${encodeURIComponent(email)}`;
+    }
 </script>
 {% endblock %}

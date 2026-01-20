@@ -22,7 +22,7 @@ def create_app():
     if '://' not in db_url and not os.path.isabs(db_url):
         db_url = os.path.join(app.root_path, db_url)
     app.config['DATABASE'] = db_url
-    app.config['APP_VERSION'] = os.environ.get('APP_VERSION', 'v2.0.1')
+    app.config['APP_VERSION'] = os.environ.get('APP_VERSION', 'v2.1.0d')
     
     # Configurações de E-mail
     app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
@@ -34,10 +34,14 @@ def create_app():
     
     mail.init_app(app)
     
-    # Injeta a versão em todos os templates automaticamente
+    # Injeta a versão e utilitários em todos os templates automaticamente
     @app.context_processor
-    def inject_version():
-        return dict(app_version=app.config['APP_VERSION'])
+    def inject_utilities():
+        import datetime
+        return dict(
+            app_version=app.config['APP_VERSION'],
+            datetime=datetime
+        )
     
     # Inicializa o Banco de Dados
     init_app(app)
@@ -64,6 +68,13 @@ def create_app():
     app.register_blueprint(facilities_bp)
     app.register_blueprint(settings_bp)
     app.register_blueprint(admin_bp)
+
+    # Rota para o Favicon (servindo de landing/assets)
+    @app.route('/favicon.ico')
+    def favicon():
+        from flask import send_from_directory
+        return send_from_directory(os.path.join(app.root_path, 'landing', 'assets'),
+                               'favicon.png', mimetype='image/png')
 
     return app
 

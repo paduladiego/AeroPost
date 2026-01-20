@@ -20,41 +20,56 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Painel Facilities</h2>
-    <div>
-        <a href="{{ url_for('main.history') }}" class="btn btn-outline-success">📜 Histórico/Entregues</a>
-        <a href="{{ url_for('settings.export') }}" class="btn btn-outline-primary">Exportar CSV</a>
-        <a href="{{ url_for('admin.users_list') }}" class="btn btn-outline-secondary">Gerenciar Usuários</a>
-        <a href="{{ url_for('settings.dashboard') }}" class="btn btn-outline-dark">⚙️ Configurações</a>
+    <div class="d-flex flex-wrap gap-2">
+        <a href="{{ url_for('main.history') }}" class="btn btn-sm btn-outline-success">
+            <span class="d-none d-md-inline">📜 Histórico/Entregues</span>
+            <span class="d-md-none">📜</span>
+        </a>
+        <a href="{{ url_for('settings.export_panel') }}" class="btn btn-sm btn-outline-primary">
+            <span class="d-none d-md-inline">📊 Exportar CSV</span>
+            <span class="d-md-none">📊</span>
+        </a>
+        <a href="{{ url_for('admin.users_list') }}" class="btn btn-sm btn-outline-secondary">
+            <span class="d-none d-md-inline">👤 Gerenciar Usuários</span>
+            <span class="d-md-none">👤</span>
+        </a>
+        <a href="{{ url_for('settings.dashboard') }}" class="btn btn-sm btn-outline-dark">
+            <span class="d-none d-md-inline">⚙️ Configurações</span>
+            <span class="d-md-none">⚙️</span>
+        </a>
     </div>
 </div>
 
 <div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card text-center text-white bg-warning">
+    <div class="col-md-4 mb-2">
+        <button class="card text-center text-white bg-warning w-100 border-0"
+            onclick="document.getElementById('portaria-tab').click()">
             <div class="card-body">
                 <h3>{{ stats.in_portaria }}</h3>
                 <p class="mb-0">Na Portaria</p>
                 <small>Aguardando Coleta</small>
             </div>
-        </div>
+        </button>
     </div>
-    <div class="col-md-3">
-        <div class="card text-center text-white bg-info">
+    <div class="col-md-4 mb-2">
+        <button class="card text-center text-white bg-info w-100 border-0"
+            onclick="document.getElementById('triagem-tab').click()">
             <div class="card-body">
                 <h3>{{ stats.in_facilities }}</h3>
                 <p class="mb-0">Em Triagem</p>
                 <small>Aguardando Alocação</small>
             </div>
-        </div>
+        </button>
     </div>
-    <div class="col-md-3">
-        <div class="card text-center text-white bg-success">
+    <div class="col-md-4 mb-2">
+        <button class="card text-center text-white bg-success w-100 border-0"
+            onclick="document.getElementById('entregar-tab').click()">
             <div class="card-body">
                 <h3>{{ stats.ready }}</h3>
                 <p class="mb-0">Disponíveis</p>
                 <small>Aguardando Retirada</small>
             </div>
-        </div>
+        </button>
     </div>
 </div>
 
@@ -119,8 +134,7 @@
                 <table class="table align-middle">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Rastreio</th>
+                            <th>ID / Rastreio</th>
                             <th>Item</th>
                             <th>Remetente</th>
                             <th>Definir Local</th>
@@ -129,8 +143,10 @@
                     <tbody>
                         {% for item in items_facilities %}
                         <tr>
-                            <td>{{ item.internal_id }}</td>
-                            <td>{{ item.tracking_code or '-' }}</td>
+                            <td>
+                                <strong>{{ item.internal_id }}</strong>
+                                <br><small class="text-muted">{{ item.tracking_code or 'Sem rastreio' }}</small>
+                            </td>
                             <td>{{ item.type }}</td>
                             <td>{{ item.sender }}</td>
                             <td>
@@ -151,10 +167,18 @@
                                             <select name="recipient_email" class="form-select"
                                                 onchange="toggleManualFields(this, '{{ item.id }}')">
                                                 <option value="">(Selecione Corporativo...)</option>
-                                                <option value="__NEW__">➕ Novo Cadastro</option>
-                                                {% for u in corp_users %}
-                                                <option value="{{ u.email }}">{{ u.full_name }} ({{ u.email }})</option>
-                                                {% endfor %}
+                                                <optgroup label="Grupos de Email">
+                                                    {% for g in email_groups %}
+                                                    <option value="{{ g.name }}">📧 Grupo: {{ g.name }}</option>
+                                                    {% endfor %}
+                                                </optgroup>
+                                                <optgroup label="Usuários Individuais">
+                                                    <option value="__NEW__">➕ Novo Cadastro</option>
+                                                    {% for u in corp_users %}
+                                                    <option value="{{ u.email }}">{{ u.full_name }} ({{ u.email }})
+                                                    </option>
+                                                    {% endfor %}
+                                                </optgroup>
                                             </select>
                                         </div>
                                         <div id="manual-fields-{{ item.id }}" style="display: none;">
@@ -197,8 +221,7 @@
                 <table class="table align-middle">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Rastreio</th>
+                            <th>ID / Rastreio</th>
                             <th>Item</th>
                             <th>Destinatário</th>
                             <th>Local</th>
@@ -208,14 +231,27 @@
                     <tbody>
                         {% for item in items_ready %}
                         <tr>
-                            <td>{{ item.internal_id }}</td>
-                            <td>{{ item.tracking_code or '-' }}</td>
+                            <td>
+                                <strong>{{ item.internal_id }}</strong>
+                                <br><small class="text-muted">{{ item.tracking_code or 'Sem rastreio' }}</small>
+                            </td>
                             <td>{{ item.type }}</td>
                             <td>
                                 <strong>{{ item.recipient_email or item.recipient_name_manual }}</strong>
                                 <br><small>Andar: {{ item.user_floor or item.recipient_floor or 'N/A' }}</small>
                             </td>
-                            <td><span class="badge bg-light text-dark border">{{ item.location }}</span></td>
+                            <td>
+                                <form action="{{ url_for('facilities.update_location', item_id=item.id) }}"
+                                    method="post" class="d-flex gap-1">
+                                    <select name="location" class="form-select form-select-sm" style="min-width: 150px;"
+                                        onchange="this.form.submit()">
+                                        {% for loc in locations %}
+                                        <option value="{{ loc.name }}" {% if loc.name==item.location %}selected{% endif
+                                            %}>{{ loc.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </td>
                             <td>
                                 <div class="btn-group">
                                     <a href="{{ url_for('facilities.delivery_page', item_id=item.id) }}"

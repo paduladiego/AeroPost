@@ -22,6 +22,8 @@
             <a class="list-group-item list-group-item-action" id="list-domains-list" data-bs-toggle="list"
                 href="#list-domains" role="tab">🔒 Domínios Permitidos</a>
             {% endif %}
+            <a class="list-group-item list-group-item-action" id="list-groups-list" data-bs-toggle="list"
+                href="#list-groups" role="tab">📧 Grupos de Email</a>
         </div>
     </div>
 
@@ -131,6 +133,45 @@
             </div>
             {% endif %}
 
+            <!-- Grupos de Email -->
+            <div class="tab-pane fade" id="list-groups" role="tabpanel">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Grupos de Email</h5>
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addGroupModal">+
+                            Novo Grupo</button>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Nome do Grupo</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in email_groups %}
+                                <tr>
+                                    <td>{{ item.name }}</td>
+                                    <td class="text-end">
+                                        <form action="{{ url_for('settings.delete_email_group', group_id=item.id) }}"
+                                            method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0"
+                                                onclick="return confirm('Excluir este grupo?')">🗑️</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="2" class="text-center text-muted py-3">Nenhum grupo cadastrado.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -214,6 +255,37 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-danger">Salvar Regra</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Group -->
+<div class="modal fade" id="addGroupModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ url_for('settings.add_email_group') }}" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Grupo de Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nome do Grupo</label>
+                        <input type="text" name="name" class="form-control" placeholder="Ex: 5º Andar Diretoria"
+                            required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Emails (separados por vírgula)</label>
+                        <textarea name="emails" class="form-control"
+                            placeholder="email1@empresa.com, email2@empresa.com" rows="3" required></textarea>
+                        <small class="text-muted">A encomenda alocada para este grupo notificará todos estes
+                            endereços.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Criar Grupo</button>
                 </div>
             </div>
         </form>

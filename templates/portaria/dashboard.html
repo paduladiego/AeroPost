@@ -51,7 +51,7 @@
     <div class="col-md-7">
         <div class="card">
             <div class="card-header">
-                Recebimentos Recentes (Hoje)
+                Itens na Portaria / Recebidos Hoje
             </div>
             <div class="card-body p-0">
                 <table class="table table-striped mb-0">
@@ -66,14 +66,21 @@
                     <tbody>
                         {% for item in recent_items %}
                         <tr>
-                            <td>{{ item.created_at.strftime('%H:%M') }}</td>
+                            <td>
+                                {% if item.created_at.date() == datetime.datetime.now().date() %}
+                                {{ item.created_at.strftime('%H:%M') }}
+                                {% else %}
+                                {{ item.created_at.strftime('%d/%m %H:%M') }}
+                                {% endif %}
+                            </td>
                             <td>{{ item.type }}</td>
                             <td>{{ item.sender }}</td>
                             <td><span class="badge bg-secondary status-badge">{{ item.status }}</span></td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="4" class="text-center text-muted p-3">Nenhum item recebido hoje ainda.</td>
+                            <td colspan="4" class="text-center text-muted p-3">Nenhum item pendente ou recebido hoje.
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
