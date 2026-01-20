@@ -22,7 +22,10 @@ def create_app():
     if '://' not in db_url and not os.path.isabs(db_url):
         db_url = os.path.join(app.root_path, db_url)
     app.config['DATABASE'] = db_url
-    app.config['APP_VERSION'] = os.environ.get('APP_VERSION', 'v3.0.1')
+    # Versão do Sistema
+    base_version = 'v3.0.2'
+    app_suffix = os.environ.get('APP_SUFFIX', '') # Ex: '-demo' ou '-dexco'
+    app.config['APP_VERSION'] = os.environ.get('APP_VERSION', f"{base_version}{app_suffix}")
     
     # Configurações de E-mail
     app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')

@@ -9,7 +9,9 @@ Este arquivo contém informações técnicas sobre o ambiente de produção e as
 - **Site Landing/Demo:** `aeropost.kran.technology`
 - **Site-Client-Dexco:** `kran.technology/Dexco/AeroPost`
 - **Caminho Landing/Demo:** `/var/www/aeropost-demo`
+- **Serviço Demo:** `aeropost-demo.service`
 - **Caminho Client Dexco:** `/var/www/Dexco/AeroPost`
+- **Serviço Client Dexco:** `aeropost.service`
   -- **Caminho Novos Clientes:** `/var/www/<ClientName>/AeroPost`
 - **Usuário SSH:** `root`
 - **Comando de Acesso:** `ssh root@76.13.71.38`
@@ -92,11 +94,11 @@ python migrations/v2.0.0.py
 
 ### 5. Reinicialização e Verificação
 ```bash
-# Reinicia o serviço principal
-systemctl restart aeropost
+# Reinicia o serviço correspondente (aeropost ou aeropost-demo)
+systemctl restart <nome_do_serviço>
 
-# Verifica se o serviço subiu sem erros (Status deve ser 'active (running)')
-systemctl status aeropost
+# Verifica se o serviço subiu sem erros
+systemctl status <nome_do_serviço>
 
 # Se der erro 502, olhe os logs aqui:
 journalctl -u aeropost -n 50 --no-pager

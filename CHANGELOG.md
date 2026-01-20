@@ -5,6 +5,11 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v3.0.2] - 2026-01-20
+### Adicionado
+- **Gestão Inteligente de Versão 🏷️**: Centralizada a versão no código (`base_version`), permitindo adicionar sufixos (ex: `-demo`, `-dexco`) via variável de ambiente `APP_SUFFIX` no `.env`. Isso evita a necessidade de atualizar o número da versão manualmente em cada servidor.
+
+
 ## [v3.0.1] - 2026-01-20
 ### Alterado
 - **Neutralidade de Marca**: Generalizados placeholders e textos de ajuda na página de cadastro corporativo para remover referências específicas à Dexco/Deca.
