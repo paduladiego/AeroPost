@@ -4,427 +4,63 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AeroPost - Gestão Inteligente de Malotes e Correspondências</title>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XH2Z0YS78J"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+
+            gtag('config', 'G-XH2Z0YS78J');
+        </script>
+        <title>AeroPost | Gestão de Malotes e Correios para Facilities</title>
+        <meta name="description"
+            content="Domine a logística de malotes da sua empresa com AeroPost. Elimine o caos das correspondências, reduza o tempo de triagem em 80% e tenha controle total com zero papel.">
+        <meta name="keywords"
+            content="gestão de malotes, correio corporativo, facilities management, rastreio de volumes, logística interna, software para condomínios, automação de correspondências">
+        <meta name="author" content="Padula.One / Desire Studios / KRAN Tech">
+        <link rel="canonical" href="https://aeropost.kran.technology/">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://aeropost.kran.technology/">
+        <meta property="og:title" content="AeroPost | Gestão Inteligente de Malotes e Correspondências">
+        <meta property="og:description"
+            content="Transforme a logística interna da sua empresa. Rastreio total e eficiência para Facilities com AeroPost.">
+        <meta property="og:image" content="https://aeropost.kran.technology/assets/favicon.png">
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="https://aeropost.kran.technology/">
+        <meta property="twitter:title" content="AeroPost | Gestão de Malotes para Facilities">
+        <meta property="twitter:description"
+            content="A solução definitiva para gestão de volumes corporativos. Controle total e zero papel.">
+        <meta property="twitter:image" content="https://aeropost.kran.technology/assets/favicon.png">
+
+        <link rel="icon" type="image/png" href="assets/favicon.png">
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-        <style>
-            :root {
-                --primary: #00d2ff;
-                --secondary: #3a7bd5;
-                --dark: #0f172a;
-                --light: #f8fafc;
-                --glass: rgba(255, 255, 255, 0.05);
-                --glass-border: rgba(255, 255, 255, 0.1);
-            }
+        <link rel="stylesheet" href="css/styles.css">
 
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: 'Outfit', sans-serif;
-            }
-
-            body {
-                background-color: var(--dark);
-                color: var(--light);
-                overflow-x: hidden;
-                line-height: 1.6;
-            }
-
-            /* --- Background Effects --- */
-            .bg-glow {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
-                z-index: -2;
-            }
-
-            .circles {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: -1;
-                overflow: hidden;
-            }
-
-            .circle {
-                position: absolute;
-                border-radius: 50%;
-                background: linear-gradient(to right, var(--primary), var(--secondary));
-                filter: blur(80px);
-                opacity: 0.15;
-                animation: float 20s infinite alternate;
-            }
-
-            .c1 {
-                width: 400px;
-                height: 400px;
-                top: -100px;
-                left: -100px;
-            }
-
-            .c2 {
-                width: 300px;
-                height: 300px;
-                bottom: -50px;
-                right: -50px;
-                animation-delay: -5s;
-            }
-
-            @keyframes float {
-                from {
-                    transform: translate(0, 0);
-                }
-
-                to {
-                    transform: translate(50px, 100px);
-                }
-            }
-
-            /* --- Header --- */
-            header {
-                padding: 2rem 5%;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                position: fixed;
-                width: 100%;
-                top: 0;
-                z-index: 100;
-                background: rgba(15, 23, 42, 0.8);
-                backdrop-filter: blur(10px);
-                border-bottom: 1px solid var(--glass-border);
-            }
-
-            .logo {
-                font-size: 1.8rem;
-                font-weight: 800;
-                background: linear-gradient(45deg, var(--primary), #fff);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .logo span {
-                color: #fff;
-                font-weight: 300;
-                font-size: 1rem;
-                letter-spacing: 2px;
-                opacity: 0.7;
-            }
-
-            nav a {
-                color: var(--light);
-                text-decoration: none;
-                margin-left: 2rem;
-                font-weight: 600;
-                transition: 0.3s;
-                opacity: 0.8;
-            }
-
-            nav a:hover {
-                color: var(--primary);
-                opacity: 1;
-            }
-
-            .btn-cta {
-                background: linear-gradient(45deg, var(--primary), var(--secondary));
-                color: white;
-                padding: 0.8rem 1.8rem;
-                border-radius: 50px;
-                text-decoration: none;
-                font-weight: 600;
-                box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2);
-                transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-            }
-
-            .btn-cta:hover {
-                transform: translateY(-4px) scale(1.02);
-                box-shadow: 0 15px 30px rgba(0, 210, 255, 0.4);
-            }
-
-            /* --- Hero --- */
-            .hero {
-                height: 100vh;
-                display: flex;
-                align-items: center;
-                padding: 0 10%;
-                position: relative;
-                overflow: hidden;
-                background: url('aeropost_hero_background_1768484668867.png') no-repeat center center/cover;
-            }
-
-            .sonar-wave {
-                position: absolute;
-                top: 50%;
-                left: 70%;
-                width: 2px;
-                height: 2px;
-                background: var(--primary);
-                border-radius: 50%;
-                opacity: 0;
-                z-index: 0;
-                animation: sonar 4s infinite;
-            }
-
-            .sonar-wave:nth-child(2) {
-                animation-delay: 1s;
-            }
-
-            .sonar-wave:nth-child(3) {
-                animation-delay: 2s;
-            }
-
-            @keyframes sonar {
-                0% {
-                    transform: scale(1);
-                    opacity: 0.5;
-                }
-
-                100% {
-                    transform: scale(500);
-                    opacity: 0;
-                }
-            }
-
-            .hero::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(90deg, #0f172a 30%, rgba(15, 23, 42, 0.4) 100%);
-                z-index: 1;
-            }
-
-            .hero-content {
-                position: relative;
-                z-index: 2;
-                max-width: 600px;
-            }
-
-            .hero-content h1 {
-                font-size: 4rem;
-                line-height: 1.1;
-                margin-bottom: 1.5rem;
-                font-weight: 800;
-            }
-
-            .hero-content p {
-                font-size: 1.2rem;
-                margin-bottom: 2rem;
-                opacity: 0.9;
-            }
-
-            .badge-mvp {
-                background: rgba(0, 210, 255, 0.1);
-                border: 1px solid var(--primary);
-                color: var(--primary);
-                padding: 0.5rem 1rem;
-                border-radius: 50px;
-                font-size: 0.9rem;
-                font-weight: 600;
-                margin-bottom: 1rem;
-                display: inline-block;
-            }
-
-            /* --- Features --- */
-            .features {
-                padding: 100px 5%;
-            }
-
-            .section-title {
-                text-align: center;
-                margin-bottom: 60px;
-            }
-
-            .section-title h2 {
-                font-size: 2.5rem;
-                font-weight: 800;
-                margin-bottom: 1rem;
-            }
-
-            .grid-features {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 2rem;
-            }
-
-            .feature-card {
-                background: var(--glass);
-                border: 1px solid var(--glass-border);
-                padding: 2.5rem;
-                border-radius: 24px;
-                transition: 0.3s;
-                cursor: pointer;
-            }
-
-            .feature-card:hover {
-                transform: translateY(-10px);
-                background: rgba(255, 255, 255, 0.08);
-                border-color: var(--primary);
-            }
-
-            .feature-card i {
-                font-size: 2.5rem;
-                color: var(--primary);
-                margin-bottom: 1.5rem;
-                display: block;
-            }
-
-            .feature-card h3 {
-                font-size: 1.5rem;
-                margin-bottom: 1rem;
-            }
-
-            /* --- Pricing --- */
-            .pricing {
-                padding: 100px 5%;
-                background: rgba(15, 23, 42, 0.5);
-            }
-
-            .grid-pricing {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                max-width: 1200px;
-                margin: 0 auto;
-                gap: 2rem;
-            }
-
-            .price-card {
-                background: var(--glass);
-                border: 1px solid var(--glass-border);
-                padding: 3rem 2rem;
-                border-radius: 32px;
-                text-align: center;
-                position: relative;
-                overflow: hidden;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .price-card.featured {
-                border: 2px solid var(--primary);
-                background: rgba(0, 210, 255, 0.05);
-                transform: scale(1.05);
-                box-shadow: 0 20px 40px rgba(0, 210, 255, 0.15);
-            }
-
-            .price-card h3 {
-                font-size: 1.5rem;
-                margin-bottom: 1rem;
-                color: var(--primary);
-            }
-
-            .price {
-                font-size: 3rem;
-                font-weight: 800;
-                margin-bottom: 2rem;
-            }
-
-            .price span {
-                font-size: 1rem;
-                font-weight: 400;
-                opacity: 0.6;
-            }
-
-            .price-features {
-                list-style: none;
-                margin-bottom: 2.5rem;
-                text-align: left;
-                width: 100%;
-                flex-grow: 1;
-            }
-
-            .price-features li {
-                margin-bottom: 0.8rem;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .price-features li::before {
-                content: '✓';
-                color: var(--primary);
-                font-weight: bold;
-            }
-
-            .most-popular {
-                position: absolute;
-                top: 0;
-                left: 50%;
-                transform: translateX(-50%);
-                background: var(--primary);
-                color: var(--dark);
-                padding: 0.3rem 2rem;
-                font-size: 0.8rem;
-                font-weight: 800;
-                border-radius: 0 0 10px 10px;
-            }
-
-            /* --- Brand Section --- */
-            .branding {
-                padding: 80px 5%;
-                text-align: center;
-                opacity: 0.9;
-            }
-
-            .branding .logo-footer {
-                height: 50px;
-                margin-bottom: 1.5rem;
-                filter: brightness(0) invert(1) opacity(0.8);
-            }
-
-            .branding p {
-                font-size: 0.9rem;
-                letter-spacing: 1.5px;
-                text-transform: uppercase;
-                color: var(--light);
-            }
-
-            .logo svg {
-                height: 32px;
-                width: auto;
-                transition: 0.3s;
-            }
-
-            .logo:hover svg {
-                filter: drop-shadow(0 0 8px var(--primary));
-                transform: rotate(-3deg);
-            }
-
-            /* --- Footer --- */
-            footer {
-                padding: 40px 5%;
-                text-align: center;
-                border-top: 1px solid var(--glass-border);
-                font-size: 0.9rem;
-                opacity: 0.6;
-            }
-
-            /* --- animations --- */
-            .reveal {
-                opacity: 0;
-                transform: translateY(30px);
-                transition: 1s all ease;
-            }
-
-            .reveal.active {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        </style>
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "AeroPost",
+          "operatingSystem": "Web, iOS, Android",
+          "applicationCategory": "BusinessApplication",
+          "offers": {
+            "@type": "Offer",
+            "price": "249.00",
+            "priceCurrency": "BRL"
+          },
+          "description": "Gestão Inteligente de Malotes e Correspondências para Facilities.",
+          "author": {
+            "@type": "Organization",
+            "name": "KRAN Tech - Padula.One"
+          }
+        }
+        </script>
     </head>
 
     <body>
@@ -437,17 +73,14 @@
 
         <header>
             <div class="logo">
-                <svg viewBox="0 0 18425.47 6788.08" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="currentColor"
-                        d="M6225.5 4606.64c532.73,-863.7 1344.2,-1539.44 2273.02,-1938.25 -143.92,373.9 -306.75,739.72 -492.71,1092.66 -241.99,457.36 -527.52,891.72 -862.42,1280.78 -309.85,-135.19 -615.51,-281.33 -917.89,-435.19zm635.16 741.7c-392.39,396.69 -849.07,725.96 -1348.37,965.66 117.52,-477.08 288.53,-939.35 516.7,-1369.69 277.78,137.44 559.96,267.44 846.17,388.88 -4.91,4.95 -9.55,10.2 -14.5,15.16zm-3960.34 -2534.36c1514.87,-1186.77 3293.41,-1815.66 4961.3,-1872.47 381.88,1.2 764.61,33.41 1145.69,101.89 -98.44,382.09 -206.07,761.04 -331.94,1134.56 -1133.88,425.08 -2126.02,1234.03 -2743.62,2276.6 0,0 -1661.44,-1120.44 -3031.43,-1640.58zm6804.9 -1603.7c486.94,147.4 954.75,354.52 1379.9,629.78 -778.78,-84.42 -1559.65,39.61 -2293.09,295.15 104.03,-356.91 190.67,-718.86 265.8,-1082.36 218.48,41.05 434.71,93.15 647.39,157.43zm6912.45 2818.59c-2831.76,1964.32 -6066.82,2502.1 -9268.15,1100.75 590.94,-751.01 1001.25,-1623.22 1297.8,-2524.71 2159.36,-837.26 3843.65,-300.44 4664.44,1405.83 -813.89,-2109.03 -2300.49,-2996.59 -4168.35,-3397.82 37.3,-203.98 72.03,-408.37 104.48,-612.92 -41.56,203.06 -86.81,405.29 -133.92,607.02 -4000.72,-810.75 -7629.86,2223.27 -9113.96,3925.76 1019.89,-868.22 2568.14,-1525.94 5732.48,261.57 3.07,1.74 6.31,3.13 9.48,4.74 -318.55,623.87 -502.63,1303.81 -610.46,1988.99 747.87,-299.59 1436.03,-759.51 1966.68,-1362.08 4278.5,1817.81 8166.06,317.5 11327.29,-2803.84 -573.71,506.53 -1176.77,978.56 -1807.8,1406.72z" />
-                </svg>
-                AeroPost<span>KRÒS</span>
+                <img src="assets/Logo-A-Box.png" alt="AeroPost Icon" class="logo-icon">
+                <img src="assets/Logo-AeroPost-Text.png" alt="AeroPost" class="logo-text">
             </div>
             <nav>
-                <a href="#features">Recursos</a>
+                <a href="#how-it-works">Como Funciona</a>
+                <a href="#features">Tecnologias</a>
                 <a href="#pricing">Planos</a>
-                <a href="#about">KRAN Tech</a>
-                <a href="/demo/" class="btn-cta">Demo do MVP</a>
+                <a href="/demo/" class="btn-cta">Demo Grátis</a>
             </nav>
         </header>
 
@@ -456,49 +89,81 @@
             <div class="sonar-wave"></div>
             <div class="sonar-wave"></div>
             <div class="hero-content">
-                <span class="badge-mvp">Lançamento MVP 1.1.0</span>
-                <h1>Logística de malotes sem atritos.</h1>
-                <p>A solução definitiva para Facilities gerenciarem volumes, correspondências e malotes corporativos com
-                    rastreio total e zero papel.</p>
+                <span class="badge-mvp">v3.0.2 Estável • 🚀 Alta Performance</span>
+                <h1>Domine a Logística de malotes da sua empresa.</h1>
+                <p>Elimine o caos das correspondências, reduza o tempo de triagem em 80% e tenha controle total com zero
+                    papel.</p>
                 <div style="display: flex; gap: 20px;">
-                    <a href="#pricing" class="btn-cta">Ver Planos de Assinatura</a>
-                    <a href="#features"
-                        style="color: white; align-self: center; text-decoration: none; font-weight: 600;">Saiba Mais
-                        ↓</a>
+                    <a href="https://wa.me/5511942659089?text=Olá! Quero modernizar a logística da minha empresa."
+                        class="btn-cta">Falar com Especialista</a>
+                    <a href="#how-it-works"
+                        style="color: white; align-self: center; text-decoration: none; font-weight: 600;">Ver como
+                        funciona ↓</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- NOVO: Seção Como Funciona -->
+        <section class="workflow" id="how-it-works">
+            <div class="section-title reveal">
+                <h2>O Fluxo "Zero Papel" Permanente</h2>
+                <p>Do recebimento na portaria à entrega final, tudo digital e auditável.</p>
+            </div>
+            <div class="workflow-steps">
+                <div class="step reveal">
+                    <div class="step-icon">1</div>
+                    <h3>Registro Ágil</h3>
+                    <p>Portaria registra o volume (rastreio/tipo) em apenas 2 segundos.</p>
+                </div>
+                <div class="step reveal">
+                    <div class="step-icon">2</div>
+                    <h3>Triagem & Alocação</h3>
+                    <p>Facilities identifica o destino e aloca em armários ou salas inteligentes.</p>
+                </div>
+                <div class="step reveal">
+                    <div class="step-icon">3</div>
+                    <h3>Aviso Automático</h3>
+                    <p>O sistema dispara e-mails automáticos para o destinatário ou grupos de e-mail.</p>
+                </div>
+                <div class="step reveal">
+                    <div class="step-icon">4</div>
+                    <h3>Entrega Segura</h3>
+                    <p>Confirmação via Assinatura Digital no tablet ou senha de login do funcionário.</p>
                 </div>
             </div>
         </section>
 
         <section class="features" id="features">
             <div class="section-title reveal">
-                <h2>Por que escolher o AeroPost?</h2>
-                <p>Desenhado para o fluxo real de prédios corporativos e grandes empresas.</p>
+                <h2>Tecnologia de Facilities v3.0</h2>
+                <p>Funcionalidades exclusivas para quem busca eficiência real.</p>
             </div>
             <div class="grid-features">
                 <div class="feature-card reveal">
-                    <h3>🚀 Portaria Ágil</h3>
-                    <p>Recebimento em segundos. O porteiro registra apenas o essencial e o sistema cuida do resto.</p>
-                </div>
-                <div class="feature-card reveal">
-                    <h3>🔍 Triagem Inteligente</h3>
-                    <p>O time de Facilities assume o controle, identifica destinatários e aloca espaços otimizados.</p>
-                </div>
-                <div class="feature-card reveal">
-                    <h3>🔒 Entrega Híbrida</h3>
-                    <p>Assinatura digital no Tablet ou autenticação segura via senha para quem está no desktop.</p>
-                </div>
-                <div class="feature-card reveal">
-                    <h3>📊 Histórico & Auditoria</h3>
-                    <p>Busca instantânea por código de rastreio ou destinatário com comprovantes digitais permanentes.
+                    <h3>🔄 Persistência Inteligente</h3>
+                    <p>O sistema lembra onde você parou. Abas ativas e contextos são mantidos entre redirecionamentos.
                     </p>
+                </div>
+                <div class="feature-card reveal">
+                    <h3>📊 Ordenação Dinâmica</h3>
+                    <p>Tabelas que se auto-organizam. Filtre e ordene por qualquer coluna com um clique instantâneo.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <h3>✉️ Grupos de Notificação</h3>
+                    <p>Gerencie grupos de e-mail para avisos em lote. Perfeito para setores ou departamentos inteiros.
+                    </p>
+                </div>
+                <div class="feature-card reveal">
+                    <h3>🔒 Autenticação Híbrida</h3>
+                    <p>Zero atrito na entrega. O destinatário escolhe: assinar na tela ou digitar sua senha segura.</p>
                 </div>
             </div>
         </section>
 
         <section class="pricing" id="pricing">
             <div class="section-title reveal">
-                <h2>Planos de Assinatura</h2>
-                <p>Invista na eficiência da sua operação de Facilities.</p>
+                <h2>Planos Sob Medida</h2>
+                <p>Retorno sobre investimento imediato para sua operação de Facilities.</p>
             </div>
             <div class="grid-pricing">
                 <div class="price-card reveal">
@@ -506,11 +171,11 @@
                     <div class="price">R$ 249<span>/mês</span></div>
                     <ul class="price-features">
                         <li>Até 500 volumes/mês</li>
-                        <li>Portaria + Facilities App</li>
+                        <li>Gestão de 1 Prédio</li>
                         <li>Assinatura Digital</li>
                         <li>Suporte via E-mail</li>
                     </ul>
-                    <a href="#" class="btn-cta"
+                    <a href="https://wa.me/5511942659089?text=Quero o plano Standard." class="btn-cta"
                         style="background: transparent; border: 1px solid var(--primary);">Assinar Agora</a>
                 </div>
 
@@ -520,12 +185,12 @@
                     <div class="price">R$ 599<span>/mês</span></div>
                     <ul class="price-features">
                         <li>Volumes Ilimitados</li>
-                        <li>Dashboard de Analytics</li>
-                        <li>Notificações por E-mail</li>
-                        <li>Suporte Prioritário 24/7</li>
-                        <li>Até 5 Prédios Gerenciados</li>
+                        <li>Dashboard v3.0.2</li>
+                        <li>Notificações em Grupo</li>
+                        <li>Exportação para Auditoria</li>
+                        <li>Até 5 Unidades/Prédios</li>
                     </ul>
-                    <a href="#" class="btn-cta">Assinar Agora</a>
+                    <a href="https://wa.me/5511942659089?text=Quero o plano Business." class="btn-cta">Assinar Agora</a>
                 </div>
 
                 <div class="price-card reveal">
@@ -533,45 +198,79 @@
                     <div class="price">Sob Consulta</div>
                     <ul class="price-features">
                         <li>Instalação On-Premise</li>
-                        <li>Integração com Catracas</li>
                         <li>Módulo de Mensageiros</li>
-                        <li>Treinamento Presencial</li>
+                        <li>SSO & Segurança Avançada</li>
+                        <li>Desenvolvimento Personalizado</li>
                     </ul>
-                    <a href="#" class="btn-cta" style="background: transparent; border: 1px solid var(--primary);">Falar
-                        com Consultor</a>
+                    <a href="https://wa.me/5511942659089?text=Olá! Gostaria de uma proposta para o AeroPost Enterprise."
+                        class="btn-cta" style="background: transparent; border: 1px solid var(--primary);">Falar com
+                        Consultor</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- NOVO: FAQ Section -->
+        <section class="faq reveal">
+            <div class="section-title">
+                <h2>Perguntas Frequentes</h2>
+                <p>Tudo o que você precisa saber para começar hoje.</p>
+            </div>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h4>Preciso comprar algum hardware específico?</h4>
+                    <p>Não. O AeroPost funciona em qualquer tablet, celular ou computador com internet. Recomendamos um
+                        tablet simples para assinaturas.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Como é feita a assinatura digital?</h4>
+                    <p>O destinatário assina diretamente na tela do dispositivo (touch) ou usa sua senha corporativa
+                        para confirmar o recebimento.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>O sistema é seguro para o LGPD?</h4>
+                    <p>Sim, todos os dados são criptografados e o log de auditoria registra cada passo do volume,
+                        garantindo total conformidade.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Posso exportar relatórios para o síndico ou diretoria?</h4>
+                    <p>Sim! O plano Business e Enterprise permitem exportação completa em CSV com um clique para
+                        auditorias e relatórios mensais.</p>
                 </div>
             </div>
         </section>
 
         <section class="branding reveal" id="about">
-            <svg class="logo-footer" viewBox="0 0 18425.47 6788.08" xmlns="http://www.w3.org/2000/svg">
-                <path fill="white"
-                    d="M6225.5 4606.64c532.73,-863.7 1344.2,-1539.44 2273.02,-1938.25 -143.92,373.9 -306.75,739.72 -492.71,1092.66 -241.99,457.36 -527.52,891.72 -862.42,1280.78 -309.85,-135.19 -615.51,-281.33 -917.89,-435.19zm635.16 741.7c-392.39,396.69 -849.07,725.96 -1348.37,965.66 117.52,-477.08 288.53,-939.35 516.7,-1369.69 277.78,137.44 559.96,267.44 846.17,388.88 -4.91,4.95 -9.55,10.2 -14.5,15.16zm-3960.34 -2534.36c1514.87,-1186.77 3293.41,-1815.66 4961.3,-1872.47 381.88,1.2 764.61,33.41 1145.69,101.89 -98.44,382.09 -206.07,761.04 -331.94,1134.56 -1133.88,425.08 -2126.02,1234.03 -2743.62,2276.6 0,0 -1661.44,-1120.44 -3031.43,-1640.58zm6804.9 -1603.7c486.94,147.4 954.75,354.52 1379.9,629.78 -778.78,-84.42 -1559.65,39.61 -2293.09,295.15 104.03,-356.91 190.67,-718.86 265.8,-1082.36 218.48,41.05 434.71,93.15 647.39,157.43zm6912.45 2818.59c-2831.76,1964.32 -6066.82,2502.1 -9268.15,1100.75 590.94,-751.01 1001.25,-1623.22 1297.8,-2524.71 2159.36,-837.26 3843.65,-300.44 4664.44,1405.83 -813.89,-2109.03 -2300.49,-2996.59 -4168.35,-3397.82 37.3,-203.98 72.03,-408.37 104.48,-612.92 -41.56,203.06 -86.81,405.29 -133.92,607.02 -4000.72,-810.75 -7629.86,2223.27 -9113.96,3925.76 1019.89,-868.22 2568.14,-1525.94 5732.48,261.57 3.07,1.74 6.31,3.13 9.48,4.74 -318.55,623.87 -502.63,1303.81 -610.46,1988.99 747.87,-299.59 1436.03,-759.51 1966.68,-1362.08 4278.5,1817.81 8166.06,317.5 11327.29,-2803.84 -573.71,506.53 -1176.77,978.56 -1807.8,1406.72z" />
-            </svg>
+            <img src="assets/Logo-Kran.png" alt="KRAN Tech" class="logo-footer-kran">
+
             <p>A Divisão de Tecnologia KRAN do selo <strong>KRÒS</strong></p>
-            <p style="font-weight: 300; opacity: 0.6; margin-top: 5px;">Uma solução desenvolvida por <strong>Desire
-                    Studios Ltda</strong></p>
+            <p style="font-weight: 300; opacity: 0.6; margin-top: 5px;">Uma solução desenvolvida por
+                <strong>Padula.One</strong></br>em parceria com <strong>Desire Studios Ltda</strong>
+            </p>
+
+            <div class="ecosystem-links" style="margin-top: 25px; display: flex; justify-content: center; gap: 20px;">
+                <a href="https://padula.one" target="_blank"
+                    style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">padula.one</a>
+                <a href="https://desire.earth" target="_blank"
+                    style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">desire.earth</a>
+                <a href="https://newdreams.xyz" target="_blank"
+                    style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">newdreams.xyz</a>
+            </div>
         </section>
+
+        <a href="https://wa.me/5511942659089?text=Olá! Gostaria de saber mais sobre o AeroPost." class="whatsapp-float"
+            target="_blank" aria-label="Fale conosco pelo WhatsApp">
+            <svg viewBox="0 0 448 512" class="whatsapp-icon">
+                <path
+                    d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.7-30.6-38.2-3.2-5.6-.3-8.6 2.4-11.3 2.5-2.4 5.5-6.5 8.3-9.8 2.8-3.2 3.7-5.5 5.5-9.3.5-3.7-.4-6.9-1.9-9.8-1.5-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.2 5.8 23.5 9.2 31.5 11.8 13.3 4.2 25.4 3.6 35 2.2 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"
+                    fill="#fff" />
+            </svg>
+        </a>
 
         <footer>
             <p>&copy; 2026 AeroPost. Todos os direitos reservados. Desire Studios Ltda.</p>
         </footer>
 
-        <script>
-            function reveal() {
-                var reveals = document.querySelectorAll(".reveal");
-                for (var i = 0; i < reveals.length; i++) {
-                    var windowHeight = window.innerHeight;
-                    var elementTop = reveals[i].getBoundingClientRect().top;
-                    var elementVisible = 150;
-                    if (elementTop < windowHeight - elementVisible) {
-                        reveals[i].classList.add("active");
-                    }
-                }
-            }
-            window.addEventListener("scroll", reveal);
-            reveal(); // Run on initiate
-        </script>
+        <script src="js/scripts.js"></script>
     </body>
 
 </html>
