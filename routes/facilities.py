@@ -192,3 +192,39 @@ def delivery_confirm(item_id):
     
     flash(f'Item entregue com sucesso para {received_by}!', 'success')
     return redirect(url_for('facilities.dashboard', tab='entregar'))
+
+@facilities_bp.route('/facilities/resend_alert/<int:item_id>', methods=['POST'])
+@login_required
+@role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
+def resend_alert(item_id):
+    db = get_db()
+    item = db.execute("SELECT * FROM items WHERE id = ?", (item_id,)).fetchone()
+    
+    if not item:
+        flash('Item não encontrado.', 'danger')
+        return redirect(url_for('facilities.dashboard', tab='entregar'))
+
+    rec_email = item['recipient_email']
+    if not rec_email and item['recipient_name_manual'] and '@' in item['recipient_name_manual']:
+        rec_email = item['recipient_name_manual']
+
+    if rec_email:
+        # Verifica se é um grupo
+        group = db.execute("SELECT id FROM email_groups WHERE name = ?", (rec_email,)).fetchone()
+        
+        if group:
+            members = db.execute("SELECT email FROM email_group_members WHERE group_id = ?", (group['id'],)).fetchall()
+            emails_sent = 0
+            for member in members:
+                if send_collection_alert(member['email'], item['internal_id'], item['type']):
+                    emails_sent += 1
+            flash(f'Alertas reenviados para o grupo "{rec_email}". {emails_sent} notificações enviadas!', 'success')
+        else:
+            if send_collection_alert(rec_email, item['internal_id'], item['type']):
+                flash(f'Alerta de reenvio enviado para {rec_email}!', 'success')
+            else:
+                flash(f'Erro ao reenviar e-mail para {rec_email}.', 'warning')
+    else:
+        flash('Destinatário não possui e-mail cadastrado.', 'warning')
+
+    return redirect(url_for('facilities.dashboard', tab='entregar'))

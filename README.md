@@ -82,4 +82,4 @@ Desenvolvido por **Desire Studios Ltda** sob o selo tecnológico **KRÒS / Divis
 MVP focado em eficiência logística e conformidade digital.
 
 ---
-**Versão Atual:** v3.0.0 (Stable)
+**Versão Atual:** v3.1.4 (Stable)

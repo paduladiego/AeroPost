@@ -5,6 +5,21 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v3.1.4] - 2026-01-22
+### Adicionado
+- **Notificações Recorrentes 🔔**: Implementada automação via script `cron_notifications.py` que reenviar alertas a cada 3 dias para encomendas pendentes.
+- **Reenvio Manual**: Novo botão de sino (🔔) no Painel Facilities para disparo imediato de notificações.
+- **Gestão de Banco de Dados**: Adicionada coluna `last_notified_at` para rastreamento preciso de alertas.
+- **Otimização de UI/UX**:
+    - **Tabelas Responsivas**: Novo layout mobile-first com `table-responsive`.
+    - **Gestão de Espaço**: Ocultação automática de colunas secundárias em telas pequenas e ajuste de espaçamento entre botões de ação.
+    - **Refatoração DRY**: Centralização da lógica de ordenação de tabelas no template base.
+    - **Edição de Grupos**: Possibilidade de editar membros de grupos de e-mail diretamente nas configurações.
+### Corrigido
+- **Navegação**: Correção de erros de rota no Painel Facilities e ajuste na persistência de abas após ações.
+- **Estética**: Alinhamento de logotipos e ajustes de branding.
+
+
 ## [v3.0.2] - 2026-01-20
 ### Adicionado
 - **Gestão Inteligente de Versão 🏷️**: Centralizada a versão no código (`base_version`), permitindo adicionar sufixos (ex: `-demo`, `-dexco`) via variável de ambiente `APP_SUFFIX` no `.env`. Isso evita a necessidade de atualizar o número da versão manualmente em cada servidor.

@@ -1,10 +1,11 @@
 from flask_mail import Message
-from flask import current_app
+from flask import current_app, url_for
+import logging
 
 def send_collection_alert(recipient_email, item_id, item_type):
     """Envia um e-mail para o destinatário informando que o item está disponível"""
     from app import mail
-    from flask import url_for
+    from .db import get_db
     
     if not recipient_email or '@' not in recipient_email:
         return False
@@ -33,9 +34,18 @@ Equipe AeroPost / Facilities
 """
         )
         mail.send(msg)
+        
+        # Atualiza o timestamp de última notificação no banco
+        try:
+            db = get_db()
+            db.execute("UPDATE items SET last_notified_at = CURRENT_TIMESTAMP WHERE internal_id = ?", (item_id,))
+            db.commit()
+        except Exception as e:
+            logging.error(f"Erro ao atualizar last_notified_at: {e}")
+
         return True
     except Exception as e:
-        print(f"Erro ao enviar e-mail: {e}")
+        logging.error(f"Erro ao enviar e-mail: {e}")
         return False
 
 def send_reset_email(recipient_email, token):
