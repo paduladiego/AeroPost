@@ -104,36 +104,39 @@
     <div class="tab-pane fade show active" id="portaria" role="tabpanel">
         <div class="card">
             <div class="card-body">
-                <table class="table align-middle" id="table-portaria">
-                    <thead>
-                        <tr>
-                            <th class="sortable" onclick="sortTable('table-portaria', 0)">ID</th>
-                            <th class="sortable" onclick="sortTable('table-portaria', 1)">Chegada</th>
-                            <th class="sortable" onclick="sortTable('table-portaria', 2)">Item</th>
-                            <th class="sortable" onclick="sortTable('table-portaria', 3)">Remetente</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in items_portaria %}
-                        <tr>
-                            <td><small class="text-muted">{{ item.internal_id }}</small></td>
-                            <td>{{ item.created_at.strftime('%d/%m %H:%M') }}</td>
-                            <td>{{ item.type }}</td>
-                            <td>{{ item.sender }}</td>
-                            <td>
-                                <form action="{{ url_for('facilities.collect', item_id=item.id) }}" method="post">
-                                    <button type="submit" class="btn btn-sm btn-warning">📥 Coletar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center">Nenhum item na portaria.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table align-middle" id="table-portaria">
+                        <thead>
+                            <tr>
+                                <th class="sortable" onclick="sortTable('table-portaria', 0)">ID</th>
+                                <th class="sortable" onclick="sortTable('table-portaria', 1)">Chegada</th>
+                                <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-portaria', 2)">
+                                    Item</th>
+                                <th class="sortable" onclick="sortTable('table-portaria', 3)">Remetente</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items_portaria %}
+                            <tr>
+                                <td><small class="text-muted">{{ item.internal_id }}</small></td>
+                                <td>{{ item.created_at.strftime('%d/%m %H:%M') }}</td>
+                                <td>{{ item.type }}</td>
+                                <td>{{ item.sender }}</td>
+                                <td>
+                                    <form action="{{ url_for('facilities.collect', item_id=item.id) }}" method="post">
+                                        <button type="submit" class="btn btn-sm btn-warning">📥 Coletar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">Nenhum item na portaria.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -142,85 +145,90 @@
     <div class="tab-pane fade" id="triagem" role="tabpanel">
         <div class="card">
             <div class="card-body">
-                <table class="table align-middle" id="table-triagem">
-                    <thead>
-                        <tr>
-                            <th class="sortable" onclick="sortTable('table-triagem', 0)">ID / Rastreio</th>
-                            <th class="sortable" onclick="sortTable('table-triagem', 1)">Item</th>
-                            <th class="sortable" onclick="sortTable('table-triagem', 2)">Remetente</th>
-                            <th>Definir Local</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in items_facilities %}
-                        <tr>
-                            <td>
-                                <strong>{{ item.internal_id }}</strong>
-                                <br><small class="text-muted">{{ item.tracking_code or 'Sem rastreio' }}</small>
-                            </td>
-                            <td>{{ item.type }}</td>
-                            <td>{{ item.sender }}</td>
-                            <td>
-                                <form action="{{ url_for('facilities.allocate', item_id=item.id) }}" method="post"
-                                    class="row g-2">
-                                    <div class="col-md-4">
-                                        <label class="form-label small mb-1">Local</label>
-                                        <select name="location" class="form-select form-select-sm" required>
-                                            <option value="">Local...</option>
-                                            {% for loc in locations %}
-                                            <option value="{{ loc.name }}">{{ loc.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <label class="form-label small mb-1">Identificar Destinatário</label>
-                                        <div class="input-group input-group-sm mb-1">
-                                            <select name="recipient_email" class="form-select"
-                                                onchange="toggleManualFields(this, '{{ item.id }}')">
-                                                <option value="">(Selecione Corporativo...)</option>
-                                                <optgroup label="Grupos de Email">
-                                                    {% for g in email_groups %}
-                                                    <option value="{{ g.name }}">📧 Grupo: {{ g.name }}</option>
-                                                    {% endfor %}
-                                                </optgroup>
-                                                <optgroup label="Usuários Individuais">
-                                                    <option value="__NEW__">➕ Novo Cadastro</option>
-                                                    {% for u in corp_users %}
-                                                    <option value="{{ u.email }}">{{ u.full_name }} ({{ u.email }})
-                                                    </option>
-                                                    {% endfor %}
-                                                </optgroup>
+                <div class="table-responsive">
+                    <table class="table align-middle" id="table-triagem">
+                        <thead>
+                            <tr>
+                                <th class="sortable" onclick="sortTable('table-triagem', 0)">ID / Rastreio</th>
+                                <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-triagem', 1)">Item
+                                </th>
+                                <th class="sortable" onclick="sortTable('table-triagem', 2)">Remetente</th>
+                                <th>Definir Local</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items_facilities %}
+                            <tr>
+                                <td>
+                                    <strong>{{ item.internal_id }}</strong>
+                                    <br><small class="text-muted">{{ item.tracking_code or 'Sem rastreio' }}</small>
+                                </td>
+                                <td class="d-none d-md-table-cell">{{ item.type }}</td>
+                                <td>{{ item.sender }}</td>
+                                <td>
+                                    <form action="{{ url_for('facilities.allocate', item_id=item.id) }}" method="post"
+                                        class="row g-2">
+                                        <div class="col-md-4">
+                                            <label class="form-label small mb-1">Local</label>
+                                            <select name="location" class="form-select form-select-sm" required>
+                                                <option value="">Local...</option>
+                                                {% for loc in locations %}
+                                                <option value="{{ loc.name }}">{{ loc.name }}</option>
+                                                {% endfor %}
                                             </select>
                                         </div>
-                                        <div id="manual-fields-{{ item.id }}" style="display: none;">
-                                            <div class="row g-1 mb-1">
-                                                <div class="col-7">
-                                                    <input type="text" name="recipient_name_manual"
-                                                        class="form-control form-control-sm" placeholder="Nome Manual">
-                                                </div>
-                                                <div class="col-5">
-                                                    <input type="text" name="recipient_floor"
-                                                        class="form-control form-control-sm" placeholder="Andar/Setor">
+                                        <div class="col-md-5">
+                                            <label class="form-label small mb-1">Identificar Destinatário</label>
+                                            <div class="input-group input-group-sm mb-1">
+                                                <select name="recipient_email" class="form-select"
+                                                    onchange="toggleManualFields(this, '{{ item.id }}')">
+                                                    <option value="">(Selecione Corporativo...)</option>
+                                                    <optgroup label="Grupos de Email">
+                                                        {% for g in email_groups %}
+                                                        <option value="{{ g.name }}">📧 Grupo: {{ g.name }}</option>
+                                                        {% endfor %}
+                                                    </optgroup>
+                                                    <optgroup label="Usuários Individuais">
+                                                        <option value="__NEW__">➕ Novo Cadastro</option>
+                                                        {% for u in corp_users %}
+                                                        <option value="{{ u.email }}">{{ u.full_name }} ({{ u.email }})
+                                                        </option>
+                                                        {% endfor %}
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                            <div id="manual-fields-{{ item.id }}" style="display: none;">
+                                                <div class="row g-1 mb-1">
+                                                    <div class="col-7">
+                                                        <input type="text" name="recipient_name_manual"
+                                                            class="form-control form-control-sm"
+                                                            placeholder="Nome Manual">
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <input type="text" name="recipient_floor"
+                                                            class="form-control form-control-sm"
+                                                            placeholder="Andar/Setor">
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <input type="text" name="observation" class="form-control form-control-sm"
+                                                placeholder="Observação (Ex: Frágil / Urgente)">
                                         </div>
-                                        <input type="text" name="observation" class="form-control form-control-sm"
-                                            placeholder="Observação (Ex: Frágil / Urgente)">
-                                    </div>
-                                    <div class="col-md-3 d-flex align-items-end">
-                                        <button type="submit" class="btn btn-sm btn-info w-100">Alocar e
-                                            Notificar</button>
-                                    </div>
-                                </form>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center">Nenhum item aguardando alocação.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                            <button type="submit" class="btn btn-sm btn-info w-100">Alocar e
+                                                Notificar</button>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">Nenhum item aguardando alocação.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -229,58 +237,69 @@
     <div class="tab-pane fade" id="entregar" role="tabpanel">
         <div class="card">
             <div class="card-body">
-                <table class="table align-middle" id="table-entrega">
-                    <thead>
-                        <tr>
-                            <th class="sortable" onclick="sortTable('table-entrega', 0)">ID / Rastreio</th>
-                            <th class="sortable" onclick="sortTable('table-entrega', 1)">Item</th>
-                            <th class="sortable" onclick="sortTable('table-entrega', 2)">Destinatário</th>
-                            <th class="sortable" onclick="sortTable('table-entrega', 3)">Local</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in items_ready %}
-                        <tr>
-                            <td>
-                                <strong>{{ item.internal_id }}</strong>
-                                <br><small class="text-muted">{{ item.tracking_code or 'Sem rastreio' }}</small>
-                            </td>
-                            <td>{{ item.type }}</td>
-                            <td>
-                                <strong>{{ item.recipient_email or item.recipient_name_manual }}</strong>
-                                <br><small>Andar: {{ item.user_floor or item.recipient_floor or 'N/A' }}</small>
-                            </td>
-                            <td>
-                                <form action="{{ url_for('facilities.update_location', item_id=item.id) }}"
-                                    method="post" class="d-flex gap-1">
-                                    <select name="location" class="form-select form-select-sm" style="min-width: 150px;"
-                                        onchange="this.form.submit()">
-                                        {% for loc in locations %}
-                                        <option value="{{ loc.name }}" {% if loc.name==item.location %}selected{% endif
-                                            %}>{{ loc.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </form>
-                            </td>
-                            <td>
-                                <div class="btn-group">
-                                    <a href="{{ url_for('facilities.delivery_page', item_id=item.id) }}"
-                                        class="btn btn-sm btn-success">✍️ Assinatura</a>
-                                    {% if item.is_registered %}
-                                    <a href="{{ url_for('facilities.delivery_password_page', item_id=item.id) }}"
-                                        class="btn btn-sm btn-outline-success">🔑 Senha</a>
+                <div class="table-responsive">
+                    <table class="table align-middle" id="table-entrega">
+                        <thead>
+                            <tr>
+                                <th class="sortable" onclick="sortTable('table-entrega', 0)">ID / Rastreio</th>
+                                <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-entrega', 1)">Item
+                                </th>
+                                <th class="sortable" onclick="sortTable('table-entrega', 2)">Destinatário</th>
+                                <th class="sortable" onclick="sortTable('table-entrega', 3)">Local</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items_ready %}
+                            <tr>
+                                <td>
+                                    <strong>{{ item.internal_id }}</strong>
+                                    <br><small class="text-muted">{{ item.tracking_code or 'Sem rastreio' }}</small>
+                                </td>
+                                <td class="d-none d-md-table-cell">{{ item.type }}</td>
+                                <td>
+                                    {% if item.recipient_email %}
+                                    <span class="d-block text-truncate" style="max-width: 150px;"
+                                        title="{{ item.recipient_email }}">
+                                        {{ item.recipient_email }}
+                                    </span>
+                                    {% else %}
+                                    {{ item.recipient_name_manual }}
                                     {% endif %}
-                                </div>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="4" class="text-center">Nenhum item disponível para entrega.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                    <br><small class="text-muted">Andar: {{ item.user_floor or item.recipient_floor or
+                                        '-' }}</small>
+                                </td>
+                                <td>
+                                    <form action="{{ url_for('facilities.update_location', item_id=item.id) }}"
+                                        method="post" class="d-flex gap-1">
+                                        <select name="location" class="form-select form-select-sm"
+                                            style="min-width: 150px;" onchange="this.form.submit()">
+                                            {% for loc in locations %}
+                                            <option value="{{ loc.name }}" {% if loc.name==item.location %}selected{%
+                                                endif %}>{{ loc.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('facilities.delivery_page', item_id=item.id) }}"
+                                            class="btn btn-success">✍️ Assinatura</a>
+                                        {% if item.is_registered %}
+                                        <a href="{{ url_for('facilities.delivery_password_page', item_id=item.id) }}"
+                                            class="btn btn-warning">🔑 Senha</a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Nenhum item disponível para entrega.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

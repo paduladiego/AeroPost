@@ -38,35 +38,38 @@
 </div>
 
 <div class="card">
-    <div class="card-body">
+    <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle" id="table-history">
-                <thead>
+            <table class="table table-hover align-middle mb-0" id="table-history">
+                <thead class="table-light">
                     <tr>
                         <th class="sortable" onclick="sortTable('table-history', 0)">ID / Rastreio</th>
-                        <th class="sortable" onclick="sortTable('table-history', 1)">Item</th>
+                        <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-history', 1)">Item</th>
                         <th class="sortable" onclick="sortTable('table-history', 2)">Entregue Para</th>
-                        <th class="sortable" onclick="sortTable('table-history', 3)">Data Entrega</th>
-                        <th>Comprovante</th>
+                        <th class="sortable d-none d-sm-table-cell" onclick="sortTable('table-history', 3)">Data Entrega
+                        </th>
+                        <th class="text-end">Comprovante</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in items %}
                     <tr>
                         <td>
-                            <strong>{{ item.internal_id }}</strong><br>
-                            <small class="text-muted">{{ item.tracking_code or '-' }}</small>
+                            <strong>{{ item.internal_id }}</strong>
+                            <br><small class="text-muted d-block text-truncate" style="max-width: 120px;">
+                                {{ item.tracking_code or 'Sem rastreio' }}
+                            </small>
                         </td>
-                        <td>
+                        <td class="d-none d-md-table-cell">
                             {{ item.type }}<br>
-                            <small>Remetente: {{ item.sender }}</small>
+                            <small>De: {{ item.sender }}</small>
                         </td>
                         <td>
                             {{ item.received_by_name }}<br>
-                            <small class="text-muted">Por: {{ item.deliverer_name }}</small>
+                            <small class="text-muted d-none d-sm-inline">Por: {{ item.deliverer_name }}</small>
                         </td>
-                        <td>{{ item.delivered_at.strftime('%d/%m/%Y %H:%M') }}</td>
-                        <td>
+                        <td class="d-none d-sm-table-cell">{{ item.delivered_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td class="text-end">
                             <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal"
                                 data-bs-target="#modalProof{{ item.id }}">
                                 🔍 Ver Comprovante
