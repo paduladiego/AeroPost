@@ -14,7 +14,6 @@
             manualFields.querySelectorAll('input').forEach(input => input.removeAttribute('required'));
         }
     }
-
     // Persistência de Abas
     document.addEventListener("DOMContentLoaded", function () {
         const urlParams = new URLSearchParams(window.location.search);
@@ -26,48 +25,6 @@
             }
         }
     });
-
-    // Ordenação de Tabelas
-    function sortTable(tableId, colIndex) {
-        const table = document.getElementById(tableId);
-        const tbody = table.querySelector('tbody');
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-        const header = table.querySelectorAll('th')[colIndex];
-        const isAsc = header.classList.contains('asc');
-
-        // Limpar estados de outras colunas
-        table.querySelectorAll('th').forEach(th => th.classList.remove('asc', 'desc'));
-
-        rows.sort((a, b) => {
-            let valA = a.cells[colIndex].innerText.trim().toLowerCase();
-            let valB = b.cells[colIndex].innerText.trim().toLowerCase();
-
-            // Lógica para números (IDs ou datas simplificadas)
-            if (!isNaN(valA) && !isNaN(valB)) {
-                return isAsc ? valB - valA : valA - valB;
-            }
-
-            return isAsc
-                ? (valA < valB ? 1 : -1)
-                : (valA > valB ? 1 : -1);
-        });
-
-        header.classList.toggle('asc', !isAsc);
-        header.classList.toggle('desc', isAsc);
-
-        rows.forEach(row => tbody.appendChild(row));
-    }
-
-    // Estilos para Ordenação
-    const style = document.createElement('style');
-    style.innerHTML = `
-        th.sortable { cursor: pointer; position: relative; padding-right: 25px !important; }
-        th.sortable:after { content: '↕'; position: absolute; right: 8px; color: #ccc; }
-        th.sortable.asc:after { content: '▴'; color: #000; }
-        th.sortable.desc:after { content: '▾'; color: #000; }
-        th.sortable:hover { background-color: #f1f1f1; }
-    `;
-    document.head.appendChild(style);
 </script>
 {% endblock %}
 

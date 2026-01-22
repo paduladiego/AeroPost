@@ -76,7 +76,7 @@ def create_app():
     @app.route('/favicon.ico')
     def favicon():
         from flask import send_from_directory
-        return send_from_directory(os.path.join(app.root_path, 'landing', 'assets'),
+        return send_from_directory(os.path.join(app.root_path, 'static', 'img'),
                                'favicon.png', mimetype='image/png')
 
     return app

@@ -16,7 +16,16 @@ def dashboard():
     item_types = db.execute("SELECT * FROM settings_item_types WHERE is_active = 1 ORDER BY name ASC").fetchall()
     locations = db.execute("SELECT * FROM settings_locations WHERE is_active = 1 ORDER BY name ASC").fetchall()
     companies = db.execute("SELECT * FROM settings_companies WHERE is_active = 1 ORDER BY name ASC").fetchall()
-    email_groups = db.execute("SELECT * FROM email_groups ORDER BY name ASC").fetchall()
+    
+    # Busca grupos e concatena os membros para facilitar o preenchimento dos modais
+    email_groups = db.execute("""
+        SELECT g.id, g.name, GROUP_CONCAT(m.email, ', ') as members
+        FROM email_groups g
+        LEFT JOIN email_group_members m ON g.id = m.group_id
+        GROUP BY g.id
+        ORDER BY g.name ASC
+    """).fetchall()
+    
     domains = []
     
     if session['role'] == 'ADMIN':
@@ -46,7 +55,7 @@ def add(category):
         elif category == 'domain' and session['role'] == 'ADMIN':
             if not name.startswith('@'):
                 flash('Domínio deve começar com @', 'warning')
-                return redirect(url_for('settings.dashboard'))
+                return redirect(url_for('settings.dashboard', tab='list-domains'))
             db.execute("INSERT INTO settings_allowed_domains (domain) VALUES (?)", (name,))
         else:
             flash('Ação não permitida ou categoria inválida.', 'danger')
@@ -57,7 +66,9 @@ def add(category):
     except sqlite3.IntegrityError:
         flash('Erro: Item já existe.', 'danger')
         
-    return redirect(url_for('settings.dashboard'))
+    # Mapeia categoria para a aba correta
+    tab_map = {'type': 'list-types', 'location': 'list-locations', 'company': 'list-companies', 'domain': 'list-domains'}
+    return redirect(url_for('settings.dashboard', tab=tab_map.get(category, '')))
 
 @settings_bp.route('/settings/delete/<category>/<int:item_id>', methods=['POST'])
 @login_required
@@ -80,7 +91,9 @@ def delete(category, item_id):
     db.execute(query, (item_id,))
     db.commit()
     flash('Item removido.', 'success')
-    return redirect(url_for('settings.dashboard'))
+    
+    tab_map = {'type': 'list-types', 'location': 'list-locations', 'company': 'list-companies', 'domain': 'list-domains'}
+    return redirect(url_for('settings.dashboard', tab=tab_map.get(category, '')))
 
 @settings_bp.route('/settings/email_groups/add', methods=['POST'])
 @login_required
@@ -104,7 +117,7 @@ def add_email_group():
     except sqlite3.IntegrityError:
         flash('Erro: Nome de grupo já existe.', 'danger')
         
-    return redirect(url_for('settings.dashboard'))
+    return redirect(url_for('settings.dashboard', tab='list-groups'))
 
 @settings_bp.route('/settings/email_groups/delete/<int:group_id>', methods=['POST'])
 @login_required
@@ -115,7 +128,34 @@ def delete_email_group(group_id):
     db.execute("DELETE FROM email_group_members WHERE group_id = ?", (group_id,))
     db.commit()
     flash('Grupo de e-mail removido.', 'success')
-    return redirect(url_for('settings.dashboard'))
+    return redirect(url_for('settings.dashboard', tab='list-groups'))
+
+@settings_bp.route('/settings/email_groups/edit/<int:group_id>', methods=['POST'])
+@login_required
+@role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
+def edit_email_group(group_id):
+    name = request.form['name'].strip()
+    emails = request.form['emails'].strip().split(',')
+    
+    db = get_db()
+    try:
+        # Atualiza nome do grupo
+        db.execute("UPDATE email_groups SET name = ? WHERE id = ?", (name, group_id))
+        
+        # Remove membros atuais e insere os novos (estratégia simples de sync)
+        db.execute("DELETE FROM email_group_members WHERE group_id = ?", (group_id,))
+        
+        for email in emails:
+            email = email.strip()
+            if email:
+                db.execute("INSERT INTO email_group_members (group_id, email) VALUES (?, ?)", (group_id, email))
+        
+        db.commit()
+        flash(f'Grupo "{name}" atualizado com sucesso.', 'success')
+    except sqlite3.IntegrityError:
+        flash('Erro: Nome de grupo já existe.', 'danger')
+        
+    return redirect(url_for('settings.dashboard', tab='list-groups'))
 
 @settings_bp.route('/history/export')
 @login_required

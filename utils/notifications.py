@@ -3,12 +3,16 @@ from flask import current_app
 
 def send_collection_alert(recipient_email, item_id, item_type):
     """Envia um e-mail para o destinatário informando que o item está disponível"""
-    from app import mail # Import aqui para evitar circular dependecy se necessário
+    from app import mail
+    from flask import url_for
     
     if not recipient_email or '@' not in recipient_email:
         return False
         
     try:
+        # Link para cadastro (externo)
+        register_link = url_for('auth.register', _external=True)
+        
         msg = Message(
             subject=f"AeroPost - Encomenda {item_id} disponível para retirada",
             recipients=[recipient_email],
@@ -17,6 +21,12 @@ def send_collection_alert(recipient_email, item_id, item_type):
 Sua encomenda ({item_type}) ID {item_id} acaba de chegar e está disponível para retirada na sala de Facilities.
 
 Por favor, apresente-se para retirar seu item.
+
+--------------------------------------------------
+Ainda não tem conta no AeroPost? 
+Cadastre-se agora para acompanhar suas encomendas em tempo real:
+{register_link}
+--------------------------------------------------
 
 Atenciosamente,
 Equipe AeroPost / Facilities

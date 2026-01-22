@@ -2,6 +2,8 @@
 
 {% block title %}Histórico de Entregas{% endblock %}
 
+
+
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Histórico de Entregas</h2>
@@ -38,13 +40,13 @@
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
+            <table class="table table-hover align-middle" id="table-history">
                 <thead>
                     <tr>
-                        <th>ID / Rastreio</th>
-                        <th>Item</th>
-                        <th>Entregue Para</th>
-                        <th>Data Entrega</th>
+                        <th class="sortable" onclick="sortTable('table-history', 0)">ID / Rastreio</th>
+                        <th class="sortable" onclick="sortTable('table-history', 1)">Item</th>
+                        <th class="sortable" onclick="sortTable('table-history', 2)">Entregue Para</th>
+                        <th class="sortable" onclick="sortTable('table-history', 3)">Data Entrega</th>
                         <th>Comprovante</th>
                     </tr>
                 </thead>

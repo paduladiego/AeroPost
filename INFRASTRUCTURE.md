@@ -103,3 +103,27 @@ systemctl status <nome_do_serviço>
 # Se der erro 502, olhe os logs aqui:
 journalctl -u aeropost -n 50 --no-pager
 ```
+
+---
+
+## 🎨 Padrões de Interface (UI/UX)
+
+Para manter a consistência e funcionalidade em todo o sistema:
+
+### 1. Tabelas Ordenáveis
+Toda tabela de dados deve preferencialmente suportar ordenação por clique no cabeçalho.
+- **Implementação**:
+  1. A `<table>` deve possuir um `id` único.
+  2. Os cabeçalhos `<th>` ordenáveis devem ter a classe `sortable`.
+  3. Devem chamar `onclick="sortTable('ID_DA_TABELA', INDICE)"`.
+- **Exemplo**:
+  ```html
+  <table id="minha-tabela">
+    <thead>
+      <tr>
+        <th class="sortable" onclick="sortTable('minha-tabela', 0)">Nome</th>
+      </tr>
+    </thead>
+  </table>
+  ```
+- **Nota**: A lógica global está centralizada em `templates/base.html`.

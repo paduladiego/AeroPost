@@ -2,6 +2,23 @@
 
 {% block title %}Configurações do Sistema{% endblock %}
 
+{% block scripts %}
+<script>
+    // Persistência de Abas nas Configurações
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeTab = urlParams.get('tab');
+        if (activeTab) {
+            // No settings.html, o ID é 'list-XXXX-list'
+            const tabButton = document.getElementById(activeTab + '-list');
+            if (tabButton) {
+                tabButton.click();
+            }
+        }
+    });
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Configurações do Sistema</h2>
@@ -154,6 +171,8 @@
                                 <tr>
                                     <td>{{ item.name }}</td>
                                     <td class="text-end">
+                                        <button class="btn btn-sm btn-outline-primary border-0" data-bs-toggle="modal"
+                                            data-bs-target="#editGroupModal{{ item.id }}">✏️</button>
                                         <form action="{{ url_for('settings.delete_email_group', group_id=item.id) }}"
                                             method="POST" class="d-inline">
                                             <button type="submit" class="btn btn-sm btn-outline-danger border-0"
@@ -291,5 +310,37 @@
         </form>
     </div>
 </div>
+
+<!-- Modais de Edição de Grupos -->
+{% for item in email_groups %}
+<div class="modal fade" id="editGroupModal{{ item.id }}" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="{{ url_for('settings.edit_email_group', group_id=item.id) }}" method="POST">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Grupo: {{ item.name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nome do Grupo</label>
+                        <input type="text" name="name" class="form-control" value="{{ item.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Emails (separados por vírgula)</label>
+                        <textarea name="emails" class="form-control" rows="4"
+                            required>{{ item.members or '' }}</textarea>
+                        <small class="text-muted">Altere a lista de e-mails mantendo a separação por vírgula.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endfor %}
 
 {% endblock %}
