@@ -23,7 +23,7 @@ def create_app():
         db_url = os.path.join(app.root_path, db_url)
     app.config['DATABASE'] = db_url
     # Versão do Sistema
-    base_version = 'v3.0.4'
+    base_version = 'v3.1.4'
     app_suffix = os.environ.get('APP_SUFFIX', '') # Ex: '-demo' ou '-dexco'
     app.config['APP_VERSION'] = os.environ.get('APP_VERSION', f"{base_version}{app_suffix}")
     
