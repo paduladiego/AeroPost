@@ -83,3 +83,26 @@ MVP focado em eficiência logística e conformidade digital.
 
 ---
 **Versão Atual:** v3.1.4 (Stable)
+
+## 🧪 Testes Automatizados
+
+O AeroPost utiliza `pytest` para garantir a estabilidade das funções críticas. A suíte atual cobre:
+
+- **Admin**: Gestão de usuários e configurações do sistema.
+- **Portaria**: Registro de entrada e validação de dashboard.
+- **Facilities**: Fluxo completo de coleta, alocação e entrega.
+
+### Como rodar os testes:
+1. Ative seu ambiente virtual:
+   ```bash
+   source .venv/Scripts/activate
+   ```
+2. Instale as dependências de teste:
+   ```bash
+   pip install pytest pytest-flask
+   ```
+3. Execute os testes:
+   ```bash
+   pytest
+   ```
+

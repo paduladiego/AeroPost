@@ -127,3 +127,13 @@ Toda tabela de dados deve preferencialmente suportar ordenação por clique no c
   </table>
   ```
 - **Nota**: A lógica global está centralizada em `templates/base.html`.
+
+---
+
+## 🧹 Higiene de Código e Testes
+
+### Arquivos Temporários
+- Logs de erro, dumps de terminal ou saídas de debug gerados manualmente (`.txt`, `.log`) **DEVEM** ser salvos dentro da pasta `tests/`.
+- **Exemplo**: `pytest > tests/debug_log.txt`
+- **IMPORTANTE**: Scripts de migração manual (ex: `update_db_*.py`) e/ou arquivos de teste descartáveis e/ou arquivos descartáveis devem ser **DELETADOS** imediatamente após o sucesso da operação.
+- Mantenha a raiz do projeto limpa, contendo apenas arquivos de configuração essenciais (`.env`, `requirements.txt`, `schema.sql`, `pytest.ini`, etc.).

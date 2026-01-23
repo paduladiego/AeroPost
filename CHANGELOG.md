@@ -18,6 +18,11 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ### Corrigido
 - **Navegação**: Correção de erros de rota no Painel Facilities e ajuste na persistência de abas após ações.
 - **Estética**: Alinhamento de logotipos e ajustes de branding.
+### Segurança & Qualidade
+- **Cobertura de Testes (End-to-End)**:
+    - Implementada suíte completa de testes de integração cobrindo os módulos Admin, Portaria e Facilities.
+    - Validação automática de fluxos críticos: Registro -> Triagem -> Entrega (Senha/Assinatura).
+    - CRUD automatizado para configurações de sistema e usuários.
 
 
 ## [v3.0.2] - 2026-01-20

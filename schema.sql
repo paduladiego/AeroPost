@@ -6,6 +6,8 @@ DROP TABLE IF EXISTS settings_item_types;
 DROP TABLE IF EXISTS settings_locations;
 DROP TABLE IF EXISTS settings_companies;
 DROP TABLE IF EXISTS settings_allowed_domains;
+DROP TABLE IF EXISTS email_group_members;
+DROP TABLE IF EXISTS email_groups;
 
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,6 +35,7 @@ CREATE TABLE items (
     location TEXT, -- Sala, Armario 1, 2, 3
     status TEXT NOT NULL DEFAULT 'RECEBIDO_PORTARIA',
     observation TEXT,
+    last_notified_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (recipient_email) REFERENCES users (email)
@@ -80,4 +83,17 @@ CREATE TABLE settings_allowed_domains (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     domain TEXT NOT NULL UNIQUE, -- e.g. @dex.co
     is_active INTEGER DEFAULT 1
+);
+
+CREATE TABLE email_groups (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE email_group_members (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_id INTEGER NOT NULL,
+    email TEXT NOT NULL,
+    FOREIGN KEY (group_id) REFERENCES email_groups (id) ON DELETE CASCADE
 );
