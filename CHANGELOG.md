@@ -78,12 +78,12 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ## [v3.0.2] - 2026-01-20
 ### Adicionado
-- **Gestão Inteligente de Versão 🏷️**: Centralizada a versão no código (`base_version`), permitindo adicionar sufixos (ex: `-demo`, `-dexco`) via variável de ambiente `APP_SUFFIX` no `.env`. Isso evita a necessidade de atualizar o número da versão manualmente em cada servidor.
+- **Gestão Inteligente de Versão 🏷️**: Centralizada a versão no código (`base_version`), permitindo adicionar sufixos (ex: `-demo`, `-client`) via variável de ambiente `APP_SUFFIX` no `.env`. Isso evita a necessidade de atualizar o número da versão manualmente em cada servidor.
 
 
 ## [v3.0.1] - 2026-01-20
 ### Alterado
-- **Neutralidade de Marca**: Generalizados placeholders e textos de ajuda na página de cadastro corporativo para remover referências específicas à Dexco/Deca.
+- **Neutralidade de Marca**: Generalizados placeholders e textos de ajuda na página de cadastro corporativo para remover referências específicas a clientes.
 
 
 ## [v3.0.0] - 2026-01-20
@@ -126,7 +126,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
     - Nova página `Configurações` para admins e facilities.
     - CRUD completo para **Tipos de Item** (Envelope, Caixa...).
     - CRUD completo para **Locais de Alocação** (Armários, Salas...).
-    - CRUD completo para **Empresas/Unidades** (Dexco, Deca...).
+    - CRUD completo para **Empresas/Unidades** (Matriz, Filial...).
     - **Gestão de Domínios**: Admin pode definir quais domínios de email são permitidos no cadastro.
 - **Exportação de Dados**:
     - Botão "Exportar CSV" no Histórico, gerando relatório detalhado de entregas.
@@ -150,7 +150,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 ### Adicionado
 - **Autenticação e Perfis**:
     - Sistema de Login unificado (Email/Username).
-    - Cadastro automático para domínios corporativos (`@dex.co`, `@deca.com.br`, etc.).
+    - Cadastro automático para domínios corporativos (`@client.com`, `@subsidiary.com`, etc.).
     - Papeis de usuário: `ADMIN`, `FACILITIES`, `PORTARIA`, `USER`.
 - **Módulo Portaria**:
     - Cadastro rápido de correspondências (Caixa/Envelope).
