@@ -23,8 +23,8 @@ def create_app():
         db_url = os.path.join(app.root_path, db_url)
     app.config['DATABASE'] = db_url
     # Versão do Sistema
-    base_version = 'v4.0.0'
-    app_suffix = os.environ.get('APP_SUFFIX', '') # Ex: '-demo' ou '-dexco'
+    base_version = 'v4.1.1'
+    app_suffix = os.environ.get('APP_SUFFIX', '') # Ex: '-demo' ou '-Kran'
     app.config['APP_VERSION'] = os.environ.get('APP_VERSION', f"{base_version}{app_suffix}")
     
     # Configurações de E-mail

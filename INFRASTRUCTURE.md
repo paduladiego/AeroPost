@@ -162,6 +162,9 @@ Para manter a escalabilidade do AeroPost, siga esta estrutura para novos scripts
 - **O que**: Scripts que alteram a estrutura do banco de dados (DDL).
 - **Regra**: Nomear por versão (ex: `v4.0.0.py`). Devem ser idempotentes (poder rodar mais de uma vez sem erro fatal).
 
+> [!IMPORTANT]
+> **Atenção com Alterações no Banco**: Sempre que você alterar o `schema.sql` ou adicionar colunas/tabelas novas, é **OBRIGATÓRIO** criar um script de migração correspondente nesta pasta. Isso garante que as bases de dados existentes em produção (Dexco, Demo, etc.) possam ser atualizadas sem perda de dados.
+
 ### 2. `/utils`
 - **O que**: Ferramentas auxiliares, funções compartilhadas e **scripts de utilidade operacional**.
 - **Exemplo**: Scripts para popular dados iniciais, limpeza de logs ou exportações customizadas que não são disparadas pelo usuário no front-end.

@@ -5,6 +5,23 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.1.1] - 2026-01-24
+
+### 🛠️ Refatoração e Melhorias de UI
+- **Código Limpo (DRY) 🧹**: Implementação massiva de Macros Jinja2 para padronizar `Badges de Status` e `Modais de Configuração`, reduzindo duplicação de código e facilitando manutenção.
+- **Componentes Reutilizáveis**: O Modal de Ocorrência foi centralizado e agora é compartilhado entre o Dashboard e o Histórico.
+- **Home do Usuário Turbinada 🏠**:
+    - **Ordenação**: Agora é possível ordenar as tabelas clicando nos cabeçalhos.
+    - **Busca Instantânea**: Novo campo de filtro que pesquisa em tempo real nas duas tabelas da tela inicial.
+- **Regras de Negócio**: Ajuste na permissão de recuperação de itens; administradores agora podem reabrir itens com status `ENTREGUE` (além de `DEVOLVIDO`).
+
+
+## [v4.1.0] - 2026-01-24
+
+### 🛂 Auditoria e Ocorrências
+- **Registro de Ocorrências (Extraordinário) ⚠️**: Implementação de sistema para registro de itens Extraviados, Devolvidos ou Recuperados com validação por senha.
+- **Auditoria de Histórico 📈**: O histórico agora exibe notas de ocorrências e status diferenciados para acompanhamento de perdas.
+
 ## [v4.0.0] - 2026-01-24
 
 ### 📱 Aplicação (App)

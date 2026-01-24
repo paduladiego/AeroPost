@@ -234,3 +234,74 @@ def resend_alert(item_id):
         flash('Destinatário não possui e-mail cadastrado.', 'warning')
 
     return redirect(url_for('facilities.dashboard', tab='entregar'))
+
+@facilities_bp.route('/facilities/register-occurrence', methods=['POST'])
+@login_required
+@role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
+def register_occurrence():
+    from werkzeug.security import check_password_hash
+    db = get_db()
+    
+    internal_id = request.form.get('internal_id')
+    action = request.form.get('action')
+    note = request.form.get('note')
+    password = request.form.get('password')
+    unit_id = session.get('unit_id')
+    
+    # 1. Validar Senha do Operador
+    user = db.execute("SELECT password_hash FROM users WHERE id = ?", (session['user_id'],)).fetchone()
+    if not check_password_hash(user['password_hash'], password):
+        flash('Senha de confirmação incorreta. O registro não foi salvo.', 'danger')
+        return redirect(url_for('facilities.dashboard', tab='entregar')) # Abre o modal via JS
+
+    # 2. Buscar o Item
+    item = db.execute("SELECT * FROM items WHERE internal_id = ? AND unit_id = ?", (internal_id, unit_id)).fetchone()
+    if not item:
+        flash(f'Item com ID "{internal_id}" não encontrado nesta unidade.', 'danger')
+        return redirect(url_for('facilities.dashboard'))
+
+    # 3. Processar Ação
+    if action in ('EXTRAVIADO', 'DEVOLVIDO'):
+        # Move para o histórico com nota
+        db.execute("UPDATE items SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (action, item['id']))
+        
+        # Insere ou Atualiza Proof (Comprovante será a nota de ocorrência)
+        db.execute("INSERT OR REPLACE INTO proofs (item_id, signature_data, delivered_by, received_by_name, delivered_at, occurrence_note) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?)",
+                   (item['id'], f"OCCURRENCE_{action}", session['user_id'], f"SISTEMA: {action}", note))
+        
+        db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", 
+                   (item['id'], session['user_id'], f'RECORDED_OCCURRENCE: {action}', unit_id))
+        
+        flash(f'Ocorrência de {action} registrada para o item {internal_id}.', 'warning')
+
+    elif action == 'RECUPERADO':
+        # REGRA: Se o item está DEVOLVIDO ou ENTREGUE, apenas ADMIN pode recuperar
+        if item['status'] in ['DEVOLVIDO', 'ENTREGUE'] and session.get('role') != 'ADMIN':
+            flash('Apenas administradores podem recuperar itens marcados como devolvidos ou já entregues.', 'danger')
+            return redirect(url_for('facilities.dashboard'))
+
+        # Volta para triagem (Alocar Local)
+        db.execute("UPDATE items SET status = 'EM_FACILITIES', updated_at = CURRENT_TIMESTAMP WHERE id = ?", (item['id'],))
+        
+        # Remove prova anterior (extravio/devolução) se existir
+        db.execute("DELETE FROM proofs WHERE item_id = ?", (item['id'],))
+        
+        db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", 
+                   (item['id'], session['user_id'], 'RECOVERED_ITEM', unit_id))
+        
+        flash(f'Item {internal_id} recuperado! Ele voltou para a aba "2. Alocar Local".', 'success')
+
+    db.commit()
+    return redirect(url_for('facilities.dashboard'))
+
+@facilities_bp.route('/facilities/check-item-status/<internal_id>')
+@login_required
+@role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
+def check_item_status(internal_id):
+    db = get_db()
+    unit_id = session.get('unit_id')
+    item = db.execute("SELECT status FROM items WHERE internal_id = ? AND unit_id = ?", (internal_id, unit_id)).fetchone()
+    
+    if item:
+        return {"status": item['status']}, 200
+    return {"error": "Item não encontrado"}, 404

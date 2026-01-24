@@ -32,6 +32,11 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Painel Facilities</h2>
     <div class="d-flex flex-wrap gap-2">
+        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+            data-bs-target="#occurrenceModal">
+            <span class="d-none d-md-inline">⚠️ Registrar Ocorrência</span>
+            <span class="d-md-none">⚠️</span>
+        </button>
         <a href="{{ url_for('main.history') }}" class="btn btn-sm btn-outline-success">
             <span class="d-none d-md-inline">📜 Histórico/Entregues</span>
             <span class="d-md-none">📜</span>
@@ -309,4 +314,6 @@
         </div>
     </div>
 </div>
+
+{% include 'includes/modal_occurrence.html' %}
 {% endblock %}

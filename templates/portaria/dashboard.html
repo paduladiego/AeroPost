@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'macros/status_badges.html' import render_status_badge %}
 
 {% block title %}Portaria - Recebimento{% endblock %}
 
@@ -77,11 +78,7 @@
                                 <td>{{ item.type }}</td>
                                 <td>{{ item.sender }}</td>
                                 <td>
-                                    {% if item.status == 'RECEBIDO_PORTARIA' %}
-                                    <span class="badge bg-primary status-badge">{{ item.status }}</span>
-                                    {% else %}
-                                    <span class="badge bg-secondary status-badge">{{ item.status }}</span>
-                                    {% endif %}
+                                    {{ render_status_badge(item.status) }}
                                 </td>
                             </tr>
                             {% else %}

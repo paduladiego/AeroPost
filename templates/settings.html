@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'macros/settings_macros.html' import render_add_modal, render_delete_form %}
 
 {% block title %}Configurações do Sistema{% endblock %}
 
@@ -60,11 +61,8 @@
                         {% for item in item_types %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ item.name }}
-                            <form action="{{ url_for('settings.delete', category='type', item_id=item.id) }}"
-                                method="POST" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-outline-danger border-0"
-                                    onclick="return confirm('Excluir este item?')">🗑️</button>
-                            </form>
+                            {{ render_delete_form(url_for('settings.delete', category='type', item_id=item.id), 'Excluir
+                            este item?') }}
                         </li>
                         {% else %}
                         <li class="list-group-item text-muted">Nenhum tipo cadastrado.</li>
@@ -85,11 +83,8 @@
                         {% for item in locations %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ item.name }}
-                            <form action="{{ url_for('settings.delete', category='location', item_id=item.id) }}"
-                                method="POST" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-outline-danger border-0"
-                                    onclick="return confirm('Excluir este local?')">🗑️</button>
-                            </form>
+                            {{ render_delete_form(url_for('settings.delete', category='location', item_id=item.id),
+                            'Excluir este local?') }}
                         </li>
                         {% else %}
                         <li class="list-group-item text-muted">Nenhum local cadastrado.</li>
@@ -110,11 +105,8 @@
                         {% for item in companies %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ item.name }}
-                            <form action="{{ url_for('settings.delete', category='company', item_id=item.id) }}"
-                                method="POST" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-outline-danger border-0"
-                                    onclick="return confirm('Excluir esta empresa?')">🗑️</button>
-                            </form>
+                            {{ render_delete_form(url_for('settings.delete', category='company', item_id=item.id),
+                            'Excluir esta empresa?') }}
                         </li>
                         {% else %}
                         <li class="list-group-item text-muted">Nenhuma empresa cadastrada.</li>
@@ -136,11 +128,8 @@
                         {% for item in domains %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ item.domain }}
-                            <form action="{{ url_for('settings.delete', category='domain', item_id=item.id) }}"
-                                method="POST" class="d-inline">
-                                <button type="submit" class="btn btn-sm btn-outline-danger border-0"
-                                    onclick="return confirm('Remover este domínio?')">🗑️</button>
-                            </form>
+                            {{ render_delete_form(url_for('settings.delete', category='domain', item_id=item.id),
+                            'Remover este domínio?') }}
                         </li>
                         {% else %}
                         <li class="list-group-item text-muted">Nenhum domínio cadastrado.</li>
@@ -173,11 +162,8 @@
                                     <td class="text-end">
                                         <button class="btn btn-sm btn-outline-primary border-0" data-bs-toggle="modal"
                                             data-bs-target="#editGroupModal{{ item.id }}">✏️</button>
-                                        <form action="{{ url_for('settings.delete_email_group', group_id=item.id) }}"
-                                            method="POST" class="d-inline">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger border-0"
-                                                onclick="return confirm('Excluir este grupo?')">🗑️</button>
-                                        </form>
+                                        {{ render_delete_form(url_for('settings.delete_email_group', group_id=item.id),
+                                        'Excluir este grupo?') }}
                                     </td>
                                 </tr>
                                 {% else %}
@@ -195,152 +181,58 @@
     </div>
 </div>
 
-<!-- Modais de Adição -->
+<!-- Modais de Adição usando Macros -->
+
 <!-- Modal Type -->
-<div class="modal fade" id="addTypeModal" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ url_for('settings.add', category='type') }}" method="POST">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Novo Tipo de Item</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" name="name" class="form-control" placeholder="Ex: ENVELOPE, CAIXA TÉRMICA..."
-                        required>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+{% call render_add_modal('addTypeModal', 'Novo Tipo de Item', url_for('settings.add', category='type')) %}
+<input type="text" name="name" class="form-control" placeholder="Ex: ENVELOPE, CAIXA TÉRMICA..." required>
+{% endcall %}
 
 <!-- Modal Location -->
-<div class="modal fade" id="addLocationModal" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ url_for('settings.add', category='location') }}" method="POST">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Novo Local</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" name="name" class="form-control" placeholder="Ex: Armário 01, Sala 402..."
-                        required>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+{% call render_add_modal('addLocationModal', 'Novo Local', url_for('settings.add', category='location')) %}
+<input type="text" name="name" class="form-control" placeholder="Ex: Armário 01, Sala 402..." required>
+{% endcall %}
 
 <!-- Modal Company -->
-<div class="modal fade" id="addCompanyModal" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ url_for('settings.add', category='company') }}" method="POST">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Nova Empresa</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" name="name" class="form-control" placeholder="Ex: Dexco, Deca, Hydra..."
-                        required>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Salvar</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+{% call render_add_modal('addCompanyModal', 'Nova Empresa', url_for('settings.add', category='company')) %}
+<input type="text" name="name" class="form-control" placeholder="Ex: Dexco, Deca, Hydra..." required>
+{% endcall %}
 
 <!-- Modal Domain -->
-<div class="modal fade" id="addDomainModal" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ url_for('settings.add', category='domain') }}" method="POST">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Novo Domínio Permitido</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" name="name" class="form-control" placeholder="Ex: @empresa.com.br" required>
-                    <small class="text-muted">Inclua o @ no início.</small>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-danger">Salvar Regra</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+{% call render_add_modal('addDomainModal', 'Novo Domínio Permitido', url_for('settings.add', category='domain'),
+'btn-danger') %}
+<input type="text" name="name" class="form-control" placeholder="Ex: @empresa.com.br" required>
+<small class="text-muted">Inclua o @ no início.</small>
+{% endcall %}
 
 <!-- Modal Group -->
-<div class="modal fade" id="addGroupModal" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ url_for('settings.add_email_group') }}" method="POST">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Novo Grupo de Email</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Nome do Grupo</label>
-                        <input type="text" name="name" class="form-control" placeholder="Ex: 5º Andar Diretoria"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Emails (separados por vírgula)</label>
-                        <textarea name="emails" class="form-control"
-                            placeholder="email1@empresa.com, email2@empresa.com" rows="3" required></textarea>
-                        <small class="text-muted">A encomenda alocada para este grupo notificará todos estes
-                            endereços.</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Criar Grupo</button>
-                </div>
-            </div>
-        </form>
-    </div>
+{% call render_add_modal('addGroupModal', 'Novo Grupo de Email', url_for('settings.add_email_group')) %}
+<div class="mb-3">
+    <label class="form-label">Nome do Grupo</label>
+    <input type="text" name="name" class="form-control" placeholder="Ex: 5º Andar Diretoria" required>
 </div>
+<div class="mb-3">
+    <label class="form-label">Emails (separados por vírgula)</label>
+    <textarea name="emails" class="form-control" placeholder="email1@empresa.com, email2@empresa.com" rows="3"
+        required></textarea>
+    <small class="text-muted">A encomenda alocada para este grupo notificará todos estes endereços.</small>
+</div>
+{% endcall %}
 
 <!-- Modais de Edição de Grupos -->
 {% for item in email_groups %}
-<div class="modal fade" id="editGroupModal{{ item.id }}" tabindex="-1">
-    <div class="modal-dialog">
-        <form action="{{ url_for('settings.edit_email_group', group_id=item.id) }}" method="POST">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar Grupo: {{ item.name }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Nome do Grupo</label>
-                        <input type="text" name="name" class="form-control" value="{{ item.name }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Emails (separados por vírgula)</label>
-                        <textarea name="emails" class="form-control" rows="4"
-                            required>{{ item.members or '' }}</textarea>
-                        <small class="text-muted">Altere a lista de e-mails mantendo a separação por vírgula.</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                </div>
-            </div>
-        </form>
-    </div>
+{% call render_add_modal('editGroupModal' ~ item.id, 'Editar Grupo: ' ~ item.name, url_for('settings.edit_email_group',
+group_id=item.id)) %}
+<div class="mb-3">
+    <label class="form-label">Nome do Grupo</label>
+    <input type="text" name="name" class="form-control" value="{{ item.name }}" required>
 </div>
+<div class="mb-3">
+    <label class="form-label">Emails (separados por vírgula)</label>
+    <textarea name="emails" class="form-control" rows="4" required>{{ item.members or '' }}</textarea>
+    <small class="text-muted">Altere a lista de e-mails mantendo a separação por vírgula.</small>
+</div>
+{% endcall %}
 {% endfor %}
 
 {% endblock %}

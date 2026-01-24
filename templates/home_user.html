@@ -1,24 +1,30 @@
 {% extends 'base.html' %}
+{% from 'macros/status_badges.html' import render_status_badge %}
 
 {% block title %}Minhas Encomendas{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-12">
-        <h2 class="mb-4">Minhas Encomendas</h2>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Minhas Encomendas</h2>
+            <div class="col-md-4">
+                <input type="text" id="tableSearchInput" class="form-control" placeholder="🔍 Filtrar encomendas...">
+            </div>
+        </div>
 
         <div class="card">
             <div class="card-body">
                 {% if items %}
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle">
+                    <table class="table table-hover align-middle" id="table-my-items">
                         <thead>
                             <tr>
-                                <th>Rastreio / ID</th>
-                                <th>Tipo / Remetente</th>
-                                <th>Chegada</th>
-                                <th>Status</th>
-                                <th>Local</th>
+                                <th class="sortable" onclick="sortTable('table-my-items', 0)">Rastreio / ID</th>
+                                <th class="sortable" onclick="sortTable('table-my-items', 1)">Tipo / Remetente</th>
+                                <th class="sortable" onclick="sortTable('table-my-items', 2)">Chegada</th>
+                                <th class="sortable" onclick="sortTable('table-my-items', 3)">Status</th>
+                                <th class="sortable" onclick="sortTable('table-my-items', 4)">Local</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,17 +40,7 @@
                                 </td>
                                 <td>{{ item.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
                                 <td>
-                                    {% if item.status == 'RECEBIDO_PORTARIA' %}
-                                    <span class="badge bg-secondary">Na Portaria</span>
-                                    {% elif item.status == 'EM_FACILITIES' %}
-                                    <span class="badge bg-info text-dark">Em Triagem</span>
-                                    {% elif item.status == 'DISPONIVEL_PARA_RETIRADA' %}
-                                    <span class="badge bg-success">Disponível</span>
-                                    {% elif item.status == 'ENTREGUE' %}
-                                    <span class="badge bg-light text-dark border">Entregue</span>
-                                    {% else %}
-                                    <span class="badge bg-secondary">{{ item.status }}</span>
-                                    {% endif %}
+                                    {{ render_status_badge(item.status) }}
                                 </td>
                                 <td>{{ item.location or '-' }}</td>
                             </tr>
@@ -70,15 +66,15 @@
 <div class="card border-warning">
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
+            <table class="table table-hover align-middle" id="table-unclaimed-items">
                 <thead>
                     <tr>
-                        <th>Rastreio / ID</th>
-                        <th>Tipo / Remetente</th>
-                        <th>Destinatário Manual</th>
-                        <th>Observação</th>
-                        <th>Chegada</th>
-                        <th>Status</th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 0)">Rastreio / ID</th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 1)">Tipo / Remetente</th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 2)">Destinatário Manual</th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 3)">Observação</th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 4)">Chegada</th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 5)">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,4 +102,28 @@
     </div>
 </div>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('tableSearchInput').addEventListener('keyup', function () {
+        const searchText = this.value.toLowerCase();
+        const tables = ['table-my-items', 'table-unclaimed-items'];
+
+        tables.forEach(tableId => {
+            const table = document.getElementById(tableId);
+            if (table) {
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const rowText = row.innerText.toLowerCase();
+                    if (rowText.includes(searchText)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }
+        });
+    });
+</script>
 {% endblock %}

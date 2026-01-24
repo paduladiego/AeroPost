@@ -65,11 +65,11 @@ def history():
     
     unit_id = session.get('unit_id')
     query = """
-        SELECT i.*, p.signature_data, p.received_by_name, p.delivered_at, u.full_name as deliverer_name
+        SELECT i.*, p.signature_data, p.received_by_name, p.delivered_at, u.full_name as deliverer_name, p.occurrence_note
         FROM items i
         JOIN proofs p ON i.id = p.item_id
         JOIN users u ON p.delivered_by = u.id
-        WHERE i.status = 'ENTREGUE' AND i.unit_id = ?
+        WHERE i.status IN ('ENTREGUE', 'EXTRAVIADO', 'DEVOLVIDO') AND i.unit_id = ?
     """
     params = [unit_id]
     

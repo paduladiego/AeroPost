@@ -90,6 +90,34 @@ def populate_full_lifecycle():
                     VALUES (?, ?, ?, ?)
                 """, (item_db_id, admin_id, 'DELIVERED', uid))
 
+            # --- ITEM 5: DEVOLVIDO (OCORRÊNCIA) ---
+            item_id_dev = f'AP-{pfx}-DEV-05'
+            cursor.execute("""
+                INSERT OR IGNORE INTO items (internal_id, tracking_code, type, sender, status, unit_id, location, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (item_id_dev, f'TRK-{pfx}-005', 'Caixa', 'Fornecedor Errado', 'DEVOLVIDO', uid, loc_name, datetime.now()))
+            
+            db_item_dev = cursor.execute("SELECT id FROM items WHERE internal_id = ?", (item_id_dev,)).fetchone()
+            if db_item_dev:
+                cursor.execute("""
+                    INSERT OR IGNORE INTO proofs (item_id, signature_data, delivered_by, received_by_name, delivered_at, occurrence_note)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (db_item_dev['id'], 'OCCURRENCE_DEVOLVIDO', admin_id, 'SISTEMA: DEVOLVIDO', datetime.now(), 'Destinatário recusou o recebimento.'))
+
+            # --- ITEM 6: EXTRAVIADO (OCORRÊNCIA) ---
+            item_id_lost = f'AP-{pfx}-LOST-06'
+            cursor.execute("""
+                INSERT OR IGNORE INTO items (internal_id, tracking_code, type, sender, status, unit_id, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (item_id_lost, f'TRK-{pfx}-006', 'Envelope', 'Correios', 'EXTRAVIADO', uid, datetime.now()))
+            
+            db_item_lost = cursor.execute("SELECT id FROM items WHERE internal_id = ?", (item_id_lost,)).fetchone()
+            if db_item_lost:
+                cursor.execute("""
+                    INSERT OR IGNORE INTO proofs (item_id, signature_data, delivered_by, received_by_name, delivered_at, occurrence_note)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (db_item_lost['id'], 'OCCURRENCE_EXTRAVIADO', admin_id, 'SISTEMA: EXTRAVIADO', datetime.now(), 'Item não localizado na triagem.'))
+
         conn.commit()
         print(f"Success! Full lifecycle items created for divisions: {', '.join(divisions)}.")
 

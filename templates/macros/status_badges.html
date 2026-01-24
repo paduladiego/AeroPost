@@ -1,0 +1,17 @@
+{% macro render_status_badge(status) %}
+{% if status == 'RECEBIDO_PORTARIA' %}
+<span class="badge bg-primary">Na Portaria</span>
+{% elif status == 'EM_FACILITIES' %}
+<span class="badge bg-info text-dark">Em Triagem</span>
+{% elif status == 'DISPONIVEL_PARA_RETIRADA' %}
+<span class="badge bg-success">Disponível</span>
+{% elif status == 'ENTREGUE' %}
+<span class="badge bg-secondary">Entregue</span>
+{% elif status == 'EXTRAVIADO' %}
+<span class="badge bg-danger">Extraviado</span>
+{% elif status == 'DEVOLVIDO' %}
+<span class="badge bg-warning text-dark">Devolvido</span>
+{% else %}
+<span class="badge bg-dark">{{ status }}</span>
+{% endif %}
+{% endmacro %}

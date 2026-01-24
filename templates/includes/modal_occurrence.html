@@ -1,0 +1,135 @@
+<!-- Modal de Ocorrência Reutilizável -->
+<div class="modal fade" id="occurrenceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-danger">
+            <form action="{{ url_for('facilities.register_occurrence') }}" method="post" id="occurrenceForm">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">⚠️ Registrar Ocorrência / Extravio</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="small text-muted">Use este formulário para registrar itens perdidos, devolvidos ou
+                        recuperar extravios através do ID.</p>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">ID do Item (Ex: AP-2026...)</label>
+                        <input type="text" name="internal_id" id="occurrenceInternalId" class="form-control" required
+                            placeholder="Digite o ID completo">
+                        <div class="invalid-feedback">
+                            ID inválido ou ação não permitida para este status.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tipo de Ocorrência</label>
+                        <select name="action" class="form-select" id="occurrenceAction" required>
+                            <option value="EXTRAVIADO" id="optExtraviado">🚫 Extraviado / Sumiu</option>
+                            <option value="DEVOLVIDO" id="optDevolvido">📦 Devolvido ao Remetente</option>
+                            <option value="RECUPERADO" id="optRecuperado" style="display: none;">✅ Recuperado (Voltar
+                                para Triagem)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Descrição do Ocorrido</label>
+                        <textarea name="note" class="form-control" rows="3" required
+                            placeholder="Descreva os detalhes para auditoria..."></textarea>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-danger">Confirme sua Senha</label>
+                        <input type="password" name="password" class="form-control border-danger" required
+                            placeholder="Digite sua senha de login">
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-danger">Salvar Registro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Lógica Dinâmica do Modal de Ocorrência (Shared Component)
+    document.addEventListener("DOMContentLoaded", function () {
+        const inputId = document.getElementById('occurrenceInternalId');
+        const optRecuperado = document.getElementById('optRecuperado');
+        const optExtraviado = document.getElementById('optExtraviado');
+        const optDevolvido = document.getElementById('optDevolvido');
+        const selectAction = document.getElementById('occurrenceAction');
+        const userRole = "{{ session.role }}";
+
+        if (inputId) {
+            inputId.addEventListener('input', function () {
+                const internalId = this.value.trim();
+                const feedback = inputId.nextElementSibling;
+
+                if (internalId.length > 5) {
+                    fetch(`/facilities/check-item-status/${internalId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Resetar padrão
+                            optExtraviado.style.display = 'block';
+                            optDevolvido.style.display = 'block';
+                            optRecuperado.style.display = 'none';
+                            inputId.classList.remove('is-invalid');
+                            inputId.setCustomValidity('');
+
+                            if (data.status === 'EXTRAVIADO') {
+                                optExtraviado.style.display = 'none';
+                                optDevolvido.style.display = 'none';
+                                optRecuperado.style.display = 'block';
+                                selectAction.value = 'RECUPERADO';
+                            } else if (data.status === 'DEVOLVIDO') {
+                                optExtraviado.style.display = 'none';
+                                optDevolvido.style.display = 'none';
+                                if (userRole === 'ADMIN') {
+                                    optRecuperado.style.display = 'block';
+                                    selectAction.value = 'RECUPERADO';
+                                } else {
+                                    optRecuperado.style.display = 'none';
+                                    selectAction.value = '';
+                                    inputId.classList.add('is-invalid');
+                                    feedback.textContent = 'Somente Administradores podem recuperar itens devolvidos.';
+                                    inputId.setCustomValidity('Inválido');
+                                }
+                            } else if (data.status === 'ENTREGUE') {
+                                optExtraviado.style.display = 'none';
+                                optDevolvido.style.display = 'none';
+                                if (userRole === 'ADMIN') {
+                                    optRecuperado.style.display = 'block';
+                                    selectAction.value = 'RECUPERADO';
+                                } else {
+                                    optRecuperado.style.display = 'none';
+                                    selectAction.value = '';
+                                    inputId.classList.add('is-invalid');
+                                    feedback.textContent = 'Este item já foi entregue. Apenas Administradores podem reabrir.';
+                                    inputId.setCustomValidity('Inválido');
+                                }
+                            } else {
+                                // Status normal
+                                optExtraviado.style.display = 'block';
+                                optDevolvido.style.display = 'block';
+                                optRecuperado.style.display = 'none';
+                                if (selectAction.value === 'RECUPERADO') selectAction.value = 'EXTRAVIADO';
+                            }
+                        })
+                        .catch(() => {
+                            optExtraviado.style.display = 'block';
+                            optDevolvido.style.display = 'block';
+                            optRecuperado.style.display = 'none';
+                        });
+                } else {
+                    optRecuperado.style.display = 'none';
+                    inputId.classList.remove('is-invalid');
+                    inputId.setCustomValidity('');
+                }
+            });
+        }
+    });
+</script>

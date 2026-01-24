@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
+{% from 'macros/status_badges.html' import render_status_badge %}
 
 {% block title %}Histórico de Entregas{% endblock %}
-
-
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Histórico de Entregas</h2>
     <div>
+        <button type="button" class="btn btn-outline-danger me-2" data-bs-toggle="modal"
+            data-bs-target="#occurrenceModal">
+            ⚠️ Registrar Ocorrência
+        </button>
         <a href="{{ url_for('settings.export') }}" class="btn btn-outline-success me-2">📊 Exportar CSV</a>
         <a href="{{ url_for('facilities.dashboard') }}" class="btn btn-outline-secondary">Voltar ao Dashboard</a>
     </div>
@@ -45,9 +48,9 @@
                     <tr>
                         <th class="sortable" onclick="sortTable('table-history', 0)">ID / Rastreio</th>
                         <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-history', 1)">Item</th>
-                        <th class="sortable" onclick="sortTable('table-history', 2)">Entregue Para</th>
-                        <th class="sortable d-none d-sm-table-cell" onclick="sortTable('table-history', 3)">Data Entrega
-                        </th>
+                        <th class="sortable" onclick="sortTable('table-history', 2)">Status</th>
+                        <th class="sortable" onclick="sortTable('table-history', 3)">Entregue Para</th>
+                        <th class="sortable d-none d-sm-table-cell" onclick="sortTable('table-history', 4)">Data</th>
                         <th class="text-end">Comprovante</th>
                     </tr>
                 </thead>
@@ -65,6 +68,9 @@
                             <small>De: {{ item.sender }}</small>
                         </td>
                         <td>
+                            {{ render_status_badge(item.status) }}
+                        </td>
+                        <td>
                             {{ item.received_by_name }}<br>
                             <small class="text-muted d-none d-sm-inline">Por: {{ item.deliverer_name }}</small>
                         </td>
@@ -75,7 +81,7 @@
                                 🔍 Ver Comprovante
                             </button>
 
-                            <!-- Modal -->
+                            <!-- Modal Proof -->
                             <div class="modal fade" id="modalProof{{ item.id }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -86,9 +92,19 @@
                                         </div>
                                         <div class="modal-body text-center">
                                             <p><strong>Item:</strong> {{ item.internal_id }}</p>
-                                            <p><strong>Recebido por:</strong> {{ item.received_by_name }}</p>
-                                            <div class="border p-4 bg-light">
-                                                {% if item.signature_data == 'DATA:AUTHENTICATED_BY_PASSWORD' %}
+                                            <p><strong>
+                                                    {% if item.status == 'ENTREGUE' %}Recebido por:{% else
+                                                    %}Responsável:{% endif %}
+                                                </strong> {{ item.received_by_name }}</p>
+
+                                            <div class="border p-4 bg-light mb-3">
+                                                {% if item.status != 'ENTREGUE' %}
+                                                <div class="py-3">
+                                                    <h5 class="text-danger">Motivo da Ocorrência</h5>
+                                                    <p class="mb-0">{{ item.occurrence_note or 'Nenhuma descrição
+                                                        fornecida.' }}</p>
+                                                </div>
+                                                {% elif item.signature_data == 'DATA:AUTHENTICATED_BY_PASSWORD' %}
                                                 <div class="py-3">
                                                     <span class="display-1 text-success">✔️</span>
                                                     <h5 class="mt-2 text-success">Autenticado via Senha</h5>
@@ -99,7 +115,8 @@
                                                 <img src="{{ item.signature_data }}" class="img-fluid" alt="Assinatura">
                                                 {% endif %}
                                             </div>
-                                            <p class="mt-2 text-muted"><small>Entregue em: {{
+
+                                            <p class="mt-2 text-muted"><small>Registrado em: {{
                                                     item.delivered_at.strftime('%d/%m/%Y %H:%M') }}</small></p>
                                         </div>
                                     </div>
@@ -109,7 +126,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="5" class="text-center p-4">Nenhuma entrega encontrada com estes filtros.</td>
+                        <td colspan="6" class="text-center p-4">Nenhuma entrega encontrada com estes filtros.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -117,4 +134,6 @@
         </div>
     </div>
 </div>
+
+{% include 'includes/modal_occurrence.html' %}
 {% endblock %}
