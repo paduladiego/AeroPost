@@ -1,0 +1,60 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.2, pytest-9.0.2, pluggy-1.6.0 -- C:\00Projetos\AeroPost\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\00Projetos\AeroPost
+configfile: pytest.ini
+plugins: flask-1.3.0
+collecting ... collected 3 items
+
+tests/test_multi_unit.py::test_unit_isolation FAILED                     [ 33%]
+tests/test_multi_unit.py::test_unit_switching_persistence PASSED         [ 66%]
+tests/test_multi_unit.py::test_registration_inherits_active_unit PASSED  [100%]
+
+================================== FAILURES ===================================
+_____________________________ test_unit_isolation _____________________________
+
+client = <FlaskClient <Flask 'app'>>
+auth = <conftest.AuthActions object at 0x0000023364548D70>
+multi_unit_setup = {'unit_central': 1, 'unit_jundiai': 2}, app = <Flask 'app'>
+
+    def test_unit_isolation(client, auth, multi_unit_setup, app):
+        """Verifica se um item registrado na Unidade A não aparece na Unidade B"""
+        auth.login('admin_multi', 'admin123')
+    
+        # 1. Garantir que estamos na Unidade Central (ID 1)
+        client.get('/set_unit/1', follow_redirects=True)
+    
+        # 2. Registrar item na Unidade Central
+        client.post('/portaria/register', data={
+            'type': 'Caixa',
+            'tracking_code': 'TRK-CENTRAL',
+            'sender': 'Fornecedor Central'
+        }, follow_redirects=True)
+    
+        # Verifica se aparece no dashboard da portaria (Central)
+        response = client.get('/portaria')
+>       assert b'TRK-CENTRAL' in response.data
+E       assert b'TRK-CENTRAL' in b'<!doctype html>\n<html lang="pt-br">\n\n    <head>\n        <meta charset="utf-8">\n        <meta name="viewport" content="width=device-width, initial-scale=1">\n        <title>AeroPost - Portaria - Recebimento</title>\n        <link rel="icon" type="image/png" href="/favicon.ico">\n        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">\n        <style>\n            body {\n                background-color: #f8f9fa;\n            }\n\n            .navbar {\n                background-color: #fff;\n                box-shadow: 0 2px 4px rgba(0, 0, 0, .05);\n            }\n\n            .card {\n                border: none;\n                box-shadow: 0 2px 8px rgba(0, 0, 0, .05);\n                margin-bottom: 20px;\n            }\n\n            .status-badge {\n                font-weight: 600;\n                font-size: 0.9em;\n            }\n\n            .version-tag {\n                position: fixed;\n                bottom: 10px;\n                right: 15px;\n                font-size: 0.8em;\n                font-style: italic;\n                color: rgba(0, 0, 0, 0.5);\n                z-index: 9999;\n         ...alA : valA - valB;\n                    }\n\n                    return isAsc\n                        ? (valA < valB ? 1 : -1)\n                        : (valA > valB ? 1 : -1);\n                });\n\n                header.classList.toggle(\'asc\', !isAsc);\n                header.classList.toggle(\'desc\', isAsc);\n\n                rows.forEach(row => tbody.appendChild(row));\n            }\n\n            // Show loading overlay on ALL form submissions\n            document.addEventListener("DOMContentLoaded", function () {\n                const forms = document.querySelectorAll(\'form\');\n                const overlay = document.getElementById(\'loading-overlay\');\n\n                forms.forEach(form => {\n                    form.addEventListener(\'submit\', function () {\n                        overlay.style.display = \'flex\';\n                        // Disable buttons to prevent double-clicks\n                        const buttons = form.querySelectorAll(\'button[type="submit"]\');\n                        buttons.forEach(btn => btn.disabled = true);\n                    });\n                });\n            });\n        </script>\n        \n    </body>\n\n</html>'
+E        +  where b'<!doctype html>\n<html lang="pt-br">\n\n    <head>\n        <meta charset="utf-8">\n        <meta name="viewport" content="width=device-width, initial-scale=1">\n        <title>AeroPost - Portaria - Recebimento</title>\n        <link rel="icon" type="image/png" href="/favicon.ico">\n        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">\n        <style>\n            body {\n                background-color: #f8f9fa;\n            }\n\n            .navbar {\n                background-color: #fff;\n                box-shadow: 0 2px 4px rgba(0, 0, 0, .05);\n            }\n\n            .card {\n                border: none;\n                box-shadow: 0 2px 8px rgba(0, 0, 0, .05);\n                margin-bottom: 20px;\n            }\n\n            .status-badge {\n                font-weight: 600;\n                font-size: 0.9em;\n            }\n\n            .version-tag {\n                position: fixed;\n                bottom: 10px;\n                right: 15px;\n                font-size: 0.8em;\n                font-style: italic;\n                color: rgba(0, 0, 0, 0.5);\n                z-index: 9999;\n         ...alA : valA - valB;\n                    }\n\n                    return isAsc\n                        ? (valA < valB ? 1 : -1)\n                        : (valA > valB ? 1 : -1);\n                });\n\n                header.classList.toggle(\'asc\', !isAsc);\n                header.classList.toggle(\'desc\', isAsc);\n\n                rows.forEach(row => tbody.appendChild(row));\n            }\n\n            // Show loading overlay on ALL form submissions\n            document.addEventListener("DOMContentLoaded", function () {\n                const forms = document.querySelectorAll(\'form\');\n                const overlay = document.getElementById(\'loading-overlay\');\n\n                forms.forEach(form => {\n                    form.addEventListener(\'submit\', function () {\n                        overlay.style.display = \'flex\';\n                        // Disable buttons to prevent double-clicks\n                        const buttons = form.querySelectorAll(\'button[type="submit"]\');\n                        buttons.forEach(btn => btn.disabled = true);\n                    });\n                });\n            });\n        </script>\n        \n    </body>\n\n</html>' = <WrapperTestResponse 16111 bytes [200 OK]>.data
+
+tests\test_multi_unit.py:38: AssertionError
+============================== warnings summary ===============================
+tests/test_multi_unit.py::test_unit_isolation
+tests/test_multi_unit.py::test_unit_switching_persistence
+tests/test_multi_unit.py::test_registration_inherits_active_unit
+  C:\00Projetos\AeroPost\routes\auth.py:18: DeprecationWarning: The default timestamp converter is deprecated as of Python 3.12; see the sqlite3 documentation for suggested replacement recipes
+    ).fetchone()
+
+tests/test_multi_unit.py::test_unit_isolation
+tests/test_multi_unit.py::test_unit_isolation
+tests/test_multi_unit.py::test_unit_isolation
+tests/test_multi_unit.py::test_unit_isolation
+tests/test_multi_unit.py::test_registration_inherits_active_unit
+tests/test_multi_unit.py::test_registration_inherits_active_unit
+  C:\00Projetos\AeroPost\routes\portaria.py:21: DeprecationWarning: The default timestamp converter is deprecated as of Python 3.12; see the sqlite3 documentation for suggested replacement recipes
+    ).fetchall()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_multi_unit.py::test_unit_isolation - assert b'TRK-CENTRAL' ...
+=================== 1 failed, 2 passed, 9 warnings in 1.21s ===================

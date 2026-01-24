@@ -14,23 +14,9 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
     - Seletor de Unidade Ativa integrado ao Navbar para troca rápida de contexto operacional.
     - Filtro global de dados baseado na unidade selecionada na sessão.
     - Atribuição de `default_unit_id` para usuários, definindo a unidade padrão ao logar.
-- **Gestão de Perfil e Edição de Usuários 👥**: 
-    - Nova funcionalidade que permite ao usuário editar seus próprios dados diretamente pela interface.
-    - **Edição Administrativa**: Usuários com perfil `ADMIN` ou `FACILITIES` podem editar dados de outros usuários (Nome, E-mail, Unidade, etc.) através de um botão de ação na listagem que direciona para a página de perfil.
-    - **Segurança Root Mantida**: A trava de segurança que impede a alteração de dados sensíveis (como senha) do administrador principal (ID 1) via interface web permanece ativa.
+- **Gestão de Perfil 👤**: Nova funcionalidade que permite ao usuário editar seus próprios dados (Nome Completo, Andar/Setor e Unidade Padrão) diretamente pela interface.
 - **Segurança de Conta Root (ID 1) 🔐**: Implementada trava de segurança que bloqueia a troca ou reset de senha do administrador principal via interface web, garantindo proteção contra sequestro de conta (mudanças apenas via acesso direto ao banco de dados).
-- **Criação de Admin Interativa 🛠️**: O comando `flask create-admin` agora é interativo, permitindo definir Username, Senha, Nome e E-mail via terminal.
-- **Automação Bootstrap 🚀**: Novo comando `flask bootstrap` que orquestra a inicialização do banco, criação do admin e configuração da primeira unidade e local em uma única execução.
-- **Melhoria na Gestão de Usuários 👥**: 
-    - Refatoração da tela administrativa com separação de usuários ativos e bloqueados.
-    - **Interatividade**: Tabelas colapsáveis, classificação de colunas e **relógio de sistema em tempo real** no rodapé para sincronia operacional.
-    - **Busca Global**: Novo campo de pesquisa em tempo real que filtra por Nome, E-mail, Unidade, Função ou Andar em todas as tabelas simultaneamente.
-- **Melhoria no Painel da Portaria 🛂**:
-    - Separação da visualização em duas tabelas: **Recebidos Hoje** e **Pendentes (Dias Anteriores)**.
-    - Destaque visual (cor amarela) para itens pendentes de dias passados para facilitar a triagem.
-    - Contadores e cabeçalhos colapsáveis integrados ao painel.
-- **Melhoria no Cadastro de Equipe (Portaria) 🛂**: O formulário de cadastro de novos porteiros agora exige a seleção explícita da Unidade de trabalho no momento da criação.
-- **Segurança de Unidade (Portaria) 🛡️**: Implementada trava para usuários de Portaria, limitando visualização e registro de encomendas exclusivamente à sua unidade de cadastro. Além disso, o acesso à edição de perfil foi desativado para este cargo por questões de governança de dados.
+- **Segurança de Unidade (Portaria) 🛡️**: Implementada trava para usuários de Portaria, limitando visualização e registro de encomendas exclusivamente à sua unidade de cadastro.
 
 ### 🌐 Landing Page
 - **Isolamento de Landing 🚀**: Refatoração completa para portabilidade estática total. A pasta `landing/` agora é independente do Flask.

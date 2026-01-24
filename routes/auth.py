@@ -78,9 +78,12 @@ def register():
             error = 'Email já cadastrado.'
 
         if error is None:
+            # Busca o ID da unidade selecionada pelo texto
+            unit_id = db.execute("SELECT id FROM settings_companies WHERE name = ?", (company,)).fetchone()[0]
+            
             db.execute(
-                'INSERT INTO users (email, password_hash, role, full_name, floor, company) VALUES (?, ?, ?, ?, ?, ?)',
-                (email, generate_password_hash(password), 'USER', full_name, floor, company)
+                'INSERT INTO users (email, password_hash, role, full_name, floor, company, default_unit_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                (email, generate_password_hash(password), 'USER', full_name, floor, company, unit_id)
             )
             db.commit()
             flash('Cadastro realizado! Faça login.', 'success')
@@ -109,6 +112,11 @@ def change_password():
         if len(password) < 6:
             flash('A senha deve ter no mínimo 6 caracteres.', 'danger')
             return render_template('change_password.html')
+
+        # REGRA DE SEGURANÇA: Admin principal (ID 1) só via banco
+        if session['user_id'] == 1:
+            flash('Erro de Segurança: A senha do administrador principal só pode ser alterada diretamente no banco de dados.', 'danger')
+            return redirect(url_for('auth.profile'))
 
         db = get_db()
         db.execute(
@@ -175,6 +183,12 @@ def reset_password(token):
             return render_template('reset_token.html', token=token)
             
         db = get_db()
+        # Busca o ID do usuário pelo email para validar se é o Admin Principal
+        user = db.execute("SELECT id FROM users WHERE email = ?", (email,)).fetchone()
+        if user and user['id'] == 1:
+            flash('Erro de Segurança: A senha do administrador principal só pode ser alterada diretamente no banco de dados.', 'danger')
+            return redirect(url_for('auth.login'))
+
         db.execute(
             'UPDATE users SET password_hash = ?, must_change_password = 0 WHERE email = ?',
             (generate_password_hash(password), email)
@@ -185,6 +199,70 @@ def reset_password(token):
         return redirect(url_for('auth.login'))
         
     return render_template('reset_token.html', token=token)
+
+@auth_bp.route('/profile', methods=['GET', 'POST'])
+@auth_bp.route('/profile/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def profile(user_id=None):
+    if session.get('role') == 'PORTARIA':
+        flash('Acesso negado: Usuários de Portaria não podem editar perfil.', 'danger')
+        return redirect(url_for('main.index'))
+    
+    db = get_db()
+    current_user_id = session['user_id']
+    is_admin = session.get('role') == 'ADMIN'
+    is_facilities = session.get('role') in ['FACILITIES', 'FACILITIES_PORTARIA']
+    
+    # Se user_id não for informado, usa o do usuário logado
+    target_user_id = user_id if user_id is not None else current_user_id
+    
+    # Busca dados do usuário alvo
+    user = db.execute('SELECT * FROM users WHERE id = ?', (target_user_id,)).fetchone()
+    if not user:
+        flash('Usuário não encontrado.', 'danger')
+        return redirect(url_for('admin.users_list'))
+
+    # Verificação de Permissão:
+    # 1. Se não for ele mesmo, deve ser ADMIN ou FACILITIES
+    if target_user_id != current_user_id:
+        if not (is_admin or is_facilities):
+            flash('Acesso negado: Você não tem permissão para editar outros usuários.', 'danger')
+            return redirect(url_for('main.index'))
+        
+        # 2. Se for FACILITIES, não pode editar usuários ADMIN
+        if is_facilities and user['role'] == 'ADMIN':
+            flash('Acesso negado: Apenas Administradores podem editar outros Administradores.', 'danger')
+            return redirect(url_for('admin.users_list'))
+
+    if request.method == 'POST':
+        full_name = request.form['full_name']
+        floor = request.form['floor']
+        unit_id = request.form['unit_id']
+        
+        # Busca o nome da empresa correspondente ao ID para manter o campo 'company' consistente
+        company_row = db.execute("SELECT name FROM settings_companies WHERE id = ?", (unit_id,)).fetchone()
+        company_name = company_row['name'] if company_row else ''
+        
+        db.execute(
+            'UPDATE users SET full_name = ?, floor = ?, company = ?, default_unit_id = ? WHERE id = ?',
+            (full_name, floor, company_name, unit_id, target_user_id)
+        )
+        db.commit()
+        
+        # Sincroniza a sessão apenas se estiver editando o próprio perfil
+        if target_user_id == current_user_id:
+            session['name'] = full_name
+            session['unit_id'] = int(unit_id)
+            flash('Perfil atualizado com sucesso!', 'success')
+            return redirect(url_for('main.index'))
+        else:
+            flash(f'Dados de {full_name} atualizados com sucesso.', 'success')
+            return redirect(url_for('admin.users_list'))
+
+    # Carrega lista de empresas para o dropdown
+    companies = db.execute("SELECT * FROM settings_companies WHERE is_active = 1").fetchall()
+    
+    return render_template('profile.html', user=user, companies=companies, editing_other=(target_user_id != current_user_id))
 
 @auth_bp.route('/check_user/<email>')
 def check_user(email):

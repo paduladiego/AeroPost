@@ -1,0 +1,92 @@
+/* --- ChangeLog Content --- */
+.changelog-content {
+    max-width: 900px;
+    margin: 80px auto;
+    padding: 60px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    color: white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.changelog-content h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 0%, #00d2ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.changelog-content h2 {
+    color: #007bff;
+    font-size: 1.8rem;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.changelog-content h3 {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.3rem;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.changelog-content ul {
+    list-style: none;
+    padding-left: 25px;
+}
+
+.changelog-content ul li {
+    margin-bottom: 12px;
+    position: relative;
+    opacity: 0.85;
+    line-height: 1.6;
+}
+
+.changelog-content ul li::before {
+    content: "→";
+    color: #007bff;
+    position: absolute;
+    left: -25px;
+    font-weight: bold;
+}
+
+/* --- Navigation & Buttons --- */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.back-btn:hover {
+    color: #007bff;
+    transform: translateX(-5px);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    .changelog-content {
+        margin: 40px 20px;
+        padding: 30px;
+    }
+
+    .changelog-content h1 {
+        font-size: 2rem;
+    }
+}

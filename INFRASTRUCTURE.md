@@ -1,6 +1,11 @@
 # Infraestrutura e Padrões de Git - AeroPost
 
-Este arquivo contém informações técnicas sobre o ambiente de produção e as regras de versionamento do projeto.
+Este arquivo contém informações técnicas sobre o ambiente de produção e as regras de versionamento do projeto. 
+
+> [!NOTE]
+> Para regras específicas da Landing Page (estática), consulte o [INFRASTRUCTURE-LANDING.md](file:///c:/00Projetos/AeroPost/landing/INFRASTRUCTURE-LANDING.md).
+
+Para instruções passo a passo de deployment, consulte o [UPGRADE_MANUAL.md](file:///c:/00Projetos/AeroPost/UPGRADE_MANUAL.md).
 
 ## 🖥️ Servidor (VPS)
 
@@ -9,10 +14,13 @@ Este arquivo contém informações técnicas sobre o ambiente de produção e as
 - **Site Landing/Demo:** `aeropost.kran.technology`
 - **Site-Client-Dexco:** `kran.technology/Dexco/AeroPost`
 - **Caminho Landing/Demo:** `/var/www/aeropost-demo`
+  - **Banco de Dados:** `aeropost_demo.db`
 - **Serviço Demo:** `aeropost-demo.service`
 - **Caminho Client Dexco:** `/var/www/Dexco/AeroPost`
+  - **Banco de Dados:** `aeropost.db`
 - **Serviço Client Dexco:** `aeropost.service`
   -- **Caminho Novos Clientes:** `/var/www/<ClientName>/AeroPost`
+    - **Banco de Dados:** `aeropost.db`
 - **Usuário SSH:** `root`
 - **Comando de Acesso:** `ssh root@76.13.71.38`
 - **Banco de Dados Local:** SQLite (`aeropost.db`)
@@ -31,7 +39,7 @@ Para manter o repositório organizado, adotamos as seguintes nomenclaturas:
 
 ### 2. Ramos de Lançamento (Release/Client)
 - **`client/<nome>/v<versão>`**: Ramos específicos para entrega em produção.
-  - Versão atual em dev: `v3.0.0`
+  - Versão atual em dev: `v3.1.4`
   - *Nota: Estes ramos podem conter configurações específicas de .env para o cliente.*
 
 ### 3. Tags (Versões Estáveis)
@@ -53,6 +61,10 @@ cd /var/www/Dexco/AeroPost
 ### Banco de Dados (SQLite)
 - Caminho: `/var/www/Dexco/AeroPost/aeropost.db`
 - Backups: Localizados em `/var/www/Dexco/AeroPost/backups/`
+
+### Banco de Dados Clientes (SQLite)
+- Caminho: `/var/www/<ClientName>/AeroPost/aeropost.db`
+- Backups: Localizados em `/var/www/<ClientName>/AeroPost/backups/`
 
 #### Comando de Backup Manual
 ```bash
@@ -89,7 +101,9 @@ pip install -r requirements.txt
 ### 4. Aplicação de Migrações
 ```bash
 # Executa o script que adapta o banco de dados sem apagar os dados
-python migrations/v2.0.0.py
+# IMPORTANTE: Se o banco tiver nome diferente (ex: Demo), use DATABASE_URL
+export DATABASE_URL=aeropost_demo.db # Apenas se necessário (Ambiente Demo)
+python migrations/v3.0.0.py
 ```
 
 ### 5. Reinicialização e Verificação
@@ -137,3 +151,33 @@ Toda tabela de dados deve preferencialmente suportar ordenação por clique no c
 - **Exemplo**: `pytest > tests/debug_log.txt`
 - **IMPORTANTE**: Scripts de migração manual (ex: `update_db_*.py`) e/ou arquivos de teste descartáveis e/ou arquivos descartáveis devem ser **DELETADOS** imediatamente após o sucesso da operação.
 - Mantenha a raiz do projeto limpa, contendo apenas arquivos de configuração essenciais (`.env`, `requirements.txt`, `schema.sql`, `pytest.ini`, etc.).
+
+---
+
+## 📂 Padrões de Organização de Arquivos
+
+Para manter a escalabilidade do AeroPost, siga esta estrutura para novos scripts:
+
+### 1. `/migrations`
+- **O que**: Scripts que alteram a estrutura do banco de dados (DDL).
+- **Regra**: Nomear por versão (ex: `v4.0.0.py`). Devem ser idempotentes (poder rodar mais de uma vez sem erro fatal).
+
+### 2. `/utils`
+- **O que**: Ferramentas auxiliares, funções compartilhadas e **scripts de utilidade operacional**.
+- **Exemplo**: Scripts para popular dados iniciais, limpeza de logs ou exportações customizadas que não são disparadas pelo usuário no front-end.
+
+### 3. `/scripts`
+- **O que**: Automações que rodam via agendamento (Cron) ou disparadores externos ao servidor web Flask.
+- **Exemplo**: `cron_notifications.py`.
+
+### 4. `/tests`
+- **O que**: Arquivos de teste automatizado (`test_*.py`) e massas de dados exclusivas para o ambiente de testes (`fixtures`).
+
+---
+
+## 🚀 Comandos Úteis (CLI)
+
+- `flask bootstrap`: Faz o setup completo (DB + Admin + Unidade + Local) em um só comando.
+- `flask init-db`: Inicializa apenas as tabelas do banco de dados.
+- `flask create-admin`: Cria apenas um novo usuário administrador (Interativo).
+- `flask test-email`: Testa as configurações de SMTP.

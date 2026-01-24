@@ -23,7 +23,7 @@ def create_app():
         db_url = os.path.join(app.root_path, db_url)
     app.config['DATABASE'] = db_url
     # Versão do Sistema
-    base_version = 'v3.1.4'
+    base_version = 'v4.0.0'
     app_suffix = os.environ.get('APP_SUFFIX', '') # Ex: '-demo' ou '-dexco'
     app.config['APP_VERSION'] = os.environ.get('APP_VERSION', f"{base_version}{app_suffix}")
     
@@ -37,13 +37,43 @@ def create_app():
     
     mail.init_app(app)
     
-    # Injeta a versão e utilitários em todos os templates automaticamente
     @app.context_processor
     def inject_utilities():
         import datetime
+        from flask import session
+        from utils.db import get_db
+        
+        # Garante que as unidades estejam disponíveis para o seletor no navbar
+        units = []
+        active_unit = None
+        if 'user_id' in session:
+            db = get_db()
+            units = db.execute("SELECT id, name FROM settings_companies WHERE is_active = 1").fetchall()
+            
+            # Se não houver unidade na sessão, tenta carregar a padrão do usuário
+            if 'unit_id' not in session:
+                user = db.execute("SELECT default_unit_id FROM users WHERE id = ?", (session['user_id'],)).fetchone()
+                if user and user['default_unit_id']:
+                    session['unit_id'] = user['default_unit_id']
+                elif units:
+                    session['unit_id'] = units[0]['id']
+            
+            # Encontra o nome da unidade ativa
+            role = session.get('role')
+            # Se for apenas PORTARIA, remove outras unidades da lista de escolha
+            if role == 'PORTARIA':
+                units = [u for u in units if u['id'] == session.get('unit_id')]
+
+            for unit in units:
+                if unit['id'] == session.get('unit_id'):
+                    active_unit = unit
+                    break
+                    
         return dict(
             app_version=app.config['APP_VERSION'],
-            datetime=datetime
+            datetime=datetime,
+            available_units=units,
+            active_unit=active_unit
         )
     
     # Inicializa o Banco de Dados

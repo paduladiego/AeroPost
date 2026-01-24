@@ -11,10 +11,11 @@ facilities_bp = Blueprint('facilities', __name__)
 @role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
 def dashboard():
     db = get_db()
+    unit_id = session.get('unit_id')
     stats = {
-        'in_portaria': db.execute("SELECT COUNT(*) FROM items WHERE status = 'RECEBIDO_PORTARIA'").fetchone()[0],
-        'in_facilities': db.execute("SELECT COUNT(*) FROM items WHERE status = 'EM_FACILITIES'").fetchone()[0],
-        'ready': db.execute("SELECT COUNT(*) FROM items WHERE status = 'DISPONIVEL_PARA_RETIRADA'").fetchone()[0]
+        'in_portaria': db.execute("SELECT COUNT(*) FROM items WHERE status = 'RECEBIDO_PORTARIA' AND unit_id = ?", (unit_id,)).fetchone()[0],
+        'in_facilities': db.execute("SELECT COUNT(*) FROM items WHERE status = 'EM_FACILITIES' AND unit_id = ?", (unit_id,)).fetchone()[0],
+        'ready': db.execute("SELECT COUNT(*) FROM items WHERE status = 'DISPONIVEL_PARA_RETIRADA' AND unit_id = ?", (unit_id,)).fetchone()[0]
     }
     
     query_base = """
@@ -24,13 +25,13 @@ def dashboard():
         LEFT JOIN users u ON i.recipient_email = u.email
     """
     
-    items_portaria = db.execute(query_base + " WHERE i.status = 'RECEBIDO_PORTARIA' ORDER BY i.created_at ASC").fetchall()
-    items_facilities = db.execute(query_base + " WHERE i.status = 'EM_FACILITIES' ORDER BY i.updated_at ASC").fetchall()
-    items_ready = db.execute(query_base + " WHERE i.status = 'DISPONIVEL_PARA_RETIRADA' ORDER BY i.updated_at DESC").fetchall()
+    items_portaria = db.execute(query_base + " WHERE i.status = 'RECEBIDO_PORTARIA' AND i.unit_id = ? ORDER BY i.created_at ASC", (unit_id,)).fetchall()
+    items_facilities = db.execute(query_base + " WHERE i.status = 'EM_FACILITIES' AND i.unit_id = ? ORDER BY i.updated_at ASC", (unit_id,)).fetchall()
+    items_ready = db.execute(query_base + " WHERE i.status = 'DISPONIVEL_PARA_RETIRADA' AND i.unit_id = ? ORDER BY i.updated_at DESC", (unit_id,)).fetchall()
 
-    corp_users = db.execute("SELECT email, full_name FROM users WHERE is_active = 1 AND role != 'ADMIN' ORDER BY full_name ASC").fetchall()
-    locations = db.execute("SELECT * FROM settings_locations WHERE is_active = 1 ORDER BY name ASC").fetchall()
-    email_groups = db.execute("SELECT * FROM email_groups ORDER BY name ASC").fetchall()
+    corp_users = db.execute("SELECT email, full_name FROM users WHERE is_active = 1 AND role != 'ADMIN' AND default_unit_id = ? ORDER BY full_name ASC", (unit_id,)).fetchall()
+    locations = db.execute("SELECT * FROM settings_locations WHERE is_active = 1 AND unit_id = ? ORDER BY name ASC", (unit_id,)).fetchall()
+    email_groups = db.execute("SELECT * FROM email_groups WHERE unit_id = ? ORDER BY name ASC", (unit_id,)).fetchall()
 
     return render_template('facilities/dashboard.html', 
                            stats=stats, 
@@ -46,8 +47,9 @@ def dashboard():
 @role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
 def collect(item_id):
     db = get_db()
+    unit_id = session.get('unit_id')
     db.execute("UPDATE items SET status = 'EM_FACILITIES', updated_at = CURRENT_TIMESTAMP WHERE id = ?", (item_id,))
-    db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], 'COLLECT_FROM_PORTARIA'))
+    db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", (item_id, session['user_id'], 'COLLECT_FROM_PORTARIA', unit_id))
     db.commit()
     flash('Item coletado com sucesso.', 'success')
     return redirect(url_for('facilities.dashboard', tab='portaria'))
@@ -69,11 +71,12 @@ def allocate(item_id):
         rec_email = rec_manual
     
     db = get_db()
+    unit_id = session.get('unit_id')
     db.execute(
         "UPDATE items SET status = 'DISPONIVEL_PARA_RETIRADA', location = ?, recipient_email = ?, recipient_name_manual = ?, recipient_floor = ?, observation = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", 
         (location, rec_email, rec_manual, rec_floor, observation, item_id)
     )
-    db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], f'ALLOCATED: {location} AND ID_RECIPIENT'))
+    db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", (item_id, session['user_id'], f'ALLOCATED: {location} AND ID_RECIPIENT', unit_id))
     db.commit()
 
     # Envio de Notificação por E-mail
@@ -108,8 +111,9 @@ def allocate(item_id):
 def update_location(item_id):
     location = request.form['location']
     db = get_db()
+    unit_id = session.get('unit_id')
     db.execute("UPDATE items SET location = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (location, item_id))
-    db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], f'LOCATION_CHANGED_TO: {location}'))
+    db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", (item_id, session['user_id'], f'LOCATION_CHANGED_TO: {location}', unit_id))
     db.commit()
     flash('Local atualizado com sucesso.', 'success')
     return redirect(url_for('facilities.dashboard', tab='entregar'))
@@ -150,6 +154,7 @@ def delivery_password_confirm(item_id):
         flash('Senha incorreta para o destinatário informado.', 'danger')
         return redirect(url_for('facilities.delivery_password_page', item_id=item_id))
     
+    unit_id = session.get('unit_id')
     db.execute("UPDATE items SET status = 'ENTREGUE', updated_at = CURRENT_TIMESTAMP WHERE id = ?", (item_id,))
     
     placeholder_sig = "DATA:AUTHENTICATED_BY_PASSWORD"
@@ -158,7 +163,7 @@ def delivery_password_confirm(item_id):
         (item_id, placeholder_sig, session['user_id'], user['full_name'])
     )
     
-    db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], 'DELIVERED_VIA_PASSWORD'))
+    db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", (item_id, session['user_id'], 'DELIVERED_VIA_PASSWORD', unit_id))
     db.commit()
     
     flash(f'Item entregue com sucesso para {user["full_name"]} via autenticação!', 'success')
@@ -180,6 +185,7 @@ def delivery_confirm(item_id):
     signature = request.form['signature_data']
     
     db = get_db()
+    unit_id = session.get('unit_id')
     db.execute("UPDATE items SET status = 'ENTREGUE', updated_at = CURRENT_TIMESTAMP WHERE id = ?", (item_id,))
     
     db.execute(
@@ -187,7 +193,7 @@ def delivery_confirm(item_id):
         (item_id, signature, session['user_id'], received_by)
     )
     
-    db.execute("INSERT INTO movements (item_id, user_id, action) VALUES (?, ?, ?)", (item_id, session['user_id'], 'DELIVERED'))
+    db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", (item_id, session['user_id'], 'DELIVERED', unit_id))
     db.commit()
     
     flash(f'Item entregue com sucesso para {received_by}!', 'success')

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Meu Perfil{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-white py-3">
+                <h4 class="mb-0">👤 {% if editing_other %}Dados de {{ user.full_name }}{% else %}Meus Dados Cadastrais{%
+                    endif %}</h4>
+                <p class="text-muted small mb-0">{% if editing_other %}Edite as informações cadastrais do usuário.{%
+                    else %}Mantenha seus dados atualizados para facilitar a entrega de suas encomendas.{% endif %}</p>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('auth.profile', user_id=user.id) }}" method="post">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">E-mail Corporativo</label>
+                        <input type="email" class="form-control bg-light" value="{{ user.email or user.username }}"
+                            readonly disabled>
+                        <div class="form-text">O e-mail não pode ser alterado por motivos de segurança.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nome Completo</label>
+                        <input type="text" name="full_name" class="form-control" value="{{ user.full_name }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Andar / Setor</label>
+                        <input type="text" name="floor" class="form-control" value="{{ user.floor or '' }}"
+                            placeholder="Ex: 10º Andar - TI">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">🏢 Unidade / Planta Padrão</label>
+                        <select name="unit_id" class="form-select" required>
+                            {% for company in companies %}
+                            <option value="{{ company.id }}" {% if company.id==user.default_unit_id %}selected{% endif
+                                %}>
+                                {{ company.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text text-primary">
+                            <strong>💡 Dica:</strong> Se você foi transferido de unidade, troque aqui sua
+                            sede oficial.
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% if editing_other %}{{ url_for('admin.users_list') }}{% else %}{{ url_for('main.index') }}{% endif %}"
+                            class="btn btn-outline-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary px-4">Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if not editing_other %}
+        <div class="card mt-4 border-warning">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="mb-1">Segurança</h6>
+                    <p class="text-muted small mb-0">Deseja trocar sua senha de acesso?</p>
+                </div>
+                <a href="{{ url_for('auth.change_password') }}" class="btn btn-sm btn-outline-warning">Trocar Senha</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -55,11 +55,19 @@ def test_crud_settings(logged_in_admin, app):
 
 def test_user_management(logged_in_admin, app):
     """Testa criação de portaria, bloqueio e reset de senha"""
+    # 0. Criar uma Unidade para o teste
+    logged_in_admin.post('/settings/add/company', data={'name': 'Unidade Teste 1'}, follow_redirects=True)
+    with app.app_context():
+        db = get_db()
+        unit = db.execute("SELECT id FROM settings_companies WHERE name = 'Unidade Teste 1'").fetchone()
+        unit_id = unit['id']
+
     # 1. Criar Usuário Portaria
     logged_in_admin.post('/users/create_portaria', data={
         'full_name': 'Porteiro de Teste',
         'username': 'porteiro1',
-        'password': 'password123'
+        'password': 'password123',
+        'unit_id': unit_id
     }, follow_redirects=True)
     
     with app.app_context():
@@ -67,6 +75,7 @@ def test_user_management(logged_in_admin, app):
         user = db.execute("SELECT * FROM users WHERE username = 'porteiro1'").fetchone()
         assert user is not None
         assert user['role'] == 'PORTARIA'
+        assert user['default_unit_id'] == unit_id
 
     # 2. Bloquear Usuário
     logged_in_admin.post(f'/users/toggle_block/{user["id"]}', follow_redirects=True)

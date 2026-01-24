@@ -20,7 +20,9 @@ CREATE TABLE users (
     company TEXT,
     is_active INTEGER DEFAULT 1,
     must_change_password INTEGER DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    default_unit_id INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (default_unit_id) REFERENCES settings_companies (id)
 );
 
 CREATE TABLE items (
@@ -35,10 +37,12 @@ CREATE TABLE items (
     location TEXT, -- Sala, Armario 1, 2, 3
     status TEXT NOT NULL DEFAULT 'RECEBIDO_PORTARIA',
     observation TEXT,
+    unit_id INTEGER,
     last_notified_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (recipient_email) REFERENCES users (email)
+    FOREIGN KEY (recipient_email) REFERENCES users (email),
+    FOREIGN KEY (unit_id) REFERENCES settings_companies (id)
 );
 
 CREATE TABLE movements (
@@ -46,18 +50,21 @@ CREATE TABLE movements (
     item_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     action TEXT NOT NULL,
+    unit_id INTEGER,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (item_id) REFERENCES items (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (unit_id) REFERENCES settings_companies (id)
 );
 
 CREATE TABLE proofs (
     item_id INTEGER PRIMARY KEY,
-    signature_data TEXT NOT NULL, -- Base64
+    signature_data TEXT NOT NULL, -- Base64 ou placeholder
     delivered_by INTEGER NOT NULL,
     received_by_name TEXT NOT NULL,
     delivered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (item_id) REFERENCES items (id),
+    occurrence_note TEXT, -- Nota para extravios ou devoluções
+    FOREIGN KEY (item_id) REFERENCES items id,
     FOREIGN KEY (delivered_by) REFERENCES users (id)
 );
 
@@ -70,7 +77,9 @@ CREATE TABLE settings_item_types (
 CREATE TABLE settings_locations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE,
-    is_active INTEGER DEFAULT 1
+    unit_id INTEGER,
+    is_active INTEGER DEFAULT 1,
+    FOREIGN KEY (unit_id) REFERENCES settings_companies (id)
 );
 
 CREATE TABLE settings_companies (
@@ -88,7 +97,9 @@ CREATE TABLE settings_allowed_domains (
 CREATE TABLE email_groups (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    unit_id INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (unit_id) REFERENCES settings_companies (id)
 );
 
 CREATE TABLE email_group_members (

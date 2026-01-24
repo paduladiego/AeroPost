@@ -11,8 +11,10 @@ admin_bp = Blueprint('admin', __name__)
 @role_required(['ADMIN', 'FACILITIES', 'FACILITIES_PORTARIA'])
 def users_list():
     db = get_db()
-    users = db.execute('SELECT * FROM users ORDER BY created_at DESC').fetchall()
-    return render_template('users.html', users=users)
+    active_users = db.execute('SELECT * FROM users WHERE is_active = 1 ORDER BY created_at DESC').fetchall()
+    blocked_users = db.execute('SELECT * FROM users WHERE is_active = 0 ORDER BY created_at DESC').fetchall()
+    units = db.execute("SELECT * FROM settings_companies WHERE is_active = 1").fetchall()
+    return render_template('users.html', active_users=active_users, blocked_users=blocked_users, units=units)
 
 @admin_bp.route('/users/create_portaria', methods=['POST'])
 @login_required
@@ -21,12 +23,13 @@ def user_create_portaria():
     full_name = request.form['full_name']
     username = request.form['username']
     password = request.form['password']
+    unit_id = request.form.get('unit_id')
     
     db = get_db()
     try:
         db.execute(
-            "INSERT INTO users (username, role, full_name, password_hash) VALUES (?, ?, ?, ?)",
-            (username, 'PORTARIA', full_name, generate_password_hash(password))
+            "INSERT INTO users (username, role, full_name, password_hash, default_unit_id) VALUES (?, ?, ?, ?, ?)",
+            (username, 'PORTARIA', full_name, generate_password_hash(password), unit_id)
         )
         db.commit()
         flash(f'Usuário de Portaria {username} criado.', 'success')
@@ -96,6 +99,11 @@ def user_reset_password(user_id):
     
     if target['role'] == 'ADMIN' and session['role'] != 'ADMIN':
         flash('Erro: Você não tem permissão para gerenciar Administradores.', 'danger')
+        return redirect(url_for('admin.users_list'))
+
+    # REGRA DE SEGURANÇA: Admin principal (ID 1) só via banco
+    if user_id == 1:
+        flash('Erro de Segurança: A senha do administrador principal não pode ser resetada via interface.', 'danger')
         return redirect(url_for('admin.users_list'))
 
     default_password = 'mudar123'

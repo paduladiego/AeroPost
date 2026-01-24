@@ -4,8 +4,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>AeroPost - {% block title %}{% endblock %}</title>
-        <link rel="icon" type="image/png" href="{{ url_for('favicon') }}">
+        <title>AeroPost - Portaria - Recebimento</title>
+        <link rel="icon" type="image/png" href="/favicon.ico">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
             body {
@@ -111,9 +111,9 @@
 
         <nav class="navbar navbar-expand-lg navbar-light mb-4">
             <div class="container-fluid">
-                <a class="navbar-brand navbar-logo" href="{{ url_for('main.home_user') }}">
-                    <img src="{{ url_for('static', filename='img/Logo-A-Box.png') }}" alt="Icon" class="logo-icon">
-                    <img src="{{ url_for('static', filename='img/Logo-AeroPost-Text.png') }}" alt="AeroPost"
+                <a class="navbar-brand navbar-logo" href="/home">
+                    <img src="/static/img/Logo-A-Box.png" alt="Icon" class="logo-icon">
+                    <img src="/static/img/Logo-AeroPost-Text.png" alt="AeroPost"
                         class="logo-text">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
@@ -122,43 +122,50 @@
 
                 <div class="collapse navbar-collapse" id="navbarContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        {% if session.get('user_id') %}
-                        {% if session.get('role') in ['PORTARIA', 'ADMIN', 'FACILITIES_PORTARIA'] %}
+                        
+                        
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('portaria.dashboard') }}">Portaria</a>
+                            <a class="nav-link" href="/portaria">Portaria</a>
                         </li>
-                        {% endif %}
-                        {% if session.get('role') in ['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'] %}
+                        
+                        
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('facilities.dashboard') }}">Facilities</a>
+                            <a class="nav-link" href="/facilities">Facilities</a>
                         </li>
-                        {% endif %}
-                        {% endif %}
+                        
+                        
                     </ul>
 
                     <div class="d-flex align-items-center">
-                        {% if session.get('user_id') %}
+                        
                         <!-- Unit Selector -->
                         <div class="dropdown me-3 border-end pe-3">
                             <button class="btn btn-sm btn-light dropdown-toggle d-flex align-items-center gap-2"
                                 type="button" data-bs-toggle="dropdown">
-                                🏢 <span class="d-none d-md-inline">{{ active_unit.name if active_unit else 'Selecionar
-                                    Unidade' }}</span>
-                                <span class="d-md-none">{{ active_unit.name[:3] if active_unit else '...' }}</span>
+                                🏢 <span class="d-none d-md-inline">Unidade Central</span>
+                                <span class="d-md-none">Uni</span>
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
                                     <h6 class="dropdown-header">Trocar Planta/Unidade</h6>
                                 </li>
-                                {% for unit in available_units %}
+                                
                                 <li>
-                                    <a class="dropdown-item d-flex justify-content-between align-items-center {% if unit.id == session.get('unit_id') %}active{% endif %}"
-                                        href="{{ url_for('main.set_unit', unit_id=unit.id) }}">
-                                        {{ unit.name }}
-                                        {% if unit.id == session.get('unit_id') %}<span>✅</span>{% endif %}
+                                    <a class="dropdown-item d-flex justify-content-between align-items-center active"
+                                        href="/set_unit/1">
+                                        Unidade Central
+                                        <span>✅</span>
                                     </a>
                                 </li>
-                                {% endfor %}
+                                
+                                <li>
+                                    <a class="dropdown-item d-flex justify-content-between align-items-center "
+                                        href="/set_unit/2">
+                                        Unidade Jundiai
+                                        
+                                    </a>
+                                </li>
+                                
                             </ul>
                         </div>
 
@@ -166,33 +173,149 @@
                             data-bs-target="#supportModal">
                             🆘 Reportar Problema
                         </button>
-                        {% if session.get('role') != 'PORTARIA' %}
-                        <a href="{{ url_for('auth.profile') }}" class="text-decoration-none text-dark me-3 fw-medium">
-                            Olá, {{ session.get('name') }}
+                        <a href="/profile" class="text-decoration-none text-dark me-3 fw-medium">
+                            Olá, Admin Multi
                         </a>
-                        {% else %}
-                        <span class="text-dark me-3 fw-medium">
-                            Olá, {{ session.get('name') }}
-                        </span>
-                        {% endif %}
-                        <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger btn-sm">Sair</a>
-                        {% else %}
-                        <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-sm">Entrar</a>
-                        {% endif %}
+                        <a href="/logout" class="btn btn-outline-danger btn-sm">Sair</a>
+                        
                     </div>
                 </div>
             </div>
         </nav>
 
         <div class="container">
-            {% for category, message in get_flashed_messages(with_categories=true) %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
+            
 
-            {% block content %}{% endblock %}
+            
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Painel da Portaria</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Registrar Novo Item</h5>
+            </div>
+            <div class="card-body">
+                <form action="/portaria/register" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Item</label>
+                        <select class="form-select" name="type" required>
+                            
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rastreio (Opcional)</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="tracking_code"
+                                placeholder="Código de rastreio">
+                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal"
+                                data-bs-target="#scannerModal">📷 Scan</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Remetente</label>
+                        <input type="text" class="form-control" name="sender" required
+                            placeholder="Nome da empresa/pessoa">
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">Registrar Recebimento</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header">
+                Itens na Portaria / Recebidos Hoje
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Tipo</th>
+                            <th>Remetente</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr>
+                            <td>
+                                
+                                04:41
+                                
+                            </td>
+                            <td>Caixa</td>
+                            <td>Fornecedor Central</td>
+                            <td><span class="badge bg-secondary status-badge">RECEBIDO_PORTARIA</span></td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal do Scanner -->
+<div class="modal fade" id="scannerModal" tabindex="-1" aria-labelledby="scannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scannerModalLabel">Leitor de Código de Barras</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div id="reader" style="width: 100%; min-height: 300px; background: #000;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+    let html5QrCode = null;
+    const scannerModal = document.getElementById('scannerModal');
+
+    scannerModal.addEventListener('shown.bs.modal', function () {
+        html5QrCode = new Html5Qrcode("reader");
+        const config = { fps: 10, qrbox: { width: 250, height: 150 } };
+
+        html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            (decodedText, decodedResult) => {
+                // Sucesso na leitura
+                document.getElementsByName("tracking_code")[0].value = decodedText;
+                const modal = bootstrap.Modal.getInstance(scannerModal);
+                modal.hide();
+            }
+        ).catch(err => {
+            console.error("Erro ao iniciar scanner:", err);
+            document.getElementById('reader').innerHTML = `<div class="p-4 text-center text-white">Erro ao acessar câmera: ${err}</div>`;
+        });
+    });
+
+    scannerModal.addEventListener('hidden.bs.modal', function () {
+        if (html5QrCode) {
+            html5QrCode.stop().then(() => {
+                html5QrCode.clear();
+            }).catch(err => console.warn("Erro ao parar scanner:", err));
+        }
+    });
+</script>
+
         </div>
 
         <div id="loading-overlay">
@@ -206,7 +329,7 @@
         <div class="modal fade" id="supportModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form action="{{ url_for('main.report_problem') }}" method="post">
+                    <form action="/report-problem" method="post">
                         <div class="modal-header">
                             <h5 class="modal-title">🆘 Reportar Problema</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -233,7 +356,7 @@
         </div>
 
         <div class="version-tag">
-            {{ datetime.datetime.now().strftime('%d/%m/%Y %H:%M') }} | {{ app_version }}
+            v4.0.0-dev
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -288,7 +411,7 @@
                 });
             });
         </script>
-        {% block scripts %}{% endblock %}
+        
     </body>
 
 </html>

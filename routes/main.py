@@ -20,15 +20,17 @@ def index():
         user = db.execute('SELECT email FROM users WHERE id = ?', (session['user_id'],)).fetchone()
         email = user['email']
         
+        unit_id = session.get('unit_id')
         my_items = db.execute(
-            'SELECT * FROM items WHERE recipient_email = ? OR recipient_name_manual = ? ORDER BY created_at DESC', 
-            (email, email)
+            'SELECT * FROM items WHERE (recipient_email = ? OR recipient_name_manual = ?) AND unit_id = ? ORDER BY created_at DESC', 
+            (email, email, unit_id)
         ).fetchall()
 
         unclaimed_items = db.execute(
             "SELECT * FROM items WHERE (recipient_email IS NULL OR recipient_email = '') "
             "AND (recipient_name_manual NOT LIKE '%@%' OR recipient_name_manual IS NULL) "
-            "AND status != 'ENTREGUE' ORDER BY created_at DESC"
+            "AND status != 'ENTREGUE' AND unit_id = ? ORDER BY created_at DESC",
+            (unit_id,)
         ).fetchall()
         
         return render_template('home_user.html', items=my_items, unclaimed_items=unclaimed_items)
@@ -40,15 +42,17 @@ def home_user():
     user = db.execute('SELECT email FROM users WHERE id = ?', (session['user_id'],)).fetchone()
     email = user['email']
     
+    unit_id = session.get('unit_id')
     my_items = db.execute(
-        'SELECT * FROM items WHERE recipient_email = ? OR recipient_name_manual = ? ORDER BY created_at DESC', 
-        (email, email)
+        'SELECT * FROM items WHERE (recipient_email = ? OR recipient_name_manual = ?) AND unit_id = ? ORDER BY created_at DESC', 
+        (email, email, unit_id)
     ).fetchall()
 
     unclaimed_items = db.execute(
         "SELECT * FROM items WHERE (recipient_email IS NULL OR recipient_email = '') "
         "AND (recipient_name_manual NOT LIKE '%@%' OR recipient_name_manual IS NULL) "
-        "AND status != 'ENTREGUE' ORDER BY created_at DESC"
+        "AND status != 'ENTREGUE' AND unit_id = ? ORDER BY created_at DESC",
+        (unit_id,)
     ).fetchall()
     
     return render_template('home_user.html', items=my_items, unclaimed_items=unclaimed_items)
@@ -59,14 +63,15 @@ def home_user():
 def history():
     db = get_db()
     
+    unit_id = session.get('unit_id')
     query = """
         SELECT i.*, p.signature_data, p.received_by_name, p.delivered_at, u.full_name as deliverer_name
         FROM items i
         JOIN proofs p ON i.id = p.item_id
         JOIN users u ON p.delivered_by = u.id
-        WHERE i.status = 'ENTREGUE'
+        WHERE i.status = 'ENTREGUE' AND i.unit_id = ?
     """
-    params = []
+    params = [unit_id]
     
     search = request.args.get('q')
     if search:
@@ -107,4 +112,15 @@ def report_problem():
     else:
         flash('Houve um erro ao enviar seu relato. Por favor, tente novamente mais tarde.', 'danger')
         
+    return redirect(request.referrer or url_for('main.index'))
+@main_bp.route('/set_unit/<int:unit_id>')
+@login_required
+def set_unit(unit_id):
+    db = get_db()
+    # Verifica se a unidade existe e está ativa
+    unit = db.execute("SELECT id FROM settings_companies WHERE id = ? AND is_active = 1", (unit_id,)).fetchone()
+    if unit:
+        session['unit_id'] = unit['id']
+        flash(f'Unidade alterada com sucesso.', 'info')
+    
     return redirect(request.referrer or url_for('main.index'))

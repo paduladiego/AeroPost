@@ -15,6 +15,7 @@ O AeroPost é uma aplicação web desenvolvida para otimizar o fluxo de recebime
 - **Gestão de Espaços**: Alocação de itens em armários ou salas específicas.
 - **Entrega Híbrida**: Assinatura digital no dispositivo (tablet) ou autenticação via senha.
 - **Auditoria**: Histórico completo com filtros e exportação CSV para relatórios.
+- **Suporte Multi-Unidades**: Gestão de múltiplos prédios ou unidades corporativas com troca de contexto fluida.
 - **Configurações Dinâmicas**: Cadastro de empresas, domínios, locais e tipos de item via interface.
 
 ### 3. Colaboradores (Usuários Finais)
@@ -57,11 +58,12 @@ APP_VERSION=v2.0.0
 > [!TIP]
 > Em produção (VPS), utilize `DATABASE_URL=postgresql://user:pass@localhost/dbname`.
 
-### 3. Inicialização
+### 3. Inicialização (Novo Cliente)
+Para configurar um novo cliente do zero em uma única etapa:
 ```bash
-flask init-db      # Cria as tabelas
-flask create-admin # Cria o usuário inicial (admin / admin123)
+flask bootstrap
 ```
+Este comando irá criar as tabelas, o administrador e a primeira unidade/local operacional.
 
 ### 4. Execução
 ```bash

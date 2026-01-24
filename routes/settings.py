@@ -13,8 +13,9 @@ settings_bp = Blueprint('settings', __name__)
 def dashboard():
     db = get_db()
     
+    unit_id = session.get('unit_id')
     item_types = db.execute("SELECT * FROM settings_item_types WHERE is_active = 1 ORDER BY name ASC").fetchall()
-    locations = db.execute("SELECT * FROM settings_locations WHERE is_active = 1 ORDER BY name ASC").fetchall()
+    locations = db.execute("SELECT * FROM settings_locations WHERE is_active = 1 AND unit_id = ? ORDER BY name ASC", (unit_id,)).fetchall()
     companies = db.execute("SELECT * FROM settings_companies WHERE is_active = 1 ORDER BY name ASC").fetchall()
     
     # Busca grupos e concatena os membros para facilitar o preenchimento dos modais
@@ -22,9 +23,10 @@ def dashboard():
         SELECT g.id, g.name, GROUP_CONCAT(m.email, ', ') as members
         FROM email_groups g
         LEFT JOIN email_group_members m ON g.id = m.group_id
+        WHERE g.unit_id = ?
         GROUP BY g.id
         ORDER BY g.name ASC
-    """).fetchall()
+    """, (unit_id,)).fetchall()
     
     domains = []
     
@@ -49,7 +51,8 @@ def add(category):
         if category == 'type':
             db.execute("INSERT INTO settings_item_types (name) VALUES (?)", (name,))
         elif category == 'location':
-            db.execute("INSERT INTO settings_locations (name) VALUES (?)", (name,))
+            unit_id = session.get('unit_id')
+            db.execute("INSERT INTO settings_locations (name, unit_id) VALUES (?, ?)", (name, unit_id))
         elif category == 'company':
             db.execute("INSERT INTO settings_companies (name) VALUES (?)", (name,))
         elif category == 'domain' and session['role'] == 'ADMIN':
@@ -103,8 +106,9 @@ def add_email_group():
     emails = request.form['emails'].strip().split(',')
     
     db = get_db()
+    unit_id = session.get('unit_id')
     try:
-        cursor = db.execute("INSERT INTO email_groups (name) VALUES (?)", (name,))
+        cursor = db.execute("INSERT INTO email_groups (name, unit_id) VALUES (?, ?)", (name, unit_id))
         group_id = cursor.lastrowid
         
         for email in emails:
@@ -163,17 +167,18 @@ def edit_email_group(group_id):
 def export():
     db = get_db()
     
+    unit_id = session.get('unit_id')
     query = """
         SELECT i.internal_id, i.tracking_code, i.type, i.sender, i.recipient_email, i.recipient_name_manual, 
                i.location, p.received_by_name, u.full_name as deliverer_name, p.delivered_at
         FROM items i
         LEFT JOIN proofs p ON i.id = p.item_id
         LEFT JOIN users u ON p.delivered_by = u.id
-        WHERE i.status = 'ENTREGUE'
+        WHERE i.status = 'ENTREGUE' AND i.unit_id = ?
         ORDER BY p.delivered_at DESC
     """
     
-    items = db.execute(query).fetchall()
+    items = db.execute(query, (unit_id,)).fetchall()
     
     si = io.StringIO()
     cw = csv.writer(si, delimiter=';') 
@@ -205,16 +210,17 @@ def export():
 def export_panel():
     db = get_db()
     
+    unit_id = session.get('unit_id')
     # Exporta itens que NÃO foram entregues ainda (Etapas 1, 2 e 3)
     query = """
         SELECT i.internal_id, i.tracking_code, i.type, i.sender, i.recipient_email, i.recipient_name_manual, 
                i.location, i.status, i.created_at
         FROM items i
-        WHERE i.status != 'ENTREGUE'
+        WHERE i.status != 'ENTREGUE' AND i.unit_id = ?
         ORDER BY i.created_at ASC
     """
     
-    items = db.execute(query).fetchall()
+    items = db.execute(query, (unit_id,)).fetchall()
     
     si = io.StringIO()
     cw = csv.writer(si, delimiter=';') 

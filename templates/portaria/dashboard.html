@@ -49,44 +49,84 @@
     </div>
 
     <div class="col-md-7">
-        <div class="card">
-            <div class="card-header">
-                Itens na Portaria / Recebidos Hoje
+        <!-- Tabela de Itens Recebidos Hoje -->
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center"
+                style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#todayItemsCollapse">
+                <h5 class="mb-0">Itens na Portaria / Recebidos Hoje</h5>
+                <span class="badge bg-white text-success">{{ today_items|length }}</span>
             </div>
-            <div class="card-body p-0">
-                <table class="table table-striped mb-0">
-                    <thead>
-                        <tr>
-                            <th>Hora</th>
-                            <th>Tipo</th>
-                            <th>Remetente</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in recent_items %}
-                        <tr>
-                            <td>
-                                {% if item.created_at.date() == datetime.datetime.now().date() %}
-                                {{ item.created_at.strftime('%H:%M') }}
-                                {% else %}
-                                {{ item.created_at.strftime('%d/%m %H:%M') }}
-                                {% endif %}
-                            </td>
-                            <td>{{ item.type }}</td>
-                            <td>{{ item.sender }}</td>
-                            <td><span class="badge bg-secondary status-badge">{{ item.status }}</span></td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="4" class="text-center text-muted p-3">Nenhum item pendente ou recebido hoje.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="collapse show" id="todayItemsCollapse">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0" id="tableTodayPortaria">
+                        <thead>
+                            <tr class="table-light">
+                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 0)">Hora</th>
+                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 1)">Tipo</th>
+                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 2)">Remetente</th>
+                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 3)">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in today_items %}
+                            <tr>
+                                <td>
+                                    {# Converte para string para comparar se PARSE_DECLTYPES está ativo #}
+                                    {{ item.created_at.strftime('%H:%M') }}
+                                </td>
+                                <td>{{ item.type }}</td>
+                                <td>{{ item.sender }}</td>
+                                <td>
+                                    {% if item.status == 'RECEBIDO_PORTARIA' %}
+                                    <span class="badge bg-primary status-badge">{{ item.status }}</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary status-badge">{{ item.status }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted p-3">Nenhum item recebido hoje.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+
+        <!-- Tabela de Itens Pendentes de Dias Anteriores -->
+        {% if pending_items %}
+        <div class="card border-warning">
+            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center"
+                style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#pendingItemsCollapse">
+                <h5 class="mb-0">Itens na Portaria / Pendentes (Dias Anteriores)</h5>
+                <span class="badge bg-dark text-white">{{ pending_items|length }}</span>
+            </div>
+            <div class="collapse show" id="pendingItemsCollapse">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0" id="tablePendingPortaria">
+                        <thead>
+                            <tr class="table-light">
+                                <th class="sortable" onclick="sortTable('tablePendingPortaria', 0)">Data/Hora</th>
+                                <th class="sortable" onclick="sortTable('tablePendingPortaria', 1)">Tipo</th>
+                                <th class="sortable" onclick="sortTable('tablePendingPortaria', 2)">Remetente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in pending_items %}
+                            <tr class="table-warning">
+                                <td><strong>{{ item.created_at.strftime('%d/%m %H:%M') }}</strong></td>
+                                <td>{{ item.type }}</td>
+                                <td>{{ item.sender }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 

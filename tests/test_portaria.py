@@ -9,9 +9,10 @@ def logged_in_portaria(client, auth, app):
     with app.app_context():
         db = get_db()
         db.execute(
-            "INSERT INTO users (username, password_hash, role, full_name) VALUES (?, ?, ?, ?)",
-            ('porteiro_test', generate_password_hash('p123'), 'PORTARIA', 'Porteiro Teste')
+            "INSERT INTO users (username, password_hash, role, full_name, default_unit_id) VALUES (?, ?, ?, ?, ?)",
+            ('porteiro_test', generate_password_hash('p123'), 'PORTARIA', 'Porteiro Teste', 1)
         )
+        db.execute("INSERT INTO settings_companies (id, name) VALUES (1, 'Unidade Teste')")
         db.commit()
     auth.login('porteiro_test', 'p123')
     return client

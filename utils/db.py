@@ -69,16 +69,68 @@ def init_app(app):
 
     @app.cli.command('create-admin')
     def create_admin_command():
+        _create_admin_logic()
+
+    @app.cli.command('bootstrap')
+    def bootstrap_command():
+        import click
+        print("🚀 Iniciando Bootstrap do AeroPost...")
+        
+        # 1. Inicializar Banco
+        init_db()
+        print("✅ Banco de Dados inicializado.")
+        
+        # 2. Criar Admin
+        print("\n--- Cadastro do Administrador Principal ---")
+        admin_data = _create_admin_logic()
+        
+        if admin_data:
+            admin_id = admin_data['id']
+            db = get_db()
+            db_type = g.get('db_type', 'sqlite')
+            placeholder = '%s' if db_type == 'postgres' else '?'
+            
+            # 3. Configuração Inicial de Unidade e Local
+            print("\n--- Configuração Operacional Inicial ---")
+            unit_name = click.prompt('Nome da Unidade Principal (ex: Matriz)', default='Matriz')
+            location_name = click.prompt('Nome do primeiro Local (ex: Recepção)', default='Recepção')
+            
+            cursor = db.cursor()
+            try:
+                # Criar Unidade
+                cursor.execute(f"INSERT INTO settings_companies (name, is_active) VALUES ({placeholder}, 1)", (unit_name,))
+                unit_id = cursor.lastrowid
+                
+                # Criar Local vinculado à unidade
+                cursor.execute(f"INSERT INTO settings_locations (name, unit_id, is_active) VALUES ({placeholder}, {placeholder}, 1)", (location_name, unit_id))
+                
+                # Vincular Admin à Unidade Padrão
+                cursor.execute(f"UPDATE users SET default_unit_id = {placeholder} WHERE id = {placeholder}", (unit_id, admin_id))
+                
+                db.commit()
+                print(f"\n✅ Setup concluído com sucesso!")
+                print(f"   - Unidade '{unit_name}' criada.")
+                print(f"   - Local '{location_name}' criado.")
+                print(f"   - Administrador vinculado à unidade '{unit_name}'.")
+                print("\nO sistema está pronto para uso!")
+            except Exception as e:
+                print(f"\n❌ Erro na configuração operacional: {e}")
+            finally:
+                cursor.close()
+
+    def _create_admin_logic():
+        import click
         from werkzeug.security import generate_password_hash
+        
+        username = click.prompt('Username do Admin', default='admin')
+        password = click.prompt('Senha do Admin', hide_input=True, confirmation_prompt=True)
+        full_name = click.prompt('Nome Completo', default='Administrador Sistema')
+        email = click.prompt('E-mail', default='admin@aeropost.local')
+
         db = get_db()
         db_type = g.get('db_type', 'sqlite')
         
-        username = 'admin'
-        password = generate_password_hash('admin123')
-        full_name = 'Administrador Sistema'
-        email = 'admin@aeropost.local'
-
-        # Placeholder universal
+        password_hash = generate_password_hash(password)
         placeholder = '%s' if db_type == 'postgres' else '?'
         
         sql = f"""
@@ -88,12 +140,14 @@ def init_app(app):
         
         cursor = db.cursor()
         try:
-            cursor.execute(sql, (username, password, full_name, email))
+            cursor.execute(sql, (username, password_hash, full_name, email))
+            admin_id = cursor.lastrowid
             db.commit()
-            print("Usuário Admin criado com sucesso!")
-            print("Login: admin / Senha: admin123")
+            print(f"✅ Usuário Admin '{username}' criado.")
+            return {'id': admin_id, 'username': username}
         except Exception as e:
-            print(f"Erro ao criar admin (provavelmente já existe): {e}")
+            print(f"❌ Erro ao criar admin: {e}")
+            return None
         finally:
             cursor.close()
 

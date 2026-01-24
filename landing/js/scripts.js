@@ -9,5 +9,21 @@ function reveal() {
         }
     }
 }
+async function loadMenu() {
+    const placeholder = document.getElementById('menu-placeholder');
+    if (!placeholder) return;
+
+    try {
+        const response = await fetch('menu.html');
+        if (response.ok) {
+            const html = await response.text();
+            placeholder.innerHTML = html;
+        }
+    } catch (error) {
+        console.error('Erro ao carregar o menu:', error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadMenu);
 window.addEventListener("scroll", reveal);
 reveal(); // Run on initiate
