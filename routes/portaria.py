@@ -19,13 +19,21 @@ def dashboard():
     user_data = db.execute("SELECT default_unit_id FROM users WHERE id = ?", (user_id,)).fetchone()
     default_unit = user_data['default_unit_id'] if user_data else None
 
+    # Garante que temos um unit_id válido na sessão
+    unit_id = session.get('unit_id')
+    
     # Se for APENAS portaria, força a visualização da sua unidade padrão
     if user_role == 'PORTARIA':
-        if session.get('unit_id') != default_unit:
+        if unit_id != default_unit:
             session['unit_id'] = default_unit
-        unit_id = default_unit
-    else:
-        unit_id = session.get('unit_id')
+            unit_id = default_unit
+    
+    # Se ainda estiver sem unidade (ex: admin sem default), tenta pegar a primeira disponível
+    if not unit_id:
+        first_unit = db.execute("SELECT id FROM settings_companies WHERE is_active = 1 LIMIT 1").fetchone()
+        if first_unit:
+            session['unit_id'] = first_unit['id']
+            unit_id = first_unit['id']
 
     today_date = datetime.date.today().strftime('%Y-%m-%d')
 

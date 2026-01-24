@@ -5,6 +5,15 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.1.3] - 2026-01-24
+
+### 📖 Documentação
+- **Manual do Operador Atualizado 📚**: Reestruturação completa do manual seguindo a sequência lógica sugerida (01-0 a 03-0), cobrindo Login, Navegação e Portaria com as novas capturas de tela.
+
+### 🐞 Correções (Bug Fixes)
+- **Sincronia de Unidade na Portaria 🏗️**: Reforçada a lógica de identificação da unidade ativa no painel da Portaria, garantindo que o filtro de dados respeite estritamente a unidade selecionada (especialmente para Administradores).
+- **Identificação Visual**: Títulos dos painéis agora exibem explicitamente o nome da Unidade Ativa para evitar confusão operacional.
+
 ## [v4.1.2] - 2026-01-24
 
 ### 🐞 Correções (Bug Fixes)

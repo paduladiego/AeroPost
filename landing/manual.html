@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Manual do Operador | AeroPost</title>
+        <meta name="description"
+            content="Guia completo de operação do AeroPost. Aprenda a gerenciar malotes, encomendas e correspondências com eficiência e zero papel.">
+        <meta name="keywords"
+            content="manual aeropost, guia do operador, como usar aeropost, gestão de encomendas, tutorial facilities">
+
+        <!-- Open Graph -->
+        <meta property="og:title" content="AeroPost | Manual do Operador">
+        <meta property="og:description"
+            content="Aprenda a extrair o máximo de eficiência da plataforma AeroPost com nosso guia completo.">
+        <meta property="og:type" content="article">
+        <link rel="canonical" href="https://aeropost.kran.technology/manual">
+
+        <link rel="icon" type="image/png" href="assets/favicon.png">
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/styles.css">
+        <style>
+            .manual-section {
+                padding: 80px 0;
+                max-width: 1000px;
+                margin: 0 auto;
+            }
+
+            .manual-card {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 20px;
+                padding: 40px;
+                margin-bottom: 40px;
+                backdrop-filter: blur(10px);
+            }
+
+            .manual-card h2 {
+                font-size: 2rem;
+                color: var(--primary);
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .manual-card p {
+                font-size: 1.1rem;
+                line-height: 1.6;
+                opacity: 0.8;
+                margin-bottom: 30px;
+            }
+
+            .screenshot-container {
+                background: #000;
+                border-radius: 15px;
+                overflow: hidden;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                margin-bottom: 20px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            }
+
+            .screenshot-container img {
+                width: 100%;
+                display: block;
+                opacity: 0.9;
+                transition: 0.5s;
+            }
+
+            .screenshot-container:hover img {
+                opacity: 1;
+                transform: scale(1.02);
+            }
+
+            .step-list {
+                list-style: none;
+                padding: 0;
+            }
+
+            .step-list li {
+                position: relative;
+                padding-left: 40px;
+                margin-bottom: 20px;
+                font-size: 1.05rem;
+            }
+
+            .step-list li::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 5px;
+                width: 24px;
+                height: 24px;
+                background: var(--primary);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.8rem;
+                font-weight: 800;
+                color: #000;
+            }
+
+            .step-list li:nth-child(1)::before {
+                content: "1";
+            }
+
+            .step-list li:nth-child(2)::before {
+                content: "2";
+            }
+
+            .step-list li:nth-child(3)::before {
+                content: "3";
+            }
+
+            .step-list li:nth-child(4)::before {
+                content: "4";
+            }
+
+            .anchor-nav {
+                position: sticky;
+                top: 100px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                z-index: 10;
+            }
+
+            .anchor-nav a {
+                color: white;
+                text-decoration: none;
+                font-size: 0.9rem;
+                opacity: 0.5;
+                transition: 0.3s;
+            }
+
+            .anchor-nav a:hover {
+                opacity: 1;
+                color: var(--primary);
+            }
+
+            @media (max-width: 768px) {
+                .manual-card {
+                    padding: 20px;
+                }
+
+                .anchor-nav {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="bg-glow"></div>
+        <div id="menu-placeholder"></div>
+
+        <section class="hero" style="min-height: 40vh;">
+            <div class="hero-content">
+                <span class="badge-mvp">Guia de Operação • v4.1.3</span>
+                <h1>Manual do Operador</h1>
+                <p>Aprenda a extrair o máximo de eficiência da plataforma AeroPost.</p>
+            </div>
+        </section>
+
+        <div class="container" style="display: flex; gap: 50px; padding: 0 5%;">
+            <aside style="width: 250px;">
+                <div class="anchor-nav">
+                    <span
+                        style="font-weight: 800; font-size: 0.7rem; letter-spacing: 2px; opacity: 0.3; margin-bottom: 10px;">SUMÁRIO</span>
+                    <div class="anchor-nav">
+                        <span
+                            style="font-weight: 800; font-size: 0.7rem; letter-spacing: 2px; opacity: 0.3; margin-bottom: 10px;">SUMÁRIO</span>
+                        <a href="#acesso">1. Acesso</a>
+                        <a href="#navegacao">2. Navegação</a>
+                        <a href="#portaria">3. Portaria</a>
+                        <a href="#facilities">4. Facilities</a>
+                        <a href="#assinatura">5. Assinatura/Senha</a>
+                        <a href="#ocorrencias">6. Ocorrências</a>
+                        <a href="#historico">7. Histórico</a>
+                        <a href="#admin">8. Usuários</a>
+                        <a href="#settings">9. Configurações</a>
+                    </div>
+                </div>
+            </aside>
+
+            <main style="flex: 1;">
+                <!-- 01: Acesso -->
+                <section id="acesso" class="manual-section">
+                    <div class="manual-card reveal">
+                        <h2>🔑 01. Acesso ao Sistema</h2>
+                        <p>Realize a autenticação segura para acessar o painel operacional.</p>
+
+                        <div class="screenshot-container">
+                            <img src="assets/manual/01-0 - Login.png" alt="Tela de Login"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=01-0+Login'">
+                        </div>
+
+                        <div
+                            style="background: rgba(255, 193, 7, 0.1); border-left: 4px solid #ffc107; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                            <h6 style="color: #ffc107; margin-bottom: 10px;">🧪 Credenciais de Demonstração:</h6>
+                            <ul style="list-style: none; padding: 0; margin: 0; font-size: 0.95rem;">
+                                <li><strong>Portaria:</strong> user: <code>portaria.kran</code> / pass:
+                                    <code>portaria123</code>
+                                </li>
+                                <li><strong>Administrador:</strong> user: <code>admin</code> / pass:
+                                    <code>admin123</code>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <ul class="step-list">
+                            <li><strong>Identificação:</strong> Utilize seu e-mail corporativo ou nome de usuário.</li>
+                            <li><strong>Segurança:</strong> Insira sua senha pessoal.</li>
+                            <li><strong>Entrar:</strong> Clique no botão "Entrar" para acessar seu painel.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 02: Navegação e Contexto -->
+                <section id="navegacao" class="manual-section">
+                    <div class="manual-card reveal">
+                        <h2>🧭 02. Navegação e Contexto</h2>
+                        <p>Após o login, você terá acesso às ferramentas de gestão e poderá alternar entre unidades.</p>
+
+                        <!-- Slide 02-0: Home -->
+                        <div class="screenshot-container">
+                            <img src="assets/manual/02-0 - Após login.png" alt="Dashboard Inicial"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=02-0+Apos+Login'">
+                        </div>
+                        <p class="small text-muted mt-2">Visão geral do sistema logo após a autenticação.</p>
+
+                        <!-- Slide 02-1: Seleção de Unidade -->
+                        <div class="screenshot-container mt-4">
+                            <img src="assets/manual/02-1 Seleção de uniade.png" alt="Seletor de Unidades"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=02-1+Selecao+de+Unidade'">
+                        </div>
+                        <ul class="step-list">
+                            <li><strong>Troca de Unidade:</strong> No menu superior, clique no prédio/unidade para
+                                alternar o contexto de trabalho. Isso filtra automaticamente todos os dados para a
+                                unidade selecionada.</li>
+                        </ul>
+
+                        <!-- Slide 02-2: Perfil -->
+                        <div class="screenshot-container mt-4">
+                            <img src="assets/manual/02-2 Edição de perfil do usuário.png" alt="Edição de Perfil"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=02-2+Perfil+Usuario'">
+                        </div>
+                        <p>Gerencie seus dados e sua unidade padrão através do menu de perfil.</p>
+
+                        <!-- Slide 02-3: Suporte -->
+                        <div class="screenshot-container mt-4">
+                            <img src="assets/manual/02-3 Reporte de problemas.png" alt="Reportar Problema"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=02-3+Suporte'">
+                        </div>
+                        <p>Encontrou algum erro? Use o botão "🆘 Reportar Problema" para enviar um chamado diretamente à
+                            equipe técnica.</p>
+                    </div>
+                </section>
+
+                <!-- 03: Módulo Portaria -->
+                <section id="portaria" class="manual-section">
+                    <div class="manual-card reveal">
+                        <h2>🛂 03. Operação de Portaria</h2>
+                        <p>Módulo simplificado para o registro imediato de encomendas.</p>
+
+                        <div class="screenshot-container">
+                            <img src="assets/manual/03-0 Portaria.png" alt="Painel Portaria"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=03-0+Portaria'">
+                        </div>
+
+                        <ul class="step-list">
+                            <li><strong>Tipo e Rastreio:</strong> Selecione o tipo de item e escaneie o código de
+                                rastreio se disponível.</li>
+                            <li><strong>Remetente e Registro:</strong> Identifique quem enviou e registre o recebimento
+                                para gerar o ID AeroPost.</li>
+                            <li><strong>Dashboard:</strong> Acompanhe os itens recebidos no dia e veja alertas de itens
+                                pendentes de dias anteriores.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 04: Módulo Facilities -->
+                <section id="facilities" class="manual-section">
+                    <div class="manual-card reveal">
+                        <h2>⚡ 04. Módulo Facilities</h2>
+                        <p>Processamento logístico completo: Triagem, Alocação e Entrega.</p>
+
+                        <!-- 04-0: Dashboard Facilities -->
+                        <div class="screenshot-container">
+                            <img src="assets/manual/04-0 Facilities tela principal.png" alt="Painel Facilities"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=04-0+Facilities'">
+                        </div>
+                        <p class="small text-muted mt-2">Visão geral do Kanban de encomendas: Portaria, Alocação e
+                            Entrega.</p>
+
+                        <!-- 04-1: Alocação -->
+                        <div class="screenshot-container mt-4">
+                            <img src="assets/manual/04-1 Alocar item, com local nome e observação.png" alt="Alocar Item"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=04-1+Alocar+Item'">
+                        </div>
+                        <ul class="step-list">
+                            <li><strong>Alocação:</strong> Defina o destinatário, o local físico (armários/salas) e
+                                adicione observações pertinentes.</li>
+                        </ul>
+
+                        <!-- 04-2: Entrega -->
+                        <div class="screenshot-container mt-4">
+                            <img src="assets/manual/04-2 Realizar entrega, com assinatura ou senha.png"
+                                alt="Realizar Entrega"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=04-2+Entrega'">
+                        </div>
+                        <p>Finalize o processo escolhendo o método de confirmação do destinatário.</p>
+                    </div>
+                </section>
+
+                <!-- 05: Assinatura e Senha -->
+                <section id="assinatura" class="manual-section">
+                    <div class="manual-card reveal">
+                        <h2>✍️ 05. Assinatura e Senha</h2>
+                        <p>Validação segura da entrega no ato da retirada.</p>
+
+                        <div class="screenshot-container">
+                            <img src="assets/manual/05-0 tela de assinatura de recebimento, reconhece usuário para senha.png"
+                                alt="Confirmação de Entrega"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=05-0+Assinatura+Senha'">
+                        </div>
+
+                        <ul class="step-list">
+                            <li><strong>Reconhecimento:</strong> O sistema identifica o usuário pelo e-mail vinculado ao
+                                item.</li>
+                            <li><strong>Assinatura Digital:</strong> Captura de firma manuscrita diretamente na tela
+                                (Tablet/Desktop).</li>
+                            <li><strong>Senha:</strong> Permite que o colaborador digite sua senha pessoal de acesso
+                                como validação digital.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 06: Ocorrências -->
+                <section id="ocorrencias" class="manual-section">
+                    <div class="manual-card reveal">
+                        <h2>⚠️ 06. Gestão de Ocorrências</h2>
+                        <p>Registro de situações extraordinárias no fluxo logístico.</p>
+
+                        <div class="screenshot-container">
+                            <img src="assets/manual/06-0 registros de ocorrencia.png" alt="Registros de Ocorrência"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=06-0+Ocorrencia'">
+                        </div>
+
+                        <ul class="step-list">
+                            <li><strong>Extravio/Devolução:</strong> Marque itens que não puderam ser entregues ou foram
+                                devolvidos ao remetente.</li>
+                            <li><strong>Notas de Auditoria:</strong> Justifique a ação com detalhes para futuras
+                                consultas.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 07: Histórico -->
+                <section id="historico" class="manual-section">
+                    <div class="manual-card reveal">
+                        <h2>📈 07. Auditoria e Histórico</h2>
+                        <p>Rastreabilidade total de todas as movimentações realizadas.</p>
+
+                        <div class="screenshot-container">
+                            <img src="assets/manual/07-0 histórico de entergas.png" alt="Histórico de Entregas"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=07-0+Historico'">
+                        </div>
+
+                        <ul class="step-list">
+                            <li><strong>Busca Avançada:</strong> Filtre por data, ID interno, código de rastreio ou
+                                destinatário.</li>
+                            <li><strong>Comprovantes:</strong> Visualize assinaturas e carimbos de data/hora de cada
+                                entrega.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 08: Usuários -->
+                <section id="admin" class="manual-section">
+                    <div class="manual-card reveal">
+                        <h2>👥 08. Gestão de Usuários</h2>
+                        <p>Controle total sobre quem opera o sistema.</p>
+
+                        <div class="screenshot-container">
+                            <img src="assets/manual/08-0 registro e controle de usuarios, bloqueio edição senha e áreas e cadsatro de portaria.png"
+                                alt="Gerenciar Usuários"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=08-0+Usuarios'">
+                        </div>
+
+                        <ul class="step-list">
+                            <li><strong>Controle de Acesso:</strong> Bloqueie, edite ou altere senhas de operadores.
+                            </li>
+                            <li><strong>Níveis de Permissão:</strong> Defina quem atua na Portaria, Facilities ou
+                                Administração.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 09: Configurações -->
+                <section id="settings" class="manual-section" style="padding-bottom: 200px;">
+                    <div class="manual-card reveal">
+                        <h2>⚙️ 09. Configurações Globais</h2>
+                        <p>Personalize o AeroPost para a estrutura da sua empresa.</p>
+
+                        <div class="screenshot-container">
+                            <img src="assets/manual/09-0 configuração tipo de encomanda - locais - unidades - domino permitido -grupo de emails.png"
+                                alt="Configurações"
+                                onerror="this.src='https://via.placeholder.com/1000x500/111/444?text=09-0+Configuracoes'">
+                        </div>
+
+                        <ul class="step-list">
+                            <li><strong>Estrutura:</strong> Gerencie Unidades, Locais de Armazenamento e Tipos de
+                                Encomenda.</li>
+                            <li><strong>Governança:</strong> Configure domínios de e-mail permitidos e grupos de
+                                notificação.</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 AeroPost. Todos os direitos reservados. Projeto KRÒS / KRAN Tech.</p>
+        </footer>
+
+        <script src="js/scripts.js"></script>
+    </body>
+
+</html>
