@@ -16,15 +16,33 @@ Para instruções passo a passo de deployment, consulte o [UPGRADE_MANUAL.md](fi
 - **Caminho Landing/Demo:** `/var/www/aeropost-demo`
   - **Banco de Dados:** `aeropost_demo.db`
 - **Serviço Demo:** `aeropost-demo.service`
-- **Caminho Client Dexco:** `/var/www/Dexco/AeroPost`
+- **Caminho Client Dexco Produção:** `/var/www/Dexco/AeroPost`
+- **Caminho Client Dexco Homologação:** `/var/www/Dexco/hml/AeroPost`
+- **Caminho Client Dexco Desenvolvimento:** `/var/www/Dexco/dev/AeroPost`
   - **Banco de Dados:** `aeropost.db`
-- **Serviço Client Dexco:** `aeropost.service`
-  -- **Caminho Novos Clientes:** `/var/www/<ClientName>/AeroPost`
+- **Serviço Client Dexco (Prod):** `aeropost.service` (Porta 8000)
+- **Serviço Client Dexco (HML):** `aeropost-hml.service` (Porta 8001)
+- **Nginx Config (Dexco):** `/etc/nginx/sites-available/aeropost`
+  -- **Caminho Novos Clientes Produção:** `/var/www/<ClientName>/AeroPost`
+  -- **Caminho Novos Clientes Homologação:** `/var/www/<ClientName>/hml/AeroPost`
+  -- **Caminho Novos Clientes Desenvolvimento:** `/var/www/<ClientName>/dev/AeroPost`
     - **Banco de Dados:** `aeropost.db`
 - **Usuário SSH:** `root`
 - **Comando de Acesso:** `ssh root@76.13.71.38`
 - **Banco de Dados Local:** SQLite (`aeropost.db`)
 
+### 🏢 Tabela de Ambientes
+
+| Ambiente | Função | URL | Caminho na VPS |
+| :--- | :--- | :--- | :--- |
+| **DEV** | Desenvolvimento local | `localhost:5000` | N/A |
+| **HML** | Homologação / Testes | `aeropost.kran.technology/Dexco/hml/` | `/var/www/Dexco/hml/AeroPost` |
+| **PRD** | Produção | `kran.technology/Dexco/AeroPost` | `/var/www/Dexco/AeroPost` |
+| **DEMO** | Demonstração Comercial | `aeropost.kran.technology/demo` | `/var/www/aeropost-demo` |
+
+- **Gerenciador de Arquivos:** `https://aeropost.kran.technology/filebrowser/`
+- **Serviço File Browser:** `filebrowser.service`
+- **Porta Interna:** `8080` (Proxy reverso via Nginx)
 ---
 
 ## 🌿 Padrões de Git (Git Flow)
@@ -177,6 +195,24 @@ Para manter a escalabilidade do AeroPost, siga esta estrutura para novos scripts
 - **O que**: Arquivos de teste automatizado (`test_*.py`) e massas de dados exclusivas para o ambiente de testes (`fixtures`).
 
 ---
+## 📂 Gerenciador de Arquivos (File Browser)
+
+O File Browser está configurado como um Proxy Reverso através do Nginx, permitindo a gestão visual de arquivos e edição de configurações diretamente pelo navegador.
+
+### 1. Configurações de Acesso
+- **URL:** `https://aeropost.kran.technology/filebrowser/`
+- **Utilizador:** `padula.one`
+- **Escopo (Scope):** `/` (Acesso total à raiz do servidor)
+- **Base de Dados:** `/etc/filebrowser/filebrowser.db`
+
+> [!WARNING]
+> **Segurança de Senha**: O sistema exige um mínimo de 12 caracteres. Alterações de senha via interface ou CLI devem respeitar este limite.
+
+### 2. Integração Nginx
+A rota está definida no arquivo `/etc/nginx/sites-available/aeropost-landing`. 
+- **Upload Limit:** Configurado para `500M` no bloco `client_max_body_size`.
+
+---
 
 ## 🚀 Comandos Úteis (CLI)
 
@@ -184,3 +220,8 @@ Para manter a escalabilidade do AeroPost, siga esta estrutura para novos scripts
 - `flask init-db`: Inicializa apenas as tabelas do banco de dados.
 - `flask create-admin`: Cria apenas um novo usuário administrador (Interativo).
 - `flask test-email`: Testa as configurações de SMTP.
+
+### Gerenciamento do File Browser
+- `systemctl restart filebrowser`: Reinicia o serviço do gerenciador.
+- `systemctl stop filebrowser`: Para o serviço (necessário para manipulação direta do banco `.db`).
+- `filebrowser users update padula.one --password <nova_senha> --database /etc/filebrowser/filebrowser.db`: Atualiza senha via terminal.
