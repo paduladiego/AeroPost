@@ -9,8 +9,8 @@ O AeroPost é uma aplicação web desenvolvida para otimizar o fluxo de recebime
 O projeto segue um fluxo rigoroso de promoção de código para garantir estabilidade:
 
 1.  **DEV (Desenvolvimento)**: Codificação local e testes unitários.
-2.  **HML (Homologação)**: Servidor de validação (`/var/www/Dexco/hml/`). Onde o usuário testa novas versões com dados reais clonados antes da subida oficial. **Etapa obrigatória.**
-3.  **PRD (Produção)**: Ambiente estável de uso final (`/var/www/Dexco/AeroPost/`).
+2.  **HML (Homologação)**: Servidor de validação (`/var/www/<ClientName>/hml/`). Onde o usuário testa novas versões com dados reais clonados antes da subida oficial. **Etapa obrigatória.**
+3.  **PRD (Produção)**: Ambiente estável de uso final (`/var/www/<ClientName>/AeroPost/`).
 
 ## 🚀 Funcionalidades Principais
 
