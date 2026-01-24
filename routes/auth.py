@@ -30,6 +30,15 @@ def login():
             session['role'] = user['role']
             session['name'] = user['full_name']
             
+            # Define unit_id imediatamente após o login para evitar telas vazias
+            db = get_db()
+            if user['default_unit_id']:
+                session['unit_id'] = user['default_unit_id']
+            else:
+                first_unit = db.execute("SELECT id FROM settings_companies WHERE is_active = 1 LIMIT 1").fetchone()
+                if first_unit:
+                    session['unit_id'] = first_unit['id']
+            
             try:
                 if user['must_change_password'] == 1:
                     session['must_change_password'] = True

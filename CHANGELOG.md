@@ -5,6 +5,13 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.1.2] - 2026-01-24
+
+### 🐞 Correções (Bug Fixes)
+- **Sincronia de Contexto Multi-Unidade 🏢**: Correção do bug onde o banco de dados carregava "vazio" (zerado) logo após o login. Agora, a unidade operacional (`unit_id`) é definida na sessão no exato momento da autenticação.
+- **Resiliência de Sessão 🛡️**: Implementado middleware `before_request` que garante a restauração automática do contexto de unidade em sessões órfãs ou persistentes, eliminando a necessidade de cliques manuais para carregar os dados.
+- **Limpeza de Contexto**: Removida lógica redundante de gravação em sessão no `context_processor`.
+
 ## [v4.1.1] - 2026-01-24
 
 ### 🛠️ Refatoração e Melhorias de UI

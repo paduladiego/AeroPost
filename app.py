@@ -23,7 +23,7 @@ def create_app():
         db_url = os.path.join(app.root_path, db_url)
     app.config['DATABASE'] = db_url
     # Versão do Sistema
-    base_version = 'v4.1.1'
+    base_version = 'v4.1.2'
     app_suffix = os.environ.get('APP_SUFFIX', '') # Ex: '-demo' ou '-Kran'
     app.config['APP_VERSION'] = os.environ.get('APP_VERSION', f"{base_version}{app_suffix}")
     
@@ -50,14 +50,6 @@ def create_app():
             db = get_db()
             units = db.execute("SELECT id, name FROM settings_companies WHERE is_active = 1").fetchall()
             
-            # Se não houver unidade na sessão, tenta carregar a padrão do usuário
-            if 'unit_id' not in session:
-                user = db.execute("SELECT default_unit_id FROM users WHERE id = ?", (session['user_id'],)).fetchone()
-                if user and user['default_unit_id']:
-                    session['unit_id'] = user['default_unit_id']
-                elif units:
-                    session['unit_id'] = units[0]['id']
-            
             # Encontra o nome da unidade ativa
             role = session.get('role')
             # Se for apenas PORTARIA, remove outras unidades da lista de escolha
@@ -82,9 +74,23 @@ def create_app():
     # Middleware para subdiretórios
     app.wsgi_app = PrefixMiddleware(app.wsgi_app)
     
-    # Lógica de troca de senha obrigatória
+    # Lógica de segurança e troca de senha
     @app.before_request
     def before_request():
+        # 1. Garante que se o usuário está logado, ele tenha um unit_id na sessão
+        from flask import session
+        if 'user_id' in session and 'unit_id' not in session:
+            from utils.db import get_db
+            db = get_db()
+            user = db.execute("SELECT default_unit_id FROM users WHERE id = ?", (session['user_id'],)).fetchone()
+            if user and user['default_unit_id']:
+                session['unit_id'] = user['default_unit_id']
+            else:
+                first_unit = db.execute("SELECT id FROM settings_companies WHERE is_active = 1 LIMIT 1").fetchone()
+                if first_unit:
+                    session['unit_id'] = first_unit['id']
+
+        # 2. Lógica de troca de senha obrigatória
         return enforce_password_change_logic()
 
     # Registro de Blueprints
