@@ -25,6 +25,30 @@
             }
         }
     });
+
+    function filterTables() {
+        const input = document.getElementById('globalSearch');
+        const filter = input.value.toLowerCase();
+        const tables = ['table-portaria', 'table-triagem', 'table-entrega'];
+
+        tables.forEach(tableId => {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) { // Skip header
+                const row = rows[i];
+                if (row.cells.length === 1 && row.cells[0].classList.contains('text-center')) continue; // Skip empty message row
+
+                let text = row.innerText.toLowerCase();
+                if (text.includes(filter)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        });
+    }
 </script>
 {% endblock %}
 
@@ -86,6 +110,16 @@
                 <small>Aguardando Retirada</small>
             </div>
         </button>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="input-group">
+            <span class="input-group-text">🔍</span>
+            <input type="text" id="globalSearch" class="form-control"
+                placeholder="Pesquisa rápida (ID, Remetente, Destinatário, Rastreio...)" onkeyup="filterTables()">
+        </div>
     </div>
 </div>
 

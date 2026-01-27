@@ -5,6 +5,13 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.2.0] - 2026-01-27
+
+### 🚀 Novas Funcionalidades
+- **Pesquisa Global no Painel Facilities 🔍**: Implementado campo de busca instantânea que filtra simultaneamente as três tabelas do dashboard (Coleta, Alocação e Entrega). Ideal para localizar itens rapidamente em ambientes com alto volume de encomendas.
+- **Filtro Inteligente**: A busca pesquisa em tempo real por ID, Remetente, Destinatário, Rastreio ou qualquer informação visível nas tabelas.
+
+
 ## [v4.1.3] - 2026-01-24
 
 ### 📖 Documentação

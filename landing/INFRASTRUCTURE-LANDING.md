@@ -25,40 +25,24 @@ Este documento define as regras de desenvolvimento e organização para a Landin
 ---
 
 ## 🛠️ Componentes e Carregamento
-
-### Menu Compartilhado
-O menu é injetado dinamicamente para evitar duplicidade de código:
-```javascript
-// Localizado em js/scripts.js
-async function loadMenu() {
-    const placeholder = document.getElementById('menu-placeholder');
-    // Faz o fetch do menu.html e injeta no DOM
-}
-```
-Regra: Qualquer alteração no menu deve ser feita EXCLUSIVAMENTE em `menu.html`.
-
-### Renderização de Markdown
-Utilizamos a biblioteca **marked.js** via CDN para transformar o `CHANGELOG.md` em HTML no lado do cliente.
-Regra: O sistema tenta carregar primeiro `landing/CHANGELOG.md`. Caso não encontre (404), ele tenta buscar na raiz do projeto (`../CHANGELOG.md`). Isso facilita o desenvolvimento sem necessidade de cópia constante.
-
----
-
-## 🎨 Padrões de Design (UI/UX)
-
-- **Fonte**: Outfit (Google Fonts) - Pesos 300, 400, 600, 800.
-- **Cores**:
-  - Primary: `#00d2ff`
-  - Secondary: `#3a7bd5`
-  - Dark: `#0f172a`
-- **Efeitos**: 
-  - Glassmorphism (blur 10px-15px, background semi-transparente).
-  - Gradientes dinâmicos para links e botões CTA.
-  - Reveal animations ao scroll (classe `.reveal`).
-
----
-
-## ⚠️ Checklist de Manutenção
-
-- [ ] Ao atualizar o sistema, copie o `CHANGELOG.md` da raiz para `landing/`.
-- [ ] Teste links relativos entre `index.html` e `changelog.html`.
-- [ ] Verifique se o `menu-placeholder` está presente em novas páginas.
+ 
+- ### Menu Compartilhado
+- O menu é injetado dinamicamente via JavaScript para evitar duplicidade de código. Qualquer alteração estrutural deve ser feita exclusivamente no arquivo `menu.html`.
+- 
+- ### Renderização de Changelog
+- O arquivo `CHANGELOG.md` é renderizado automaticamente no front-end. O sistema busca primeiro a versão local na pasta `landing/` e utiliza a raiz do projeto como fallback apenas para desenvolvimento.
+- 
+- ---
+- 
+- ## 🎨 Padrões de Design (UI/UX)
+- 
+- - **Identidade**: Tipografia Outfit (Google Fonts) e paleta baseada em tons de azul e escuro (`#00d2ff`, `#0f172a`).
+- - **Estética**: Uso de Glassmorphism, gradientes modernos e animações de revelação (reveal) ao rolar a página.
+- 
+- ---
+- 
+- ## ⚠️ Checklist de Manutenção
+- 
+- - [ ] **Novo Release**: Reescrever as novidades técnicas do projeto em linguagem comercial no `landing/CHANGELOG.md`.
+- - [ ] **Consistência**: Validar se o `menu-placeholder` está presente em todas as novas páginas HTML.
+- - [ ] **Assets**: Garantir que novos caminhos de imagens e estilos sejam sempre relativos.

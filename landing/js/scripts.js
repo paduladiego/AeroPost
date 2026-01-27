@@ -18,10 +18,34 @@ async function loadMenu() {
         if (response.ok) {
             const html = await response.text();
             placeholder.innerHTML = html;
+            setupMenu(); // Inicializa a lógica após carregar o HTML
         }
     } catch (error) {
         console.error('Erro ao carregar o menu:', error);
     }
+}
+
+function setupMenu() {
+    const toggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('nav');
+    const links = document.querySelectorAll('nav a');
+
+    if (!toggle || !nav) return;
+
+    toggle.addEventListener('click', () => {
+        toggle.classList.toggle('active');
+        nav.classList.toggle('active');
+        document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : 'auto';
+    });
+
+    // Fecha o menu ao clicar em qualquer link
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            toggle.classList.remove('active');
+            nav.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+    });
 }
 
 document.addEventListener("DOMContentLoaded", loadMenu);

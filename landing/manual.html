@@ -19,6 +19,11 @@
 
         <link rel="icon" type="image/png" href="assets/favicon.png">
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+        <!-- CSP para evitar erros de blob: no Live Server e permitir GTM -->
+        <meta http-equiv="Content-Security-Policy"
+            content="script-src 'self' 'unsafe-inline' https://www.googletagmanager.com blob:;">
+
         <link rel="stylesheet" href="css/styles.css">
         <style>
             .manual-section {

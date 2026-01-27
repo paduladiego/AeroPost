@@ -39,6 +39,11 @@
 
         <link rel="icon" type="image/png" href="assets/favicon.png">
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+        <!-- CSP para evitar erros de blob: no Live Server e permitir GTM -->
+        <meta http-equiv="Content-Security-Policy"
+            content="script-src 'self' 'unsafe-inline' https://www.googletagmanager.com blob:;">
+
         <link rel="stylesheet" href="css/styles.css">
 
         <!-- JSON-LD Structured Data -->
@@ -124,7 +129,7 @@
 
         <section class="features" id="features">
             <div class="section-title reveal">
-                <h2>Tecnologia de Facilities v3.0</h2>
+                <h2>Tecnologia de Facilities v4.1</h2>
                 <p>Funcionalidades exclusivas para quem busca eficiência real.</p>
             </div>
             <div class="grid-features">
@@ -144,7 +149,8 @@
                 </div>
                 <div class="feature-card reveal">
                     <h3>🔒 Autenticação Híbrida</h3>
-                    <p>Zero atrito na entrega. O destinatário escolhe: assinar na tela ou digitar sua senha segura.</p>
+                    <p>Zero atrito na entrega. O destinatário escolhe: assinar na tela ou digitar sua senha segura
+                        (Exclusivo v4.1).</p>
                 </div>
             </div>
         </section>
@@ -174,7 +180,7 @@
                     <div class="price">R$ 599<span>/mês</span></div>
                     <ul class="price-features">
                         <li>Volumes Ilimitados</li>
-                        <li>Dashboard v3.0.2</li>
+                        <li>Dashboard v4.1.3</li>
                         <li>Notificações em Grupo</li>
                         <li>Exportação para Auditoria</li>
                         <li>Até 5 Unidades/Prédios</li>
@@ -238,15 +244,16 @@
 
             <div class="ecosystem-links"
                 style="margin-top: 25px; display: flex; justify-content: center; flex-wrap: wrap; gap: 20px;">
-                <a href="/changelog"
+                <a href="/changelog.html"
                     style="color: var(--primary); text-decoration: none; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; border: 1px solid rgba(var(--primary-rgb), 0.3); padding: 5px 15px; border-radius: 20px;">Notas
                     de Versão (ChangeLog)</a>
-                <a href="https://padula.one" target="_blank"
-                    style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">padula.one</a>
-                <a href="https://desire.earth" target="_blank"
-                    style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">desire.earth</a>
-                <a href="https://newdreams.xyz" target="_blank"
-                    style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">newdreams.xyz</a>
+            </div><br>
+            <a href="https://padula.one" target="_blank"
+                style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">padula.one</a>
+            <a href="https://desire.earth" target="_blank"
+                style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">desire.earth</a>
+            <a href="https://newdreams.xyz" target="_blank"
+                style="color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;">newdreams.xyz</a>
             </div>
         </section>
 

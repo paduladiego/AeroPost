@@ -2,6 +2,17 @@
 
 Acompanhe as evoluções e melhorias contínuas da plataforma.
 
+## [v4.2.0] - 2026-01-27
+### 🔍 Produtividade e Busca
+- **Pesquisa Global de Itens**: Novo motor de busca instantânea no Painel Facilities. Encontre qualquer encomenda em segundos filtrando por ID, Remetente, Destinatário ou Rastreio em todas as etapas do processo (Coleta, Alocação e Entrega).
+- **Eficiência em Volume**: Otimização pensada para operações com grande fluxo de correspondências, reduzindo o tempo de triagem e localização.
+
+## [v4.1.3] - 2026-01-24
+### 📖 Documentação e Precisão
+- **Novo Manual do Operador**: Guia completo e reestruturado para facilitar o treinamento de novas equipes.
+- **Precisão Visual**: Melhorias na identificação de unidades ativas nos painéis, garantindo zero confusão em operações multi-site.
+
+
 ## [v4.1.2] - 2026-01-24
 ### 🛡️ Infraestrutura
 - **Estabilidade de Sessão**: Melhorias no gerenciamento de conexão do usuário para evitar quedas e recarregamentos desnecessários.
