@@ -100,8 +100,9 @@ deactivate
 
 ### 2. Backup de Segurança (CRÍTICO)
 ```bash
-# Recomenda-se usar a data e hora no nome do arquivo
-cp aeropost.db aeropost.db.backup_$(date +%Y%m%d_%H%M)
+# Recomenda-se usar a data e hora no nome do arquivo dentro da pasta backups
+mkdir -p backups # "se nao existir"
+cp aeropost.db backups/aeropost_backup_$(date +%Y%m%d_%H%M).db
 ```
 
 ### 3. Atualização de Código e Dependências
