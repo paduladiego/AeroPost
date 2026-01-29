@@ -70,7 +70,8 @@
                 const feedback = inputId.nextElementSibling;
 
                 if (internalId.length > 5) {
-                    fetch(`/facilities/check-item-status/${internalId}`)
+                    const url = "{{ url_for('facilities.check_item_status', internal_id='INTERNAL_ID') }}".replace('INTERNAL_ID', internalId);
+                    fetch(url)
                         .then(response => response.json())
                         .then(data => {
                             // Resetar padrão

@@ -5,6 +5,11 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.4.1] - 2026-01-29
+
+### 🐞 Correções (Hotfix)
+- **Compatibilidade de Subdiretórios**: Corrigido erro nas chamadas AJAX do Ciclo de Vida e Ocorrências que falhavam em ambientes com prefixo (ex: `/demo`).
+
 ## [v4.4.0] - 2026-01-29
 
 ### 🚀 Novas Funcionalidades (PWA)

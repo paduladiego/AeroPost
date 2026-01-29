@@ -43,7 +43,8 @@
         const overlay = document.getElementById('loading-overlay');
         if (overlay) overlay.style.display = 'flex';
 
-        fetch(`/api/item/history/${itemId}`)
+        const url = "{{ url_for('main.get_item_history', item_id=999999) }}".replace('999999', itemId);
+        fetch(url)
             .then(response => response.json())
             .then(data => {
                 if (overlay) overlay.style.display = 'none';
