@@ -46,17 +46,22 @@
             <table class="table table-hover align-middle mb-0" id="table-history">
                 <thead class="table-light">
                     <tr>
-                        <th class="sortable" onclick="sortTable('table-history', 0)">ID / Rastreio</th>
-                        <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-history', 1)">Item</th>
-                        <th class="sortable" onclick="sortTable('table-history', 2)">Status</th>
-                        <th class="sortable" onclick="sortTable('table-history', 3)">Entregue Para</th>
-                        <th class="sortable d-none d-sm-table-cell" onclick="sortTable('table-history', 4)">Data</th>
+                        <th style="width: 40px;"></th>
+                        <th class="sortable" onclick="sortTable('table-history', 1)">ID / Rastreio</th>
+                        <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-history', 2)">Item</th>
+                        <th class="sortable" onclick="sortTable('table-history', 3)">Status</th>
+                        <th class="sortable" onclick="sortTable('table-history', 4)">Entregue Para</th>
+                        <th class="sortable d-none d-sm-table-cell" onclick="sortTable('table-history', 5)">Data</th>
                         <th class="text-end">Comprovante</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in items %}
                     <tr>
+                        <td>
+                            <a href="javascript:void(0)" class="history-trigger"
+                                onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                        </td>
                         <td>
                             <strong>{{ item.internal_id }}</strong>
                             <br><small class="text-muted d-block text-truncate" style="max-width: 120px;">
@@ -126,7 +131,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="6" class="text-center p-4">Nenhuma entrega encontrada com estes filtros.</td>
+                        <td colspan="7" class="text-center p-4">Nenhuma entrega encontrada com estes filtros.</td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -62,15 +62,20 @@
                     <table class="table table-hover mb-0" id="tableTodayPortaria">
                         <thead>
                             <tr class="table-light">
-                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 0)">Hora</th>
-                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 1)">Tipo</th>
-                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 2)">Remetente</th>
-                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 3)">Status</th>
+                                <th style="width: 40px;"></th>
+                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 1)">Hora</th>
+                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 2)">Tipo</th>
+                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 3)">Remetente</th>
+                                <th class="sortable" onclick="sortTable('tableTodayPortaria', 4)">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in today_items %}
                             <tr>
+                                <td>
+                                    <a href="javascript:void(0)" class="history-trigger"
+                                        onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                                </td>
                                 <td>
                                     {# Converte para string para comparar se PARSE_DECLTYPES está ativo #}
                                     {{ item.created_at.strftime('%H:%M') }}
@@ -83,7 +88,7 @@
                             </tr>
                             {% else %}
                             <tr>
-                                <td colspan="4" class="text-center text-muted p-3">Nenhum item recebido hoje.</td>
+                                <td colspan="5" class="text-center text-muted p-3">Nenhum item recebido hoje.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -105,14 +110,19 @@
                     <table class="table table-hover mb-0" id="tablePendingPortaria">
                         <thead>
                             <tr class="table-light">
-                                <th class="sortable" onclick="sortTable('tablePendingPortaria', 0)">Data/Hora</th>
-                                <th class="sortable" onclick="sortTable('tablePendingPortaria', 1)">Tipo</th>
-                                <th class="sortable" onclick="sortTable('tablePendingPortaria', 2)">Remetente</th>
+                                <th style="width: 40px;"></th>
+                                <th class="sortable" onclick="sortTable('tablePendingPortaria', 1)">Data/Hora</th>
+                                <th class="sortable" onclick="sortTable('tablePendingPortaria', 2)">Tipo</th>
+                                <th class="sortable" onclick="sortTable('tablePendingPortaria', 3)">Remetente</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in pending_items %}
                             <tr class="table-warning">
+                                <td>
+                                    <a href="javascript:void(0)" class="history-trigger"
+                                        onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                                </td>
                                 <td><strong>{{ item.created_at.strftime('%d/%m %H:%M') }}</strong></td>
                                 <td>{{ item.type }}</td>
                                 <td>{{ item.sender }}</td>

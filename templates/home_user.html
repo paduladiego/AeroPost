@@ -20,16 +20,21 @@
                     <table class="table table-hover align-middle" id="table-my-items">
                         <thead>
                             <tr>
-                                <th class="sortable" onclick="sortTable('table-my-items', 0)">Rastreio / ID</th>
-                                <th class="sortable" onclick="sortTable('table-my-items', 1)">Tipo / Remetente</th>
-                                <th class="sortable" onclick="sortTable('table-my-items', 2)">Chegada</th>
-                                <th class="sortable" onclick="sortTable('table-my-items', 3)">Status</th>
-                                <th class="sortable" onclick="sortTable('table-my-items', 4)">Local</th>
+                                <th style="width: 40px;"></th>
+                                <th class="sortable" onclick="sortTable('table-my-items', 1)">Rastreio / ID</th>
+                                <th class="sortable" onclick="sortTable('table-my-items', 2)">Tipo / Remetente</th>
+                                <th class="sortable" onclick="sortTable('table-my-items', 3)">Chegada</th>
+                                <th class="sortable" onclick="sortTable('table-my-items', 4)">Status</th>
+                                <th class="sortable" onclick="sortTable('table-my-items', 5)">Local</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in items %}
                             <tr>
+                                <td>
+                                    <a href="javascript:void(0)" class="history-trigger"
+                                        onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                                </td>
                                 <td>
                                     <strong>{{ item.internal_id }}</strong><br>
                                     <small class="text-muted">{{ item.tracking_code or '-' }}</small>
@@ -69,17 +74,22 @@
             <table class="table table-hover align-middle" id="table-unclaimed-items">
                 <thead>
                     <tr>
-                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 0)">Rastreio / ID</th>
-                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 1)">Tipo / Remetente</th>
-                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 2)">Destinatário Manual</th>
-                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 3)">Observação</th>
-                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 4)">Chegada</th>
-                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 5)">Status</th>
+                        <th style="width: 40px;"></th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 1)">Rastreio / ID</th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 2)">Tipo / Remetente</th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 3)">Destinatário Manual</th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 4)">Observação</th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 5)">Chegada</th>
+                        <th class="sortable" onclick="sortTable('table-unclaimed-items', 6)">Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in unclaimed_items %}
                     <tr>
+                        <td>
+                            <a href="javascript:void(0)" class="history-trigger"
+                                onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                        </td>
                         <td>
                             <strong>{{ item.internal_id }}</strong><br>
                             <small class="text-muted">{{ item.tracking_code or '-' }}</small>

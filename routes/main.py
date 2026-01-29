@@ -5,6 +5,17 @@ from utils.notifications import send_support_ticket
 
 main_bp = Blueprint('main', __name__)
 
+# Mapeamento de ações para nomes amigáveis no histórico
+ITEM_ACTION_MAP = {
+    'REGISTER_PORTARIA': '📦 Recebido na Portaria',
+    'COLLECT_FROM_PORTARIA': '🚚 Coletado pelo Facilities',
+    'DELIVERED': '✅ Entregue ao Destinatário',
+    'DELIVERED_VIA_PASSWORD': '🔑 Entregue via Autenticação por Senha',
+    'RECOVERED_ITEM': '♻️ Item Recuperado',
+    'RECORDED_OCCURRENCE: EXTRAVIADO': '⚠️ Registrada Ocorrência: EXTRAVIADO',
+    'RECORDED_OCCURRENCE: DEVOLVIDO': '⚠️ Registrada Ocorrência: DEVOLVIDO'
+}
+
 @main_bp.route('/')
 def index():
     if 'user_id' not in session:
@@ -124,3 +135,75 @@ def set_unit(unit_id):
         flash(f'Unidade alterada com sucesso.', 'info')
     
     return redirect(request.referrer or url_for('main.index'))
+
+@main_bp.route('/api/item/history/<int:item_id>')
+@login_required
+def get_item_history(item_id):
+    db = get_db()
+    # 1. Busca dados básicos do item
+    item = db.execute("SELECT internal_id, status, sender, observation FROM items WHERE id = ?", (item_id,)).fetchone()
+    if not item:
+        return {"error": "Item não encontrado"}, 404
+
+    # 2. Busca todas as movimentações com o nome do usuário responsável
+    movements = db.execute("""
+        SELECT m.timestamp, m.action, u.full_name as user_name
+        FROM movements m
+        JOIN users u ON m.user_id = u.id
+        WHERE m.item_id = ?
+        ORDER BY m.timestamp ASC
+    """, (item_id,)).fetchall()
+    
+    # 3. Busca detalhes extras do comprovante se houver (quem recebeu de fato)
+    proof = db.execute("""
+        SELECT p.received_by_name, p.occurrence_note
+        FROM proofs p
+        WHERE p.item_id = ?
+    """, (item_id,)).fetchone()
+    
+    history_data = []
+    for m in movements:
+        raw_action = m['action']
+        
+        # Parse delimiter da nota se houver (Audit Trail v4.3.0+)
+        note_from_movement = ""
+        if " | " in raw_action:
+            parts = raw_action.split(" | ", 1)
+            raw_action = parts[0]
+            note_from_movement = parts[1]
+
+        display_action = ITEM_ACTION_MAP.get(raw_action, raw_action)
+        
+        # Tratamento especial para strings dinâmicas
+        if raw_action.startswith('ALLOCATED:'):
+            display_action = '📍 Alocado para Retirada'
+        elif raw_action.startswith('LOCATION_CHANGED_TO:'):
+            display_action = '🔄 Local de Armazenamento Alterado'
+
+        entry = {
+            'timestamp': m['timestamp'],
+            'action': display_action,
+            'user': m['user_name'],
+            'details': '-'
+        }
+        
+        # Lógica de detalhes refinada
+        if raw_action == 'REGISTER_PORTARIA':
+            entry['details'] = item['sender']
+        elif raw_action.startswith('ALLOCATED:'):
+            entry['details'] = note_from_movement or item['observation'] or '-'
+        elif raw_action.startswith('RECORDED_OCCURRENCE') or raw_action == 'RECOVERED_ITEM':
+            # Prioriza a nota salva no movimento
+            entry['details'] = note_from_movement or (proof['occurrence_note'] if proof else '-')
+        elif raw_action.startswith('LOCATION_CHANGED_TO:'):
+             entry['details'] = note_from_movement or '-'
+        elif raw_action in ('DELIVERED', 'DELIVERED_VIA_PASSWORD'):
+             entry['details'] = f"Recebido por: {proof['received_by_name']}" if proof else '-'
+
+        history_data.append(entry)
+        
+    return {
+        "internal_id": item['internal_id'],
+        "status": item['status'],
+        "history": history_data
+    }, 200

@@ -13,16 +13,21 @@
         <form action="{{ url_for('facilities_search') }}" method="get" class="row g-3">
             <div class="col-md-4">
                 <label class="form-label">Busca Geral</label>
-                <input type="text" class="form-control" name="q" value="{{ request.args.get('q', '') }}" placeholder="Rastreio, Destinatário, Remetente...">
+                <input type="text" class="form-control" name="q" value="{{ request.args.get('q', '') }}"
+                    placeholder="Rastreio, Destinatário, Remetente...">
             </div>
             <div class="col-md-3">
                 <label class="form-label">Status</label>
                 <select class="form-select" name="status">
                     <option value="">Todos</option>
-                    <option value="RECEBIDO_PORTARIA" {% if request.args.get('status') == 'RECEBIDO_PORTARIA' %}selected{% endif %}>Na Portaria</option>
-                    <option value="EM_FACILITIES" {% if request.args.get('status') == 'EM_FACILITIES' %}selected{% endif %}>Em Triagem</option>
-                    <option value="DISPONIVEL_PARA_RETIRADA" {% if request.args.get('status') == 'DISPONIVEL_PARA_RETIRADA' %}selected{% endif %}>Disponível</option>
-                    <option value="ENTREGUE" {% if request.args.get('status') == 'ENTREGUE' %}selected{% endif %}>Entregue</option>
+                    <option value="RECEBIDO_PORTARIA" {% if request.args.get('status')=='RECEBIDO_PORTARIA' %}selected{%
+                        endif %}>Na Portaria</option>
+                    <option value="EM_FACILITIES" {% if request.args.get('status')=='EM_FACILITIES' %}selected{% endif
+                        %}>Em Triagem</option>
+                    <option value="DISPONIVEL_PARA_RETIRADA" {% if
+                        request.args.get('status')=='DISPONIVEL_PARA_RETIRADA' %}selected{% endif %}>Disponível</option>
+                    <option value="ENTREGUE" {% if request.args.get('status')=='ENTREGUE' %}selected{% endif %}>Entregue
+                    </option>
                 </select>
             </div>
             <div class="col-md-3">
@@ -46,17 +51,23 @@
             <table class="table table-hover align-middle">
                 <thead>
                     <tr>
-                        <th>ID / Rastreio</th>
-                        <th>Tipo / Remetente</th>
-                        <th>Destinatário</th>
-                        <th>Status / Local</th>
-                        <th>Atualizado em</th>
+                        <th style="width: 40px;"></th>
+                        <th class="sortable" onclick="sortTable('table-search-results', 1)">ID / Rastreio</th>
+                        <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-search-results', 2)">Tipo
+                            / Remetente</th>
+                        <th class="sortable" onclick="sortTable('table-search-results', 3)">Destinatário</th>
+                        <th class="sortable" onclick="sortTable('table-search-results', 4)">Status / Local</th>
+                        <th class="sortable" onclick="sortTable('table-search-results', 5)">Atualizado em</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in items %}
                     <tr>
+                        <td>
+                            <a href="javascript:void(0)" class="history-trigger"
+                                onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                        </td>
                         <td>
                             <strong>{{ item.internal_id }}</strong>
                             {% if item.tracking_code %}
@@ -84,13 +95,14 @@
                         <td>
                             <!-- Ações contextuais simples -->
                             {% if item.status == 'DISPONIVEL_PARA_RETIRADA' %}
-                            <a href="{{ url_for('delivery_page', item_id=item.id) }}" class="btn btn-sm btn-success">Entregar</a>
+                            <a href="{{ url_for('delivery_page', item_id=item.id) }}"
+                                class="btn btn-sm btn-success">Entregar</a>
                             {% endif %}
                         </td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="6" class="text-center text-muted p-4">Nenhum resultado encontrado.</td>
+                        <td colspan="7" class="text-center text-muted p-4">Nenhum resultado encontrado.</td>
                     </tr>
                     {% endfor %}
                 </tbody>

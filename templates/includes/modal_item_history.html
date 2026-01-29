@@ -1,0 +1,115 @@
+<!-- Modal de Histórico de Vida do ID -->
+<div class="modal fade" id="itemHistoryModal" tabindex="-1" aria-labelledby="itemHistoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="itemHistoryModalLabel">🔍 Ciclo de Vida: <span
+                        id="historyItemIdHeader"></span></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex justify-content-between align-items-center mb-3 text-uppercase">
+                    <div>
+                        <strong>Status Atual:</strong> <span id="historyItemStatus" class="badge"></span>
+                    </div>
+                </div>
+
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-sm table-hover align-middle">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Ação</th>
+                                <th>Operador</th>
+                                <th>Detalhes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemHistoryBody">
+                            <!-- Preenchido via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showItemHistory(itemId) {
+        const overlay = document.getElementById('loading-overlay');
+        if (overlay) overlay.style.display = 'flex';
+
+        fetch(`/api/item/history/${itemId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (overlay) overlay.style.display = 'none';
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                document.getElementById('historyItemIdHeader').innerText = data.internal_id;
+
+                const statusBadge = document.getElementById('historyItemStatus');
+                statusBadge.innerText = data.status.replace(/_/g, ' ');
+                statusBadge.className = 'badge ';
+
+                if (data.status === 'ENTREGUE') statusBadge.classList.add('bg-success');
+                else if (data.status === 'RECEBIDO_PORTARIA') statusBadge.classList.add('bg-warning', 'text-dark');
+                else if (['EXTRAVIADO', 'DEVOLVIDO'].includes(data.status)) statusBadge.classList.add('bg-danger');
+                else statusBadge.classList.add('bg-info', 'text-dark');
+
+                const body = document.getElementById('itemHistoryBody');
+                body.innerHTML = '';
+
+                data.history.forEach(entry => {
+                    const row = document.createElement('tr');
+
+                    // Formata Timestamp
+                    let formattedDate = entry.timestamp;
+                    try {
+                        const date = new Date(entry.timestamp);
+                        formattedDate = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ' ' +
+                            date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                    } catch (e) { }
+
+                    row.innerHTML = `
+                        <td><small>${formattedDate}</small></td>
+                        <td><span class="fw-bold">${entry.action}</span></td>
+                        <td>${entry.user}</td>
+                        <td><small class="text-muted">${entry.details || '-'}</small></td>
+                    `;
+                    body.appendChild(row);
+                });
+
+                const modalElement = document.getElementById('itemHistoryModal');
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            })
+            .catch(err => {
+                if (overlay) overlay.style.display = 'none';
+                console.error(err);
+                alert('Erro ao carregar o histórico do item.');
+            });
+    }
+</script>
+
+<style>
+    .history-trigger {
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: 0.2s;
+        color: #0d6efd;
+        display: inline-block;
+    }
+
+    .history-trigger:hover {
+        background-color: #f0f4f8;
+        transform: scale(1.1);
+    }
+</style>

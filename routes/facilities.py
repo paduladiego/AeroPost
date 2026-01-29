@@ -76,7 +76,7 @@ def allocate(item_id):
         "UPDATE items SET status = 'DISPONIVEL_PARA_RETIRADA', location = ?, recipient_email = ?, recipient_name_manual = ?, recipient_floor = ?, observation = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", 
         (location, rec_email, rec_manual, rec_floor, observation, item_id)
     )
-    db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", (item_id, session['user_id'], f'ALLOCATED: {location} AND ID_RECIPIENT', unit_id))
+    db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", (item_id, session['user_id'], f'ALLOCATED: {location} AND ID_RECIPIENT | {observation or ""}', unit_id))
     db.commit()
 
     # Envio de Notificação por E-mail
@@ -109,11 +109,21 @@ def allocate(item_id):
 @login_required
 @role_required(['FACILITIES', 'ADMIN', 'FACILITIES_PORTARIA'])
 def update_location(item_id):
-    location = request.form['location']
+    new_location = request.form['location']
     db = get_db()
+    
+    # Busca o local atual antes de atualizar
+    current_item = db.execute("SELECT location FROM items WHERE id = ?", (item_id,)).fetchone()
+    old_location = current_item['location'] if current_item else "?"
+    
     unit_id = session.get('unit_id')
-    db.execute("UPDATE items SET location = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (location, item_id))
-    db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", (item_id, session['user_id'], f'LOCATION_CHANGED_TO: {location}', unit_id))
+    db.execute("UPDATE items SET location = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", (new_location, item_id))
+    
+    # Registra no histórico: NovoLocal | Velho -> Novo
+    action_str = f'LOCATION_CHANGED_TO: {new_location} | {old_location} ➔ {new_location}'
+    db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", 
+               (item_id, session['user_id'], action_str, unit_id))
+    
     db.commit()
     flash('Local atualizado com sucesso.', 'success')
     return redirect(url_for('facilities.dashboard', tab='entregar'))
@@ -159,7 +169,7 @@ def delivery_password_confirm(item_id):
     
     placeholder_sig = "DATA:AUTHENTICATED_BY_PASSWORD"
     db.execute(
-        "INSERT INTO proofs (item_id, signature_data, delivered_by, received_by_name) VALUES (?, ?, ?, ?)",
+        "INSERT OR REPLACE INTO proofs (item_id, signature_data, delivered_by, received_by_name, delivered_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)",
         (item_id, placeholder_sig, session['user_id'], user['full_name'])
     )
     
@@ -189,7 +199,7 @@ def delivery_confirm(item_id):
     db.execute("UPDATE items SET status = 'ENTREGUE', updated_at = CURRENT_TIMESTAMP WHERE id = ?", (item_id,))
     
     db.execute(
-        "INSERT INTO proofs (item_id, signature_data, delivered_by, received_by_name) VALUES (?, ?, ?, ?)",
+        "INSERT OR REPLACE INTO proofs (item_id, signature_data, delivered_by, received_by_name, delivered_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)",
         (item_id, signature, session['user_id'], received_by)
     )
     
@@ -270,7 +280,7 @@ def register_occurrence():
                    (item['id'], f"OCCURRENCE_{action}", session['user_id'], f"SISTEMA: {action}", note))
         
         db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", 
-                   (item['id'], session['user_id'], f'RECORDED_OCCURRENCE: {action}', unit_id))
+                   (item['id'], session['user_id'], f'RECORDED_OCCURRENCE: {action} | {note or ""}', unit_id))
         
         flash(f'Ocorrência de {action} registrada para o item {internal_id}.', 'warning')
 
@@ -283,11 +293,12 @@ def register_occurrence():
         # Volta para triagem (Alocar Local)
         db.execute("UPDATE items SET status = 'EM_FACILITIES', updated_at = CURRENT_TIMESTAMP WHERE id = ?", (item['id'],))
         
-        # Remove prova anterior (extravio/devolução) se existir
-        db.execute("DELETE FROM proofs WHERE item_id = ?", (item['id'],))
+        # Insere nota de recuperação na prova (ou substitui a anterior) para rastro
+        db.execute("INSERT OR REPLACE INTO proofs (item_id, signature_data, delivered_by, received_by_name, delivered_at, occurrence_note) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?)",
+                   (item['id'], "OCCURRENCE_RECUPERADO", session['user_id'], "SISTEMA: RECUPERADO", note))
         
         db.execute("INSERT INTO movements (item_id, user_id, action, unit_id) VALUES (?, ?, ?, ?)", 
-                   (item['id'], session['user_id'], 'RECOVERED_ITEM', unit_id))
+                   (item['id'], session['user_id'], f'RECOVERED_ITEM | {note or ""}', unit_id))
         
         flash(f'Item {internal_id} recuperado! Ele voltou para a aba "2. Alocar Local".', 'success')
 

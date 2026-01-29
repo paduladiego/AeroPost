@@ -147,17 +147,22 @@
                     <table class="table align-middle" id="table-portaria">
                         <thead>
                             <tr>
-                                <th class="sortable" onclick="sortTable('table-portaria', 0)">ID</th>
-                                <th class="sortable" onclick="sortTable('table-portaria', 1)">Chegada</th>
-                                <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-portaria', 2)">
+                                <th style="width: 40px;"></th>
+                                <th class="sortable" onclick="sortTable('table-portaria', 1)">ID</th>
+                                <th class="sortable" onclick="sortTable('table-portaria', 2)">Chegada</th>
+                                <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-portaria', 3)">
                                     Item</th>
-                                <th class="sortable" onclick="sortTable('table-portaria', 3)">Remetente</th>
+                                <th class="sortable" onclick="sortTable('table-portaria', 4)">Remetente</th>
                                 <th>Ação</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in items_portaria %}
                             <tr>
+                                <td>
+                                    <a href="javascript:void(0)" class="history-trigger"
+                                        onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                                </td>
                                 <td><small class="text-muted">{{ item.internal_id }}</small></td>
                                 <td>{{ item.created_at.strftime('%d/%m %H:%M') }}</td>
                                 <td>{{ item.type }}</td>
@@ -170,7 +175,7 @@
                             </tr>
                             {% else %}
                             <tr>
-                                <td colspan="5" class="text-center">Nenhum item na portaria.</td>
+                                <td colspan="6" class="text-center">Nenhum item na portaria.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -188,16 +193,21 @@
                     <table class="table align-middle" id="table-triagem">
                         <thead>
                             <tr>
-                                <th class="sortable" onclick="sortTable('table-triagem', 0)">ID / Rastreio</th>
-                                <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-triagem', 1)">Item
+                                <th style="width: 40px;"></th>
+                                <th class="sortable" onclick="sortTable('table-triagem', 1)">ID / Rastreio</th>
+                                <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-triagem', 2)">Item
                                 </th>
-                                <th class="sortable" onclick="sortTable('table-triagem', 2)">Remetente</th>
+                                <th class="sortable" onclick="sortTable('table-triagem', 3)">Remetente</th>
                                 <th>Definir Local</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in items_facilities %}
                             <tr>
+                                <td>
+                                    <a href="javascript:void(0)" class="history-trigger"
+                                        onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                                </td>
                                 <td>
                                     <strong>{{ item.internal_id }}</strong>
                                     <br><small class="text-muted">{{ item.tracking_code or 'Sem rastreio' }}</small>
@@ -280,17 +290,22 @@
                     <table class="table align-middle" id="table-entrega">
                         <thead>
                             <tr>
-                                <th class="sortable" onclick="sortTable('table-entrega', 0)">ID / Rastreio</th>
-                                <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-entrega', 1)">Item
+                                <th style="width: 40px;"></th>
+                                <th class="sortable" onclick="sortTable('table-entrega', 1)">ID / Rastreio</th>
+                                <th class="sortable d-none d-md-table-cell" onclick="sortTable('table-entrega', 2)">Item
                                 </th>
-                                <th class="sortable" onclick="sortTable('table-entrega', 2)">Destinatário</th>
-                                <th class="sortable" onclick="sortTable('table-entrega', 3)">Local</th>
+                                <th class="sortable" onclick="sortTable('table-entrega', 3)">Destinatário</th>
+                                <th class="sortable" onclick="sortTable('table-entrega', 4)">Local</th>
                                 <th>Ação</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in items_ready %}
                             <tr>
+                                <td>
+                                    <a href="javascript:void(0)" class="history-trigger"
+                                        onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                                </td>
                                 <td>
                                     <strong>{{ item.internal_id }}</strong>
                                     <br><small class="text-muted">{{ item.tracking_code or 'Sem rastreio' }}</small>

@@ -20,7 +20,7 @@ Este documento define as regras de desenvolvimento e organização para a Landin
   - `scripts.js`: Lógica global (reveal animations, carregamento de menu).
   - `changelog.js`: Lógica específica para fetch e render do ChangeLog.
 - `menu.html`: Componente compartilhado do cabeçalho.
-- `CHANGELOG.md`: Fonte de verdade para as notas de versão.
+- `CHANGELOG-LANDING.md`: Fonte de verdade simplificada para as notas de versão (público).
 
 ---
 
@@ -30,7 +30,7 @@ Este documento define as regras de desenvolvimento e organização para a Landin
 - O menu é injetado dinamicamente via JavaScript para evitar duplicidade de código. Qualquer alteração estrutural deve ser feita exclusivamente no arquivo `menu.html`.
 - 
 - ### Renderização de Changelog
-- O arquivo `CHANGELOG.md` é renderizado automaticamente no front-end. O sistema busca primeiro a versão local na pasta `landing/` e utiliza a raiz do projeto como fallback apenas para desenvolvimento.
+- O arquivo `CHANGELOG-LANDING.md` é renderizado automaticamente no front-end. Este arquivo é exclusivo da Landing Page e não possui vínculo ou fallback com o ChangeLog técnico da raiz, garantindo independência total.
 - 
 - ---
 - 
@@ -43,6 +43,6 @@ Este documento define as regras de desenvolvimento e organização para a Landin
 - 
 - ## ⚠️ Checklist de Manutenção
 - 
-- - [ ] **Novo Release**: Reescrever as novidades técnicas do projeto em linguagem comercial no `landing/CHANGELOG.md`.
+- - [ ] **Novo Release**: Reescrever as novidades técnicas do projeto em linguagem comercial no `landing/CHANGELOG-LANDING.md`.
 - - [ ] **Consistência**: Validar se o `menu-placeholder` está presente em todas as novas páginas HTML.
 - - [ ] **Assets**: Garantir que novos caminhos de imagens e estilos sejam sempre relativos.

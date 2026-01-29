@@ -1,16 +1,10 @@
 async function loadChangelog() {
     const markdownBody = document.getElementById('markdown-body');
     try {
-        // Tenta primeiro o caminho local (landing/)
-        let response = await fetch('CHANGELOG.md');
+        // Tenta buscar o caminho da landing (específico e simplificado)
+        const response = await fetch('CHANGELOG-LANDING.md');
 
-        // Se não achar localmente (404), tenta o caminho da raiz
-        if (!response.ok) {
-            console.log('CHANGELOG.md não encontrado na pasta landing, tentando raiz...');
-            response = await fetch('../CHANGELOG.md');
-        }
-
-        if (!response.ok) throw new Error('Não foi possível localizar o arquivo CHANGELOG.md em nenhum dos diretórios.');
+        if (!response.ok) throw new Error('O arquivo de novidades (CHANGELOG-LANDING.md) não foi encontrado no servidor.');
 
         const text = await response.text();
         markdownBody.innerHTML = marked.parse(text);

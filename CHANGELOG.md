@@ -5,6 +5,18 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.3.1] - 2026-01-28
+
+### ⚡ Otimização e Refinamento
+- **Envio de E-mail Assíncrono**: Otimizada a performance do Painel Facilities (Passo 2). Agora as notificações são enviadas em segundo plano (background), tornando a interface instantânea e eliminando a lentidão ao alocar itens.
+- **Trajetória de Localização**: O histórico agora detalha a mudança de local ("De ➔ Para") quando um item é realocado, garantindo maior precisão no rastreio interno.
+
+## [v4.3.0] - 2026-01-28
+
+### 🚀 Novas Funcionalidades
+- **Ciclo de Vida do ID 🔍**: Implementado o histórico completo de movimentações de cada encomenda. Agora é possível visualizar exatamente quem registrou, quem coletou, quem alocou e quem entregou cada item, com data e hora precisas.
+- **Rastreabilidade Total**: Adicionado ícone de lupa em todas as tabelas do sistema (Portaria, Facilities, Histórico e Home do Usuário) para abertura instantânea do histórico via pop-up.
+
 ## [v4.2.0] - 2026-01-27
 
 ### 🚀 Novas Funcionalidades
