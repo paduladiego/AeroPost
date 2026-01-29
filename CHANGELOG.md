@@ -5,6 +5,23 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.4.7] - 2026-01-29
+
+### 🛡️ Estabilidade Crítica (PWA)
+- **Service Worker Passthrough**: O Service Worker agora opera em modo transparente para requisições de rede. Isso garante que logins e redirecionamentos 302 funcionem sem interferência, mantendo a instalação PWA ativa.
+- **Cache de Assets**: Otimização do cache apenas para imagens e fontes essenciais.
+
+## [v4.4.6] - 2026-01-29
+
+### 🛡️ Estabilidade e Login
+- **Service Worker (Fix Localhost/Demo)**: Removida a rota raiz do cache inicial obrigatório. Isso resolve o conflito de redirecionamento que causava o erro `ERR_FAILED` no login. Agora o PWA gerencia apenas assets estáticos no primeiro carregamento.
+
+## [v4.4.5] - 2026-01-29
+
+### 🐞 Correção Crítica (Login/POST)
+- **Service Worker Bypass**: Corrigido bug onde o Service Worker bloqueava requisições POST, impedindo o login em alguns navegadores. Agora apenas requisições GET são gerenciadas pelo cache.
+- **Robustez do Backend**: Otimização dos imports para o Service Worker no `app.py`.
+
 ## [v4.4.4] - 2026-01-29
 
 ### 🛡️ PWA & Service Worker (Escopo Total)

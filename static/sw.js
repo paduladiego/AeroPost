@@ -1,29 +1,23 @@
-const CACHE_NAME = 'aeropost-v1';
+const CACHE_NAME = 'aeropost-v3';
 const urlsToCache = [
-    './',
-    'static/img/Logo-A-Box.png',
-    'static/img/Logo-AeroPost-Text.png',
-    'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
-    'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js'
+    '/static/img/Logo-A-Box.png',
+    '/static/img/Logo-AeroPost-Text.png'
 ];
 
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                return cache.addAll(urlsToCache);
+                return Promise.all(
+                    urlsToCache.map(url => {
+                        return cache.add(url).catch(err => console.log('Erro de cache (ignorado):', url));
+                    })
+                );
             })
     );
 });
 
 self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                if (response) {
-                    return response;
-                }
-                return fetch(event.request);
-            })
-    );
+    // Deixa o navegador lidar com tudo. 
+    // Removendo o respondWith para evitar bloqueio de redirecionamentos 302.
 });

@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, send_from_directory, make_response
 from dotenv import load_dotenv
 from utils.db import init_app
 from utils.middleware import PrefixMiddleware
@@ -23,7 +23,7 @@ def create_app():
         db_url = os.path.join(app.root_path, db_url)
     app.config['DATABASE'] = db_url
     # Versão do Sistema
-    base_version = 'v4.4.4'
+    base_version = 'v4.4.7'
     app_suffix = os.environ.get('APP_SUFFIX', '') # Ex: '-demo' ou '-Kran'
     app.config['APP_VERSION'] = os.environ.get('APP_VERSION', f"{base_version}{app_suffix}")
     
@@ -124,7 +124,6 @@ def create_app():
     # Rota para o Service Worker (necessário estar na raiz para ter escopo total)
     @app.route('/sw.js')
     def serve_sw():
-        from flask import send_from_directory, make_response
         response = make_response(send_from_directory(os.path.join(app.root_path, 'static'), 'sw.js'))
         # Garante que o navegador saiba que é um Service Worker
         response.headers['Content-Type'] = 'application/javascript'

@@ -3,18 +3,8 @@
 Acompanhe as evoluções e melhorias contínuas da plataforma.
 
 
-## [v4.4.4] - 2026-01-29
-- **PWA Offiline**: Ajuste técnico no escopo do Service Worker para garantir que a aplicação possa ser instalada e aberta sem internet.
-
-## [v4.4.3] - 2026-01-29
-- **Melhoria Técnica**: Otimização do cache offline e correções de acessibilidade em todos os formulários do sistema.
-
-## [v4.4.2] - 2026-01-29
-- **Instalabilidade PWA**: Correção definitiva nos caminhos de manifesto e ícones para suporte a subpastas operacionais.
-- **Histórico Detalhado**: Melhoria visual no Ciclo de Vida do ID para exibir locais de alocação de forma clara.
-
-## [v4.4.1] - 2026-01-29
-- **Correção Técnica**: Ajuste nas rotas de histórico e ocorrências para pleno funcionamento em todos os ambientes de servidor.
+## [v4.4.1] até [v4.4.7] - 2026-01-29
+- Diversas correções de estabilidade!
 
 ## [v4.4.0] - 2026-01-29
 - **AeroPost no seu Celular**: Agora você pode instalar o AeroPost como um aplicativo! Compatível com Android, iOS e Desktop para uma experiência de uso rápida e em tela cheia.
