@@ -9,21 +9,21 @@
             <h3 class="text-center mb-4">Cadastro Corporativo</h3>
             <form method="post">
                 <div class="mb-3">
-                    <label class="form-label">Nome Completo</label>
-                    <input type="text" class="form-control" name="full_name" required>
+                    <label for="full_name" class="form-label">Nome Completo</label>
+                    <input type="text" class="form-control" id="full_name" name="full_name" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Email Corporativo</label>
-                    <input type="email" class="form-control" name="email" placeholder="seu.nome@empresa.com.br"
-                        required>
+                    <label for="email" class="form-label">Email Corporativo</label>
+                    <input type="email" class="form-control" id="email" name="email"
+                        placeholder="seu.nome@empresa.com.br" required>
                     <div class="form-text">Use seu e-mail corporativo para se cadastrar.</div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Empresa</label>
-                        <select class="form-select" name="company" required>
+                        <label for="company" class="form-label">Empresa</label>
+                        <select class="form-select" id="company" name="company" required>
                             <option value="">Selecione...</option>
                             {% for c in companies %}
                             <option value="{{ c.name }}">{{ c.name }}</option>
@@ -31,14 +31,15 @@
                         </select>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Andar / Setor</label>
-                        <input type="text" class="form-control" name="floor" placeholder="Ex: 5º Andar" required>
+                        <label for="floor" class="form-label">Andar / Setor</label>
+                        <input type="text" class="form-control" id="floor" name="floor" placeholder="Ex: 5º Andar"
+                            required>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Senha</label>
-                    <input type="password" class="form-control" name="password" required>
+                    <label for="password" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
                 </div>
 
                 <div class="d-grid gap-2">

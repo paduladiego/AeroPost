@@ -5,6 +5,13 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.4.3] - 2026-01-29
+
+### 🔧 Polimento e Acessibilidade
+- **Service Worker Robusto**: Corrigido erro de `Cache.addAll` que falhava em ambientes com subdiretórios (visto no /demo). Agora o cache utiliza caminhos relativos ao Service Worker.
+- **PWA em Subpastas**: Caminhos de `start_url` e `id` no manifesto agora são relativos, permitindo instalação correta independente do prefixo da URL.
+- **Acessibilidade (Labels)**: Corrigido erro de formulários (Modal de Suporte, Cadastro, Perfil) onde os rótulos não estavam tecnicamente associados aos campos. Melhora o SEO e suporte a leitores de tela.
+
 ## [v4.4.2] - 2026-01-29
 
 ### 🚀 Melhorias e Ajustes Finais

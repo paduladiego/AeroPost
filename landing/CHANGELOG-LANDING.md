@@ -3,6 +3,9 @@
 Acompanhe as evoluções e melhorias contínuas da plataforma.
 
 
+## [v4.4.3] - 2026-01-29
+- **Melhoria Técnica**: Otimização do cache offline e correções de acessibilidade em todos os formulários do sistema.
+
 ## [v4.4.2] - 2026-01-29
 - **Instalabilidade PWA**: Correção definitiva nos caminhos de manifesto e ícones para suporte a subpastas operacionais.
 - **Histórico Detalhado**: Melhoria visual no Ciclo de Vida do ID para exibir locais de alocação de forma clara.

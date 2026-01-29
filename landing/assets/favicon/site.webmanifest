@@ -2,8 +2,8 @@
   "name": "AeroPost",
   "short_name": "AeroPost",
   "description": "Sistema de Gestão de Correspondências e Encomendas Corporativas",
-  "start_url": "/?source=pwa",
-  "id": "/?source=pwa",
+  "start_url": "./?source=pwa",
+  "id": "./?source=pwa",
   "icons": [
     {
       "src": "web-app-manifest-192x192.png",

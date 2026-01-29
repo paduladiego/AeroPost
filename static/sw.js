@@ -1,8 +1,8 @@
 const CACHE_NAME = 'aeropost-v1';
 const urlsToCache = [
-    '/',
-    '/static/img/Logo-A-Box.png',
-    '/static/img/Logo-AeroPost-Text.png',
+    './',
+    'img/Logo-A-Box.png',
+    'img/Logo-AeroPost-Text.png',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
     'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js'
 ];
