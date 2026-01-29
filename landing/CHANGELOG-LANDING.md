@@ -3,6 +3,10 @@
 Acompanhe as evoluções e melhorias contínuas da plataforma.
 
 
+## [v4.4.0] - 2026-01-29
+- **AeroPost no seu Celular**: Agora você pode instalar o AeroPost como um aplicativo! Compatível com Android, iOS e Desktop para uma experiência de uso rápida e em tela cheia.
+- **Identidade Visual Renovada**: Novos ícones de sistema e favicons integrados.
+
 ## [v4.3.1] - 2026-01-28
 - **Performance e Precisão**: Otimizada a velocidade de resposta do Painel Facilities e implementado o rastreio de trajetória de local ("De ➔ Para") no histórico.
 

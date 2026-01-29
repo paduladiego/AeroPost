@@ -5,6 +5,13 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.4.0] - 2026-01-29
+
+### 🚀 Novas Funcionalidades (PWA)
+- **Suporte a PWA (Progressive Web App) 📱**: O AeroPost agora pode ser instalado como um aplicativo nativo no Android, iOS e Desktop.
+- **Experiência Imersiva**: Quando instalado, o sistema abre em tela cheia (standalone), removendo as barras de navegação do navegador.
+- **Novos Favicons e Identidade Visual**: Atualização completa dos ícones de sistema e favicons para todas as plataformas.
+
 ## [v4.3.1] - 2026-01-28
 
 ### ⚡ Otimização e Refinamento
