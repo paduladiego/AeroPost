@@ -3,7 +3,7 @@
 Acompanhe as evoluções e melhorias contínuas da plataforma.
 
 
-## [v4.4.1] até [v4.4.7] - 2026-01-29
+## [v4.4.1] até [v4.4.8] - 2026-01-29
 - Diversas correções de estabilidade!
 
 ## [v4.4.0] - 2026-01-29

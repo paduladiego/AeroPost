@@ -5,6 +5,17 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.4.8] - 2026-01-29
+
+### ⏳ Ajustes de Sistema
+- **Fuso Horário Local**: Forçado o fuso horário `America/Sao_Paulo` via código no `app.py`. Isso garante que a hora exibida no sistema esteja correta (Brasília) independentemente da configuração regional do servidor VPS.
+
+## [v4.4.8] - 2026-01-29
+
+### 🕒 Fuso Horário (GMT-3)
+- **Migração de Dados Legados**: Adicionado script `migrations/fix_legacy_timezone_gmt0.py` para converter registros salvos anteriormente em UTC para o horário de Brasília (subtraindo 3 horas).
+- **Consistência de Histórico**: Garante que o histórico retroativo da Dexco e outros clientes esteja alinhado com o horário local.
+
 ## [v4.4.7] - 2026-01-29
 
 ### 🛡️ Estabilidade Crítica (PWA)

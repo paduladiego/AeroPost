@@ -192,6 +192,11 @@ Para manter a escalabilidade do AeroPost, siga esta estrutura para novos scripts
 - **O que**: Automações que rodam via agendamento (Cron) ou disparadores externos ao servidor web Flask.
 - **Exemplo**: `cron_notifications.py`.
 
+### 4. Scripts de Correção Única (One-off / Maintenance)
+- **O que**: Scripts para correções pontuais de dados legados (ex: ajuste de fuso horário de clientes antigos).
+- **Regra**: Devem ter nomes explícitos e avisos internos. **Devem ser DELETADOS** após a aplicação bem-sucedida em produção para não serem executados por engano em novos clientes.
+- **Exemplo Atual**: `migrations/fix_legacy_timezone_gmt0.py` (Usar apenas em PRD Dexco, depois remover).
+
 ### 4. `/tests`
 - **O que**: Arquivos de teste automatizado (`test_*.py`) e massas de dados exclusivas para o ambiente de testes (`fixtures`).
 
