@@ -191,12 +191,17 @@ def get_item_history(item_id):
         if raw_action == 'REGISTER_PORTARIA':
             entry['details'] = item['sender']
         elif raw_action.startswith('ALLOCATED:'):
-            entry['details'] = note_from_movement or item['observation'] or '-'
+            # Extrai o local: "ALLOCATED: Local Name AND ID_RECIPIENT" -> "Local Name"
+            local_part = raw_action.replace('ALLOCATED: ', '').split(' AND ')[0]
+            obs_part = note_from_movement or item['observation'] or ""
+            entry['details'] = f"{local_part} - {obs_part}" if obs_part else local_part
         elif raw_action.startswith('RECORDED_OCCURRENCE') or raw_action == 'RECOVERED_ITEM':
             # Prioriza a nota salva no movimento
             entry['details'] = note_from_movement or (proof['occurrence_note'] if proof else '-')
         elif raw_action.startswith('LOCATION_CHANGED_TO:'):
-             entry['details'] = note_from_movement or '-'
+             # Extrai o novo local
+             local_part = raw_action.replace('LOCATION_CHANGED_TO: ', '')
+             entry['details'] = note_from_movement or local_part or '-'
         elif raw_action in ('DELIVERED', 'DELIVERED_VIA_PASSWORD'):
              entry['details'] = f"Recebido por: {proof['received_by_name']}" if proof else '-'
 

@@ -3,6 +3,10 @@
 Acompanhe as evoluções e melhorias contínuas da plataforma.
 
 
+## [v4.4.2] - 2026-01-29
+- **Instalabilidade PWA**: Correção definitiva nos caminhos de manifesto e ícones para suporte a subpastas operacionais.
+- **Histórico Detalhado**: Melhoria visual no Ciclo de Vida do ID para exibir locais de alocação de forma clara.
+
 ## [v4.4.1] - 2026-01-29
 - **Correção Técnica**: Ajuste nas rotas de histórico e ocorrências para pleno funcionamento em todos os ambientes de servidor.
 

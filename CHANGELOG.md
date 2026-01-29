@@ -5,6 +5,12 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.4.2] - 2026-01-29
+
+### 🚀 Melhorias e Ajustes Finais
+- **PWA Universal**: Corrigido o erro 404 do Manifesto PWA e ícones em ambientes com prefixo de subdiretório (visto no /demo da VPS). Agora o AeroPost é 100% instalável em qualquer estrutura de URL.
+- **Ciclo de Vida Enriquecido**: O detalhe da ação "Alocado para Retirada" agora exibe o Local + Observação (ex: "Armário A - Urgente"), garantindo rastreabilidade mesmo sem notas manuais.
+
 ## [v4.4.1] - 2026-01-29
 
 ### 🐞 Correções (Hotfix)
