@@ -5,6 +5,12 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
+## [v4.4.4] - 2026-01-29
+
+### 🛡️ PWA & Service Worker (Escopo Total)
+- **Escopo de Service Worker**: O arquivo `sw.js` agora é servido diretamente na raiz da aplicação (`/sw.js`). Isso resolve o erro de cache 404 e permite que o PWA controle toda a aplicação, garantindo funcionamento offline da página inicial.
+- **Header de Segurança**: Adicionado header `Service-Worker-Allowed: /` para garantir compatibilidade máxima entre navegadores.
+
 ## [v4.4.3] - 2026-01-29
 
 ### 🔧 Polimento e Acessibilidade

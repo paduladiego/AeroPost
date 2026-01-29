@@ -3,6 +3,9 @@
 Acompanhe as evoluções e melhorias contínuas da plataforma.
 
 
+## [v4.4.4] - 2026-01-29
+- **PWA Offiline**: Ajuste técnico no escopo do Service Worker para garantir que a aplicação possa ser instalada e aberta sem internet.
+
 ## [v4.4.3] - 2026-01-29
 - **Melhoria Técnica**: Otimização do cache offline e correções de acessibilidade em todos os formulários do sistema.
 

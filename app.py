@@ -23,7 +23,7 @@ def create_app():
         db_url = os.path.join(app.root_path, db_url)
     app.config['DATABASE'] = db_url
     # Versão do Sistema
-    base_version = 'v4.4.3'
+    base_version = 'v4.4.4'
     app_suffix = os.environ.get('APP_SUFFIX', '') # Ex: '-demo' ou '-Kran'
     app.config['APP_VERSION'] = os.environ.get('APP_VERSION', f"{base_version}{app_suffix}")
     
@@ -120,6 +120,16 @@ def create_app():
     def serve_landing(filename):
         from flask import send_from_directory
         return send_from_directory(os.path.join(app.root_path, 'landing'), filename)
+
+    # Rota para o Service Worker (necessário estar na raiz para ter escopo total)
+    @app.route('/sw.js')
+    def serve_sw():
+        from flask import send_from_directory, make_response
+        response = make_response(send_from_directory(os.path.join(app.root_path, 'static'), 'sw.js'))
+        # Garante que o navegador saiba que é um Service Worker
+        response.headers['Content-Type'] = 'application/javascript'
+        response.headers['Service-Worker-Allowed'] = '/'
+        return response
 
     return app
 
