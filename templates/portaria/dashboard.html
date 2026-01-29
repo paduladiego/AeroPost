@@ -73,8 +73,8 @@
                             {% for item in today_items %}
                             <tr>
                                 <td>
-                                    <a href="javascript:void(0)" class="history-trigger"
-                                        onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                                    <a href="javascript:void(0)" class="history-trigger" data-item-id="{{ item.id }}"
+                                        title="Ver Histórico">🔍</a>
                                 </td>
                                 <td>
                                     {# Converte para string para comparar se PARSE_DECLTYPES está ativo #}
@@ -120,8 +120,8 @@
                             {% for item in pending_items %}
                             <tr class="table-warning">
                                 <td>
-                                    <a href="javascript:void(0)" class="history-trigger"
-                                        onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                                    <a href="javascript:void(0)" class="history-trigger" data-item-id="{{ item.id }}"
+                                        title="Ver Histórico">🔍</a>
                                 </td>
                                 <td><strong>{{ item.created_at.strftime('%d/%m %H:%M') }}</strong></td>
                                 <td>{{ item.type }}</td>

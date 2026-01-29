@@ -59,8 +59,8 @@
                     {% for item in items %}
                     <tr>
                         <td>
-                            <a href="javascript:void(0)" class="history-trigger"
-                                onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                            <a href="javascript:void(0)" class="history-trigger" data-item-id="{{ item.id }}"
+                                title="Ver Histórico">🔍</a>
                         </td>
                         <td>
                             <strong>{{ item.internal_id }}</strong>

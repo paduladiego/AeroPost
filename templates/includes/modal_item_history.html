@@ -96,6 +96,17 @@
                 alert('Erro ao carregar o histórico do item.');
             });
     }
+
+    // Global listener for history triggers
+    document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('click', function (e) {
+            const trigger = e.target.closest('.history-trigger');
+            if (trigger && trigger.dataset.itemId) {
+                e.preventDefault();
+                showItemHistory(trigger.dataset.itemId);
+            }
+        });
+    });
 </script>
 
 <style>

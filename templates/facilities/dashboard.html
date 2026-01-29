@@ -160,8 +160,8 @@
                             {% for item in items_portaria %}
                             <tr>
                                 <td>
-                                    <a href="javascript:void(0)" class="history-trigger"
-                                        onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                                    <a href="javascript:void(0)" class="history-trigger" data-item-id="{{ item.id }}"
+                                        title="Ver Histórico">🔍</a>
                                 </td>
                                 <td><small class="text-muted">{{ item.internal_id }}</small></td>
                                 <td>{{ item.created_at.strftime('%d/%m %H:%M') }}</td>
@@ -205,8 +205,8 @@
                             {% for item in items_facilities %}
                             <tr>
                                 <td>
-                                    <a href="javascript:void(0)" class="history-trigger"
-                                        onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                                    <a href="javascript:void(0)" class="history-trigger" data-item-id="{{ item.id }}"
+                                        title="Ver Histórico">🔍</a>
                                 </td>
                                 <td>
                                     <strong>{{ item.internal_id }}</strong>
@@ -303,8 +303,8 @@
                             {% for item in items_ready %}
                             <tr>
                                 <td>
-                                    <a href="javascript:void(0)" class="history-trigger"
-                                        onclick="showItemHistory({{ item.id }})" title="Ver Histórico">🔍</a>
+                                    <a href="javascript:void(0)" class="history-trigger" data-item-id="{{ item.id }}"
+                                        title="Ver Histórico">🔍</a>
                                 </td>
                                 <td>
                                     <strong>{{ item.internal_id }}</strong>

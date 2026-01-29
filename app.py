@@ -108,12 +108,18 @@ def create_app():
     app.register_blueprint(settings_bp)
     app.register_blueprint(admin_bp)
 
-    # Rota para o Favicon (servindo de landing/assets)
+    # Rota para o Favicon
     @app.route('/favicon.ico')
     def favicon():
         from flask import send_from_directory
-        return send_from_directory(os.path.join(app.root_path, 'static', 'img'),
-                               'favicon.png', mimetype='image/png')
+        return send_from_directory(os.path.join(app.root_path, 'landing', 'assets', 'favicon'),
+                               'favicon.ico')
+
+    # Rota para servir assets da landing page (necessário para os favicons no App)
+    @app.route('/landing/<path:filename>')
+    def serve_landing(filename):
+        from flask import send_from_directory
+        return send_from_directory(os.path.join(app.root_path, 'landing'), filename)
 
     return app
 
