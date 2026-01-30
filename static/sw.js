@@ -1,7 +1,7 @@
 const CACHE_NAME = 'aeropost-v3';
 const urlsToCache = [
-    '/static/img/Logo-A-Box.png',
-    '/static/img/Logo-AeroPost-Text.png'
+    'img/Logo-A-Box.png',
+    'img/Logo-AeroPost-Text.png'
 ];
 
 self.addEventListener('install', event => {

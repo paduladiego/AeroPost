@@ -130,10 +130,53 @@ def create_app():
         response.headers['Service-Worker-Allowed'] = '/'
         return response
 
+    # Rota para o Manifesto PWA dinâmico
+    @app.route('/manifest.json')
+    def serve_manifest():
+        from flask import jsonify, url_for
+        manifest = {
+            "name": "AeroPost",
+            "short_name": "AeroPost",
+            "description": "Sistema de Gestão de Correspondências e Encomendas Corporativas",
+            "start_url": url_for('main.home_user', source='pwa'),
+            "id": url_for('main.home_user', source='pwa'),
+            "icons": [
+                {
+                    "src": url_for('serve_landing', filename='assets/favicon/web-app-manifest-192x192.png'),
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "purpose": "any"
+                },
+                {
+                    "src": url_for('serve_landing', filename='assets/favicon/web-app-manifest-512x512.png'),
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "any"
+                },
+                {
+                    "src": url_for('serve_landing', filename='assets/favicon/web-app-manifest-192x192.png'),
+                    "sizes": "192x192",
+                    "type": "image/png",
+                    "purpose": "maskable"
+                },
+                {
+                    "src": url_for('serve_landing', filename='assets/favicon/web-app-manifest-512x512.png'),
+                    "sizes": "512x512",
+                    "type": "image/png",
+                    "purpose": "maskable"
+                }
+            ],
+            "theme_color": "#0d6efd",
+            "background_color": "#f8f9fa",
+            "display": "standalone",
+            "orientation": "portrait"
+        }
+        return jsonify(manifest)
+
     return app
 
 app = create_app()
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    # app.run(host='0.0.0.0', port=5000, debug=True)
+    # app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
