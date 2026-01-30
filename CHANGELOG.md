@@ -9,6 +9,7 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ### 🛡️ PWA Dinâmico (Fix de Instalação)
 - **Manifesto Dinâmico**: O arquivo `manifest.json` agora é gerado sob demanda. Isso garante que o `start_url` e os caminhos dos ícones sejam resolvidos corretamente mesmo quando o app está instalado em subdiretórios (ex: `/Dexco/AeroPost/` ou `/demo/`).
+- **Versão no App**: Adicionado o campo `version` ao manifesto para que o Android exiba a versão correta (`v4.4.9`) nas configurações do aplicativo.
 - **Service Worker Relativo**: Ajustada a lista de cache para usar caminhos relativos ao arquivo `sw.js`, permitindo que o PWA funcione corretamente em qualquer estrutura de URL servida via proxy reverso.
 
 ## [v4.4.8] - 2026-01-29

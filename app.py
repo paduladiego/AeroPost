@@ -138,6 +138,7 @@ def create_app():
             "name": "AeroPost",
             "short_name": "AeroPost",
             "description": "Sistema de Gestão de Correspondências e Encomendas Corporativas",
+            "version": app.config.get('APP_VERSION', 'v4.4.9'),
             "start_url": url_for('main.home_user', source='pwa'),
             "id": url_for('main.home_user', source='pwa'),
             "icons": [
