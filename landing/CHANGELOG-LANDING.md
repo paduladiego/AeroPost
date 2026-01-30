@@ -3,6 +3,10 @@
 Acompanhe as evoluções e melhorias contínuas da plataforma.
 
 
+
+## [v4.4.9] - 2026-01-29
+- **Instalação PWA Simplificada**: Corrigido o erro que impedia a instalação e abertura do AeroPost em aparelhos celulares quando hospedado em subdiretórios. Agora o aplicativo é 100% instalável e funcional em qualquer endereço.
+
 ## [v4.4.1] até [v4.4.8] - 2026-01-29
 - Diversas correções de estabilidade!
 
